@@ -5,7 +5,7 @@ import Button from './Button'
 import SelectToken from './SelectToken'
 import IncrementToken from './IncrementToken'
 import { useAppContext } from '../context'
-import { ERROR_CODES, amountFormatter } from '../utils'
+import { ERROR_CODES, amountFormatter, TRADE_TYPES } from '../utils'
 
 export function useCount() {
   const [state, setState] = useAppContext()
@@ -55,54 +55,76 @@ export default function Checkout({
   unlock,
   validateBuy,
   buy,
+  validateSell,
+  sell,
   dollarize
 }) {
   const [state, setState] = useAppContext()
 
-  const [{ inputValue, maximumInputValue, outputValue }, setValidationState] = useState({})
+  const buying = state.tradeType === TRADE_TYPES.BUY
+  const selling = !buying
+
+  const [buyValidationState, setBuyValidationState] = useState({}) // { maximumInputValue, inputValue, outputValue }
+  const [sellValidationState, setSellValidationState] = useState({}) // { inputValue, outputValue, minimumOutputValue }
   const [validationError, setValidationError] = useState()
 
+  // buy state validation
   useEffect(() => {
-    if (ready) {
+    if (ready && buying) {
       try {
-        setValidationState(validateBuy(String(state.count)))
+        setBuyValidationState(validateBuy(String(state.count)))
         setValidationError(null)
-        return () => {
-          setValidationState({})
-          setValidationError()
-        }
       } catch (error) {
+        setBuyValidationState({})
         setValidationError(error)
-        return () => {
-          setValidationError()
-        }
+      }
+
+      return () => {
+        setBuyValidationState({})
+        setValidationError()
       }
     }
-  }, [ready, validateBuy, state.count])
+  }, [ready, buying, state.count, validateBuy])
 
-  let dismissCheckout = e => {
-    e.preventDefault()
-    setState(state => ({ ...state, visible: !state.visible }))
-  }
+  // sell state validation
+  useEffect(() => {
+    if (ready && selling) {
+      try {
+        setSellValidationState(validateSell(String(state.count)))
+        setValidationError(null)
+      } catch (error) {
+        setSellValidationState({})
+        setValidationError(error)
+      }
+
+      return () => {
+        setSellValidationState({})
+        setValidationError()
+      }
+    }
+  }, [ready, selling, state.count, validateSell])
 
   const shouldRenderUnlock = validationError && validationError.code === ERROR_CODES.INSUFFICIENT_ALLOWANCE
 
   const errorMessage = getValidationErrorMessage(validationError)
-
-  // if (maximumInputValue) {
-  //   console.log('max input amount', amountFormatter(maximumInputValue, 18, 4))
-  // }
-  // if (outputValue) {
-  //   console.log('output amount', amountFormatter(outputValue, 18, 4))
-  // }
 
   return (
     <div>
       <CheckoutFrame isVisible={state.visible}>
         <div>
           <p>{state.count} SOCKS</p>
-          <p>{inputValue && `${amountFormatter(inputValue, 18, 4)} ${selectedTokenSymbol}`}</p>
-          <p>{ready && inputValue && `$${amountFormatter(dollarize(inputValue), 18, 4)}`}</p>
+          <p>
+            {buying
+              ? buyValidationState.inputValue &&
+                `${amountFormatter(buyValidationState.inputValue, 18, 4)} ${selectedTokenSymbol}`
+              : sellValidationState.inputValue && `${amountFormatter(sellValidationState.inputValue, 18, 4)} SOCKS`}
+          </p>
+          <p>
+            {ready && buying
+              ? buyValidationState.inputValue && `$${amountFormatter(dollarize(buyValidationState.inputValue), 18, 4)}`
+              : sellValidationState.inputValue &&
+                `$${amountFormatter(dollarize(sellValidationState.inputValue), 18, 4)}`}
+          </p>
         </div>
         <div>
           <p>How do you want to pay?</p>
@@ -112,17 +134,24 @@ export default function Checkout({
         <IncrementToken />
         <p>{errorMessage}</p>
         {shouldRenderUnlock ? (
-          <Button text={`Unlock ${selectedTokenSymbol}`} type={'cta'} onClick={() => unlock()} />
+          <Button
+            text={`Unlock ${state.tradeType === TRADE_TYPES.BUY ? selectedTokenSymbol : 'SOCKS'}`}
+            type={'cta'}
+            onClick={() => unlock()}
+          />
         ) : (
           <Button
             disabled={validationError !== null}
-            text={'Buy SOCKS'}
+            text={`${buy ? 'Buy' : 'Sell'} SOCKS`}
             type={'cta'}
-            onClick={() => buy(maximumInputValue, outputValue)}
+            onClick={() => buy(buyValidationState.maximumInputValue, buyValidationState.outputValue)}
           />
         )}
       </CheckoutFrame>
-      <CheckoutBackground onClick={e => dismissCheckout(e)} isVisible={state.visible} />
+      <CheckoutBackground
+        onClick={() => setState(state => ({ ...state, visible: !state.visible }))}
+        isVisible={state.visible}
+      />
     </div>
   )
 }

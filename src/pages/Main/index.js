@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react'
 import { useWeb3Context } from 'web3-react'
 import { ethers } from 'ethers'
 
-import { TOKEN_SYMBOLS, TOKEN_ADDRESSES, ERROR_CODES, amountFormatter } from '../../utils'
+import { TOKEN_SYMBOLS, TOKEN_ADDRESSES, ERROR_CODES } from '../../utils'
 import { useTokenContract, useExchangeContract, useAddressBalance, useAddressAllowance } from '../../hooks'
 import Body from '../Body'
 
@@ -101,7 +101,6 @@ function calculateAmount(
   const buyingSOCKS = outputTokenSymbol === TOKEN_SYMBOLS.SOCKS
 
   if (buyingSOCKS) {
-    console.log('hey!')
     // eth needed to buy x socks
     const intermediateValue = calculateEtherTokenInputFromOutput(SOCKSAmount, reserveSOCKSETH, reserveSOCKSToken)
     // calculateEtherTokenOutputFromInput
@@ -114,7 +113,6 @@ function calculateAmount(
       reserveSelectedTokenToken,
       reserveSelectedTokenETH
     )
-    console.log(amountFormatter(amount, 18, 4))
     if (amount.lte(ethers.constants.Zero) || amount.gte(ethers.constants.MaxUint256)) {
       throw Error()
     }
@@ -214,20 +212,16 @@ export default function Main() {
   }
 
   const ready =
-    selectedTokenSymbol &&
-    reserveSOCKSETH &&
-    reserveSOCKSToken &&
-    (selectedTokenSymbol === 'ETH' || reserveSelectedTokenETH) &&
-    (selectedTokenSymbol === 'ETH' || reserveSelectedTokenToken) &&
-    (selectedTokenSymbol === 'ETH' || allowanceSelectedToken) &&
     allowanceSOCKS &&
+    (selectedTokenSymbol === 'ETH' || allowanceSelectedToken) &&
     balanceETH &&
     balanceSOCKS &&
     balanceSelectedToken &&
-    tokenContractSOCKS &&
-    (selectedTokenSymbol === 'ETH' || tokenContractSelectedToken) &&
-    exchangeContractSOCKS &&
-    (selectedTokenSymbol === 'ETH' || exchangeContractSelectedToken) &&
+    reserveSOCKSETH &&
+    reserveSOCKSToken &&
+    (selectedTokenSymbol === 'ETH' || reserveSelectedTokenToken) &&
+    (selectedTokenSymbol === 'ETH' || reserveSelectedTokenETH) &&
+    selectedTokenSymbol &&
     USDExchangeRate
 
   async function unlock(buyingSOCKS = true) {
@@ -325,8 +319,6 @@ export default function Main() {
         })
         .then(({ hash }) => hash)
     } else {
-      console.log(amountFormatter(maximumInputValue, 18, 2))
-      console.log(amountFormatter(outputValue, 18, 2))
       const estimatedGasLimit = await exchangeContractSelectedToken.estimate.tokenToTokenSwapOutput(
         outputValue,
         maximumInputValue,

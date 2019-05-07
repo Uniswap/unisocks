@@ -8,7 +8,7 @@ import Checkout from '../../components/Checkout'
 const AppWrapper = styled.div`
   width: 100wh;
   height: 100vh;
-  overflow: hidden;
+  /* overflow: hidden; */
   padding: 5vw;
   background-color: ${props => props.theme.orange};
 `
@@ -59,6 +59,8 @@ export default function Body({
         unlock={unlock}
         validateBuy={validateBuy}
         buy={buy}
+        validateSell={validateSell}
+        sell={sell}
         dollarize={dollarize}
       />
     </AppWrapper>
