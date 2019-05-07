@@ -173,9 +173,9 @@ export default function Main() {
     exchangeContractSOCKS &&
     (selectedTokenSymbol === 'ETH' || exchangeContractSelectedToken)
 
-  async function unlock(unlockSOCKS = true) {
-    const contract = unlockSOCKS ? tokenContractSOCKS : tokenContractSelectedToken
-    const spenderAddress = unlockSOCKS ? exchangeContractSOCKS.address : exchangeContractSelectedToken.address
+  async function unlock(buyingSOCKS = true) {
+    const contract = buyingSOCKS ? tokenContractSelectedToken : tokenContractSOCKS
+    const spenderAddress = buyingSOCKS ? exchangeContractSelectedToken.address : exchangeContractSOCKS.address
 
     const estimatedGasLimit = await contract.estimate.approve(spenderAddress, ethers.constants.MaxUint256)
 
@@ -239,42 +239,38 @@ export default function Main() {
       throw error
     }
 
-    return { value: requiredValueInSelectedToken, maximum }
+    return { inputValue: requiredValueInSelectedToken, maximumInputValue: maximum, outputValue: parsedValue }
   }
 
-  async function buy(value, maximum) {
+  async function buy(maximumInputValue, outputValue) {
     const deadline = Math.ceil(Date.now() / 1000) + DEADLINE_FROM_NOW
 
     if (selectedTokenSymbol === TOKEN_SYMBOLS.ETH) {
-      const estimatedGasLimit = await exchangeContractSOCKS.estimate.ethToTokenSwapOutput(value, deadline, {
-        value: maximum
+      const estimatedGasLimit = await exchangeContractSOCKS.estimate.ethToTokenSwapOutput(outputValue, deadline, {
+        value: maximumInputValue
       })
       return exchangeContractSOCKS
-        .ethToTokenSwapOutput(value, deadline, {
-          value: maximum,
+        .ethToTokenSwapOutput(outputValue, deadline, {
+          value: maximumInputValue,
           gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
         })
         .then(({ hash }) => hash)
     } else {
-      const estimatedGasLimit = await exchangeContractSOCKS.estimate.tokenToTokenSwapOutput(
-        value,
-        maximum,
+      const estimatedGasLimit = await exchangeContractSelectedToken.estimate.tokenToTokenSwapOutput(
+        outputValue,
+        maximumInputValue,
         ethers.constants.MaxUint256,
         deadline,
-        TOKEN_ADDRESSES[selectedTokenSymbol],
-        {
-          value: ethers.constants.Zero
-        }
+        TOKEN_ADDRESSES.SOCKS
       )
       return exchangeContractSOCKS
         .tokenToTokenSwapOutput(
-          value,
-          maximum,
+          outputValue,
+          maximumInputValue,
           ethers.constants.MaxUint256,
           deadline,
-          TOKEN_ADDRESSES[selectedTokenSymbol],
+          TOKEN_ADDRESSES.SOCKS,
           {
-            value: ethers.constants.Zero,
             gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
           }
         )
@@ -293,6 +289,7 @@ export default function Main() {
       throw error
     }
 
+    // how much ETH or tokens the sale will result in
     let requiredValueInSelectedToken
     try {
       requiredValueInSelectedToken = calculateAmount(
@@ -309,12 +306,11 @@ export default function Main() {
       throw error
     }
 
-    // get min slippage amount
+    // slippage-ized
     const { minimum } = calculateSlippageBounds(requiredValueInSelectedToken)
 
     // validate allowance
     if (allowanceSOCKS.lt(parsedValue)) {
-      console.log(allowanceSOCKS)
       const error = Error()
       error.code = ERROR_CODES.INSUFFICIENT_ALLOWANCE
       throw error
@@ -334,49 +330,53 @@ export default function Main() {
       throw error
     }
 
-    return { value: requiredValueInSelectedToken, minimum }
+    return { inputValue: parsedValue, outputValue: requiredValueInSelectedToken, minimumOutputValue: minimum }
   }
 
-  async function sell(value, minimum) {
+  async function sell(inputValue, minimumOutputValue) {
     const deadline = Math.ceil(Date.now() / 1000) + DEADLINE_FROM_NOW
 
     if (selectedTokenSymbol === TOKEN_SYMBOLS.ETH) {
-      const estimatedGasLimit = await exchangeContractSOCKS.estimate.tokenToETHSwapInput(value, minimum, deadline, {
-        value: ethers.constants.Zero
-      })
+      const estimatedGasLimit = await exchangeContractSOCKS.estimate.tokenToEthSwapInput(
+        inputValue,
+        minimumOutputValue,
+        deadline
+      )
       return exchangeContractSOCKS
-        .tokenToETHSwapInput(value, minimum, deadline, {
-          value: ethers.constants.Zero,
+        .tokenToEthSwapInput(inputValue, minimumOutputValue, deadline, {
           gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
         })
         .then(({ hash }) => hash)
     } else {
       const estimatedGasLimit = await exchangeContractSOCKS.estimate.tokenToTokenSwapInput(
-        value,
-        minimum,
+        inputValue,
+        minimumOutputValue,
         ethers.constants.One,
         deadline,
-        TOKEN_ADDRESSES[selectedTokenSymbol],
-        {
-          value: ethers.constants.Zero
-        }
+        TOKEN_ADDRESSES[selectedTokenSymbol]
       )
       return exchangeContractSOCKS
-        .tokenToTokenSwapInput(value, minimum, ethers.constants.One, deadline, TOKEN_ADDRESSES[selectedTokenSymbol], {
-          value: ethers.constants.Zero,
-          gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
-        })
+        .tokenToTokenSwapInput(
+          inputValue,
+          minimumOutputValue,
+          ethers.constants.One,
+          deadline,
+          TOKEN_ADDRESSES[selectedTokenSymbol],
+          {
+            gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
+          }
+        )
         .then(({ hash }) => hash)
     }
   }
 
   // setSelectedTokenSymbol(tokenSymbol)
   // ready
-  // unlock(unlockSOCKS = false)
-  // validateBuy(numberOfSOCKS) -> { value, maximum }
-  // buy(value, maximum) -> hash
-  // validateSell(numberOfSOCKS) -> { value, minimum }
-  // sell(value, minimum) -> hash
+  // unlock(buyingSOCKS = true)
+  // validateBuy(numberOfSOCKS) -> { inputValue, maximumInputValue, outputValue }
+  // buy(maximumInputValue, outputValue) -> hash
+  // validateSell(numberOfSOCKS) -> { inputValue, outputValue, minimumOutputValue }
+  // sell(inputValue, minimumOutputValue) -> hash
 
   return (
     <>
@@ -384,10 +384,10 @@ export default function Main() {
       <p>Token: {selectedTokenSymbol}</p>
       <button
         onClick={() => {
-          setSelectedTokenSymbol(TOKEN_SYMBOLS.DAI)
+          setSelectedTokenSymbol(TOKEN_SYMBOLS.SPANK)
         }}
       >
-        set to DAI
+        set to SPANK
       </button>
       <button
         disabled={!ready}
@@ -408,8 +408,8 @@ export default function Main() {
       <button
         disabled={!ready}
         onClick={() => {
-          const { value, maximum } = validateBuy('1')
-          buy(value, maximum).then(console.log)
+          const { inputValue, maximumInputValue, outputValue } = validateBuy('1')
+          buy(inputValue, maximumInputValue, outputValue).then(console.log)
         }}
       >
         buy 1
@@ -417,8 +417,8 @@ export default function Main() {
       <button
         disabled={!ready}
         onClick={() => {
-          const { value, minimum } = validateSell('1')
-          sell(value, minimum).then(console.log)
+          const { inputValue, outputValue, minimumOutputValue } = validateSell('1')
+          sell(inputValue, outputValue, minimumOutputValue).then(console.log)
         }}
       >
         sell 1
