@@ -392,10 +392,10 @@ export default function Main() {
       <button
         disabled={!ready}
         onClick={() => {
-          unlock().then(console.log)
+          unlock(true).then(console.log)
         }}
       >
-        unlock SOCKS
+        unlock {selectedTokenSymbol}
       </button>
       <button
         disabled={!ready}
@@ -403,7 +403,7 @@ export default function Main() {
           unlock(false).then(console.log)
         }}
       >
-        unlock {selectedTokenSymbol}
+        unlock SOCKS
       </button>
       <button
         disabled={!ready}
