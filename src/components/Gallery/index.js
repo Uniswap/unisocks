@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import test from './test.jpg'
 
-export const GalleryFrame = styled.div`
+const GalleryFrame = styled.div`
   width: 80vw;
   height: 80vw;
   min-height: 200px;
@@ -17,7 +17,7 @@ export const GalleryFrame = styled.div`
   box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.2);
 `
 
-export const ImgStyle = styled.img`
+const ImgStyle = styled.img`
   width: 100%;
   padding: 2rem;
   box-sizing: border-box;

@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { useWeb3Context } from 'web3-react'
 import { ethers } from 'ethers'
 
-import { TOKEN_SYMBOLS, TOKEN_ADDRESSES, ERROR_CODES } from '../../utils'
+import { TOKEN_SYMBOLS, TOKEN_ADDRESSES, ERROR_CODES, amountFormatter } from '../../utils'
 import { useTokenContract, useExchangeContract, useAddressBalance, useAddressAllowance } from '../../hooks'
 import Body from '../Body'
 
@@ -45,6 +45,30 @@ function calculateEtherTokenInputFromOutput(outputAmount, inputReserve, outputRe
   return numerator.div(denominator).add(ethers.constants.One)
 }
 
+// get exchange rate for a token/ETH pair
+function getExchangeRate(inputValue, outputValue, invert = false) {
+  const inputDecimals = 18
+  const outputDecimals = 18
+
+  if (inputValue && inputDecimals && outputValue && outputDecimals) {
+    const factor = ethers.utils.bigNumberify(10).pow(ethers.utils.bigNumberify(18))
+
+    if (invert) {
+      return inputValue
+        .mul(factor)
+        .div(outputValue)
+        .mul(ethers.utils.bigNumberify(10).pow(ethers.utils.bigNumberify(outputDecimals)))
+        .div(ethers.utils.bigNumberify(10).pow(ethers.utils.bigNumberify(inputDecimals)))
+    } else {
+      return outputValue
+        .mul(factor)
+        .div(inputValue)
+        .mul(ethers.utils.bigNumberify(10).pow(ethers.utils.bigNumberify(inputDecimals)))
+        .div(ethers.utils.bigNumberify(10).pow(ethers.utils.bigNumberify(outputDecimals)))
+    }
+  }
+}
+
 function calculateAmount(
   inputTokenSymbol,
   outputTokenSymbol,
@@ -69,15 +93,18 @@ function calculateAmount(
     if (amount.lte(ethers.constants.Zero) || amount.gte(ethers.constants.MaxUint256)) {
       throw Error()
     }
+
     return amount
   }
 
   // token to token - buy or sell
-  const buyingSOCKS = inputTokenSymbol === TOKEN_SYMBOLS.ETH
+  const buyingSOCKS = outputTokenSymbol === TOKEN_SYMBOLS.SOCKS
 
   if (buyingSOCKS) {
+    console.log('hey!')
     // eth needed to buy x socks
     const intermediateValue = calculateEtherTokenInputFromOutput(SOCKSAmount, reserveSOCKSETH, reserveSOCKSToken)
+    // calculateEtherTokenOutputFromInput
     if (intermediateValue.lte(ethers.constants.Zero) || intermediateValue.gte(ethers.constants.MaxUint256)) {
       throw Error()
     }
@@ -87,6 +114,7 @@ function calculateAmount(
       reserveSelectedTokenToken,
       reserveSelectedTokenETH
     )
+    console.log(amountFormatter(amount, 18, 4))
     if (amount.lte(ethers.constants.Zero) || amount.gte(ethers.constants.MaxUint256)) {
       throw Error()
     }
@@ -119,6 +147,7 @@ export default function Main() {
   // get exchange contracts
   const exchangeContractSOCKS = useExchangeContract(TOKEN_ADDRESSES.SOCKS)
   const exchangeContractSelectedToken = useExchangeContract(TOKEN_ADDRESSES[selectedTokenSymbol])
+  const exchangeContractDAI = useExchangeContract(TOKEN_ADDRESSES.DAI)
 
   // get token contracts
   const tokenContractSOCKS = useTokenContract(TOKEN_ADDRESSES.SOCKS)
@@ -155,6 +184,34 @@ export default function Main() {
     exchangeContractSelectedToken && exchangeContractSelectedToken.address,
     TOKEN_ADDRESSES[selectedTokenSymbol]
   )
+  const reserveDAIETH = useAddressBalance(exchangeContractDAI && exchangeContractDAI.address, TOKEN_ADDRESSES.ETH)
+  const reserveDAIToken = useAddressBalance(exchangeContractDAI && exchangeContractDAI.address, TOKEN_ADDRESSES.DAI)
+
+  const [USDExchangeRate, setUSDExchangeRate] = useState()
+  useEffect(() => {
+    try {
+      const exchangeRateDAI = getExchangeRate(reserveDAIETH, reserveDAIToken)
+
+      if (selectedTokenSymbol === TOKEN_SYMBOLS.ETH) {
+        setUSDExchangeRate(exchangeRateDAI)
+      } else {
+        const exchangeRateSelectedToken = getExchangeRate(reserveSelectedTokenETH, reserveSelectedTokenToken)
+        if (exchangeRateDAI && exchangeRateSelectedToken) {
+          setUSDExchangeRate(
+            exchangeRateDAI
+              .mul(ethers.utils.bigNumberify(10).pow(ethers.utils.bigNumberify(18)))
+              .div(exchangeRateSelectedToken)
+          )
+        }
+      }
+    } catch {
+      setUSDExchangeRate()
+    }
+  }, [reserveDAIETH, reserveDAIToken, reserveSelectedTokenETH, reserveSelectedTokenToken, selectedTokenSymbol])
+
+  function dollarize(amount) {
+    return amount.mul(USDExchangeRate).div(ethers.utils.bigNumberify(10).pow(ethers.utils.bigNumberify(18)))
+  }
 
   const ready =
     selectedTokenSymbol &&
@@ -170,7 +227,8 @@ export default function Main() {
     tokenContractSOCKS &&
     (selectedTokenSymbol === 'ETH' || tokenContractSelectedToken) &&
     exchangeContractSOCKS &&
-    (selectedTokenSymbol === 'ETH' || exchangeContractSelectedToken)
+    (selectedTokenSymbol === 'ETH' || exchangeContractSelectedToken) &&
+    USDExchangeRate
 
   async function unlock(buyingSOCKS = true) {
     const contract = buyingSOCKS ? tokenContractSelectedToken : tokenContractSOCKS
@@ -186,60 +244,72 @@ export default function Main() {
   }
 
   // buy functionality
-  function validateBuy(numberOfSOCKS) {
-    // validate passed amount
-    let parsedValue
-    try {
-      parsedValue = ethers.utils.parseUnits(numberOfSOCKS, 18)
-    } catch (error) {
-      error.code = ERROR_CODES.INVALID_AMOUNT
-      throw error
-    }
-
-    let requiredValueInSelectedToken
-    try {
-      requiredValueInSelectedToken = calculateAmount(
-        selectedTokenSymbol,
-        TOKEN_SYMBOLS.SOCKS,
-        parsedValue,
-        reserveSOCKSETH,
-        reserveSOCKSToken,
-        reserveSelectedTokenETH,
-        reserveSelectedTokenToken
-      )
-    } catch (error) {
-      error.code = ERROR_CODES.INVALID_EXCHANGE
-      throw error
-    }
-
-    // get max slippage amount
-    const { maximum } = calculateSlippageBounds(requiredValueInSelectedToken)
-
-    // validate allowance
-    if (selectedTokenSymbol !== 'ETH') {
-      if (allowanceSelectedToken.lt(maximum)) {
-        const error = Error()
-        error.code = ERROR_CODES.INSUFFICIENT_ALLOWANCE
+  const validateBuy = useCallback(
+    numberOfSOCKS => {
+      // validate passed amount
+      let parsedValue
+      try {
+        parsedValue = ethers.utils.parseUnits(numberOfSOCKS, 18)
+      } catch (error) {
+        error.code = ERROR_CODES.INVALID_AMOUNT
         throw error
       }
-    }
 
-    // validate minimum ether balance
-    if (balanceETH.lt(ethers.utils.parseEther('.1'))) {
-      const error = Error()
-      error.code = ERROR_CODES.INSUFFICIENT_ETH_BALANCE
-      throw error
-    }
+      let requiredValueInSelectedToken
+      try {
+        requiredValueInSelectedToken = calculateAmount(
+          selectedTokenSymbol,
+          TOKEN_SYMBOLS.SOCKS,
+          parsedValue,
+          reserveSOCKSETH,
+          reserveSOCKSToken,
+          reserveSelectedTokenETH,
+          reserveSelectedTokenToken
+        )
+      } catch (error) {
+        error.code = ERROR_CODES.INVALID_EXCHANGE
+        throw error
+      }
 
-    // validate minimum selected token balance
-    if (balanceSelectedToken.lt(maximum)) {
-      const error = Error()
-      error.code = ERROR_CODES.INSUFFICIENT_TOKEN_BALANCE
-      throw error
-    }
+      // get max slippage amount
+      const { maximum } = calculateSlippageBounds(requiredValueInSelectedToken)
 
-    return { inputValue: requiredValueInSelectedToken, maximumInputValue: maximum, outputValue: parsedValue }
-  }
+      // validate minimum ether balance
+      if (balanceETH.lt(ethers.utils.parseEther('.01'))) {
+        const error = Error()
+        error.code = ERROR_CODES.INSUFFICIENT_ETH_BALANCE
+        throw error
+      }
+
+      // validate minimum selected token balance
+      if (balanceSelectedToken.lt(maximum)) {
+        const error = Error()
+        error.code = ERROR_CODES.INSUFFICIENT_TOKEN_BALANCE
+        throw error
+      }
+
+      // validate allowance
+      if (selectedTokenSymbol !== 'ETH') {
+        if (allowanceSelectedToken.lt(maximum)) {
+          const error = Error()
+          error.code = ERROR_CODES.INSUFFICIENT_ALLOWANCE
+          throw error
+        }
+      }
+
+      return { inputValue: requiredValueInSelectedToken, maximumInputValue: maximum, outputValue: parsedValue }
+    },
+    [
+      allowanceSelectedToken,
+      balanceETH,
+      balanceSelectedToken,
+      reserveSOCKSETH,
+      reserveSOCKSToken,
+      reserveSelectedTokenETH,
+      reserveSelectedTokenToken,
+      selectedTokenSymbol
+    ]
+  )
 
   async function buy(maximumInputValue, outputValue) {
     const deadline = Math.ceil(Date.now() / 1000) + DEADLINE_FROM_NOW
@@ -255,6 +325,8 @@ export default function Main() {
         })
         .then(({ hash }) => hash)
     } else {
+      console.log(amountFormatter(maximumInputValue, 18, 2))
+      console.log(amountFormatter(outputValue, 18, 2))
       const estimatedGasLimit = await exchangeContractSelectedToken.estimate.tokenToTokenSwapOutput(
         outputValue,
         maximumInputValue,
@@ -262,7 +334,7 @@ export default function Main() {
         deadline,
         TOKEN_ADDRESSES.SOCKS
       )
-      return exchangeContractSOCKS
+      return exchangeContractSelectedToken
         .tokenToTokenSwapOutput(
           outputValue,
           maximumInputValue,
@@ -278,59 +350,71 @@ export default function Main() {
   }
 
   // sell functionality
-  function validateSell(numberOfSOCKS) {
-    // validate passed amount
-    let parsedValue
-    try {
-      parsedValue = ethers.utils.parseUnits(numberOfSOCKS, 18)
-    } catch (error) {
-      error.code = ERROR_CODES.INVALID_AMOUNT
-      throw error
-    }
+  const validateSell = useCallback(
+    numberOfSOCKS => {
+      // validate passed amount
+      let parsedValue
+      try {
+        parsedValue = ethers.utils.parseUnits(numberOfSOCKS, 18)
+      } catch (error) {
+        error.code = ERROR_CODES.INVALID_AMOUNT
+        throw error
+      }
 
-    // how much ETH or tokens the sale will result in
-    let requiredValueInSelectedToken
-    try {
-      requiredValueInSelectedToken = calculateAmount(
-        selectedTokenSymbol,
-        TOKEN_SYMBOLS.SOCKS,
-        parsedValue,
-        reserveSOCKSETH,
-        reserveSOCKSToken,
-        reserveSelectedTokenETH,
-        reserveSelectedTokenToken
-      )
-    } catch (error) {
-      error.code = ERROR_CODES.INVALID_EXCHANGE
-      throw error
-    }
+      // how much ETH or tokens the sale will result in
+      let requiredValueInSelectedToken
+      try {
+        requiredValueInSelectedToken = calculateAmount(
+          TOKEN_SYMBOLS.SOCKS,
+          selectedTokenSymbol,
+          parsedValue,
+          reserveSOCKSETH,
+          reserveSOCKSToken,
+          reserveSelectedTokenETH,
+          reserveSelectedTokenToken
+        )
+      } catch (error) {
+        error.code = ERROR_CODES.INVALID_EXCHANGE
+        throw error
+      }
 
-    // slippage-ized
-    const { minimum } = calculateSlippageBounds(requiredValueInSelectedToken)
+      // slippage-ized
+      const { minimum } = calculateSlippageBounds(requiredValueInSelectedToken)
 
-    // validate allowance
-    if (allowanceSOCKS.lt(parsedValue)) {
-      const error = Error()
-      error.code = ERROR_CODES.INSUFFICIENT_ALLOWANCE
-      throw error
-    }
+      // validate minimum ether balance
+      if (balanceETH.lt(ethers.utils.parseEther('.01'))) {
+        const error = Error()
+        error.code = ERROR_CODES.INSUFFICIENT_ETH_BALANCE
+        throw error
+      }
 
-    // validate minimum ether balance
-    if (balanceETH.lt(ethers.utils.parseEther('.1'))) {
-      const error = Error()
-      error.code = ERROR_CODES.INSUFFICIENT_ETH_BALANCE
-      throw error
-    }
+      // validate minimum socks balance
+      if (balanceSOCKS.lt(parsedValue)) {
+        const error = Error()
+        error.code = ERROR_CODES.INSUFFICIENT_TOKEN_BALANCE
+        throw error
+      }
 
-    // validate minimum socks balance
-    if (balanceSOCKS.lt(parsedValue)) {
-      const error = Error()
-      error.code = ERROR_CODES.INSUFFICIENT_TOKEN_BALANCE
-      throw error
-    }
+      // validate allowance
+      if (allowanceSOCKS.lt(parsedValue)) {
+        const error = Error()
+        error.code = ERROR_CODES.INSUFFICIENT_ALLOWANCE
+        throw error
+      }
 
-    return { inputValue: parsedValue, outputValue: requiredValueInSelectedToken, minimumOutputValue: minimum }
-  }
+      return { inputValue: parsedValue, outputValue: requiredValueInSelectedToken, minimumOutputValue: minimum }
+    },
+    [
+      allowanceSOCKS,
+      balanceETH,
+      balanceSOCKS,
+      reserveSOCKSETH,
+      reserveSOCKSToken,
+      reserveSelectedTokenETH,
+      reserveSelectedTokenToken,
+      selectedTokenSymbol
+    ]
+  )
 
   async function sell(inputValue, minimumOutputValue) {
     const deadline = Math.ceil(Date.now() / 1000) + DEADLINE_FROM_NOW
@@ -379,51 +463,7 @@ export default function Main() {
       buy={buy}
       validateSell={validateSell}
       sell={sell}
+      dollarize={dollarize}
     />
   )
-}
-
-{
-  /* <p>Token: {selectedTokenSymbol}</p>
-<button
-  onClick={() => {
-    setSelectedTokenSymbol(TOKEN_SYMBOLS.SPANK)
-  }}
->
-  set to SPANK
-</button>
-<button
-  disabled={!ready}
-  onClick={() => {
-    unlock(true).then(console.log)
-  }}
->
-  unlock {selectedTokenSymbol}
-</button>
-<button
-  disabled={!ready}
-  onClick={() => {
-    unlock(false).then(console.log)
-  }}
->
-  unlock SOCKS
-</button>
-<button
-  disabled={!ready}
-  onClick={() => {
-    const { inputValue, maximumInputValue, outputValue } = validateBuy('1')
-    buy(inputValue, maximumInputValue, outputValue).then(console.log)
-  }}
->
-  buy 1
-</button>
-<button
-  disabled={!ready}
-  onClick={() => {
-    const { inputValue, outputValue, minimumOutputValue } = validateSell('1')
-    sell(inputValue, outputValue, minimumOutputValue).then(console.log)
-  }}
->
-  sell 1
-</button> */
 }

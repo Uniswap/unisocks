@@ -1,23 +1,22 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+
+import { TRADE_TYPES } from '../utils'
 
 export const AppContext = React.createContext([{}, () => {}])
-
-const tokenOptions = [
-  { value: '0.095', label: 'ETH' },
-  { value: '1.02', label: 'DAI' },
-  { value: '1000.23', label: 'SPANK' }
-]
 
 const initialState = {
   visible: false,
   count: 1,
   valid: false,
-  currency: { value: '0.095', label: 'ETH' },
-  options: tokenOptions
+  tradeType: TRADE_TYPES.BUY
 }
 
 export default function AppProvider({ children }) {
   const [state, setState] = useState(initialState)
 
   return <AppContext.Provider value={[state, setState]}>{children}</AppContext.Provider>
+}
+
+export function useAppContext() {
+  return useContext(AppContext)
 }

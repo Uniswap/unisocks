@@ -1,10 +1,10 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import Select from 'react-select'
 
-import { AppContext } from '../context'
+import { TOKEN_SYMBOLS } from '../utils'
 
-export const SelectMenu = styled(Select)`
+const SelectMenu = styled(Select)`
   display: block;
   font-size: 16px;
   border-radius: 24px;
@@ -21,17 +21,18 @@ export const SelectMenu = styled(Select)`
   background-color: #fff;
 `
 
-export const CtaText = styled.span`
-  width: 100%;
-`
+const options = Object.keys(TOKEN_SYMBOLS)
+  .filter(s => s !== 'SOCKS')
+  .map(s => ({ value: s, label: s }))
 
-export default function Button(props) {
-  const [state, setState] = useContext(AppContext)
-
-  let handleChange = selected => {
-    setState(state => ({ ...state, currency: selected }))
-    console.log(`Option selected:`, selected)
-  }
-
-  return <SelectMenu value={state.currency} onChange={e => handleChange(e)} options={state.options} />
+export default function SelectToken({ selectedTokenSymbol, setSelectedTokenSymbol }) {
+  return (
+    <SelectMenu
+      value={{ value: selectedTokenSymbol, label: selectedTokenSymbol }}
+      onChange={({ value }) => {
+        setSelectedTokenSymbol(value)
+      }}
+      options={options}
+    />
+  )
 }

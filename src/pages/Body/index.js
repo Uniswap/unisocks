@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import Gallery from '../../components/gallery'
-import BuyButtons from '../../components/buttons'
-import Checkout from '../../components/checkout'
+import Gallery from '../../components/Gallery'
+import BuyButtons from '../../components/Buttons'
+import Checkout from '../../components/Checkout'
 
 const AppWrapper = styled.div`
   width: 100wh;
@@ -43,15 +43,24 @@ export default function Body({
   validateBuy,
   buy,
   validateSell,
-  sell
+  sell,
+  dollarize
 }) {
   return (
     <AppWrapper>
       <Status />
-      <Header>UniSock</Header>
+      <Header>Unisocks</Header>
       <Gallery />
       <BuyButtons />
-      <Checkout />
+      <Checkout
+        selectedTokenSymbol={selectedTokenSymbol}
+        setSelectedTokenSymbol={setSelectedTokenSymbol}
+        ready={ready}
+        unlock={unlock}
+        validateBuy={validateBuy}
+        buy={buy}
+        dollarize={dollarize}
+      />
     </AppWrapper>
   )
 }

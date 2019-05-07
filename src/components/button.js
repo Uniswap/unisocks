@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-export const ButtonFrame = styled.button`
+const ButtonFrame = styled.button`
   padding: 0;
   text-align: center;
   border-radius: 24px;
@@ -19,18 +19,26 @@ export const ButtonFrame = styled.button`
   cursor: pointer;
   background-color: ${props => props.theme.black};
   border-color: ${props => props.theme.black};
-  color: ${props => props.theme.orange};
+  color: ${props => (props.disabled ? props.theme.grey : props.theme.orange)};
 `
 
-export const CtaText = styled.span`
+const CtaText = styled.span`
   width: 100%;
 `
 
-export default function Button(props) {
+export default function Button({ text, onClick, preventDefault = true, ...rest }) {
   return (
     <div>
-      <ButtonFrame onClick={e => props.buttonEffect(e)}>
-        <CtaText>{props.text}</CtaText>
+      <ButtonFrame
+        onClick={e => {
+          if (preventDefault) {
+            e.preventDefault()
+          }
+          onClick(e)
+        }}
+        {...rest}
+      >
+        <CtaText>{text}</CtaText>
       </ButtonFrame>
     </div>
   )

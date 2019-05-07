@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { useCount } from './checkout'
+import { useCount } from './Checkout'
 
-export const SelectFrame = styled.div`
+const SelectFrame = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -11,7 +11,7 @@ export const SelectFrame = styled.div`
   width: 100%;
 `
 
-export const SelectMenu = styled.div`
+const SelectMenu = styled.div`
   display: block;
   font-size: 16px;
   border-radius: 24px;
@@ -28,7 +28,7 @@ export const SelectMenu = styled.div`
   background-color: #fff;
 `
 
-export const IncrementButton = styled.span`
+const IncrementButton = styled.span`
   width: 48px;
   height: 48px;
   display: flex;
