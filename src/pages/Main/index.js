@@ -4,8 +4,7 @@ import { ethers } from 'ethers'
 
 import { TOKEN_SYMBOLS, TOKEN_ADDRESSES, ERROR_CODES } from '../../utils'
 import { useTokenContract, useExchangeContract, useAddressBalance, useAddressAllowance } from '../../hooks'
-
-import { Header } from './styles'
+import Body from '../Body'
 
 // denominated in bips
 const GAS_MARGIN = ethers.utils.bigNumberify(1000)
@@ -370,59 +369,61 @@ export default function Main() {
     }
   }
 
-  // setSelectedTokenSymbol(tokenSymbol)
-  // ready
-  // unlock(buyingSOCKS = true)
-  // validateBuy(numberOfSOCKS) -> { inputValue, maximumInputValue, outputValue }
-  // buy(maximumInputValue, outputValue) -> hash
-  // validateSell(numberOfSOCKS) -> { inputValue, outputValue, minimumOutputValue }
-  // sell(inputValue, minimumOutputValue) -> hash
-
   return (
-    <>
-      <Header>Initialized!</Header>
-      <p>Token: {selectedTokenSymbol}</p>
-      <button
-        onClick={() => {
-          setSelectedTokenSymbol(TOKEN_SYMBOLS.SPANK)
-        }}
-      >
-        set to SPANK
-      </button>
-      <button
-        disabled={!ready}
-        onClick={() => {
-          unlock(true).then(console.log)
-        }}
-      >
-        unlock {selectedTokenSymbol}
-      </button>
-      <button
-        disabled={!ready}
-        onClick={() => {
-          unlock(false).then(console.log)
-        }}
-      >
-        unlock SOCKS
-      </button>
-      <button
-        disabled={!ready}
-        onClick={() => {
-          const { inputValue, maximumInputValue, outputValue } = validateBuy('1')
-          buy(inputValue, maximumInputValue, outputValue).then(console.log)
-        }}
-      >
-        buy 1
-      </button>
-      <button
-        disabled={!ready}
-        onClick={() => {
-          const { inputValue, outputValue, minimumOutputValue } = validateSell('1')
-          sell(inputValue, outputValue, minimumOutputValue).then(console.log)
-        }}
-      >
-        sell 1
-      </button>
-    </>
+    <Body
+      selectedTokenSymbol={selectedTokenSymbol}
+      setSelectedTokenSymbol={setSelectedTokenSymbol}
+      ready={ready}
+      unlock={unlock}
+      validateBuy={validateBuy}
+      buy={buy}
+      validateSell={validateSell}
+      sell={sell}
+    />
   )
+}
+
+{
+  /* <p>Token: {selectedTokenSymbol}</p>
+<button
+  onClick={() => {
+    setSelectedTokenSymbol(TOKEN_SYMBOLS.SPANK)
+  }}
+>
+  set to SPANK
+</button>
+<button
+  disabled={!ready}
+  onClick={() => {
+    unlock(true).then(console.log)
+  }}
+>
+  unlock {selectedTokenSymbol}
+</button>
+<button
+  disabled={!ready}
+  onClick={() => {
+    unlock(false).then(console.log)
+  }}
+>
+  unlock SOCKS
+</button>
+<button
+  disabled={!ready}
+  onClick={() => {
+    const { inputValue, maximumInputValue, outputValue } = validateBuy('1')
+    buy(inputValue, maximumInputValue, outputValue).then(console.log)
+  }}
+>
+  buy 1
+</button>
+<button
+  disabled={!ready}
+  onClick={() => {
+    const { inputValue, outputValue, minimumOutputValue } = validateSell('1')
+    sell(inputValue, outputValue, minimumOutputValue).then(console.log)
+  }}
+>
+  sell 1
+</button> */
 }

@@ -3,6 +3,7 @@ import Web3Provider, { Connectors } from 'web3-react'
 
 import GlobalStyle, { ThemeProvider } from '../theme'
 import Web3ReactManager from '../components/Web3ReactManager'
+import AppProvider from '../context'
 import Main from './Main'
 
 const { InjectedConnector } = Connectors
@@ -16,7 +17,9 @@ export default function App() {
         <GlobalStyle />
         <Web3Provider connectors={connectors} libraryName={'ethers.js'}>
           <Web3ReactManager>
-            <Main />
+            <AppProvider>
+              <Main />
+            </AppProvider>
           </Web3ReactManager>
         </Web3Provider>
       </>

@@ -1,5 +1,5 @@
 {
-  "name": "web3-react-boilerplate",
+  "name": "unisocks",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -7,6 +7,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.0",
+    "react-select": "^2.4.3",
     "styled-components": "^4.2.0",
     "web3-react": "^5.0.4"
   },

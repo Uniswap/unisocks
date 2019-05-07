@@ -2,7 +2,7 @@ import React from 'react'
 import { createGlobalStyle, ThemeProvider as StyledComponentsThemeProvider } from 'styled-components'
 
 export default createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css?family=Roboto');
+  @import url('https://rsms.me/inter/inter.css');
   
   body {
     padding: 0;
@@ -15,7 +15,12 @@ export default createGlobalStyle`
 `
 
 const theme = {
-  uniswapPink: '#DC6BE5'
+  uniswapPink: '#DC6BE5',
+  orange: '#CF2C0A',
+  green: '#66BB66',
+  black: '#000',
+  grey: '#F2F2F2',
+  white: '#FFF'
 }
 
 export function ThemeProvider({ children }) {

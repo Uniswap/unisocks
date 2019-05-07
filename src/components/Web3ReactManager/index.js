@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useWeb3Context } from 'web3-react'
 
-import { Paragraph } from './styles'
+import { Message } from './styles'
 
 export default function Web3ReactManager({ children }) {
   const { setConnector, error, active } = useWeb3Context()
@@ -12,9 +12,9 @@ export default function Web3ReactManager({ children }) {
 
   if (error) {
     console.error(error)
-    return <Paragraph>Error!</Paragraph>
+    return <Message>Please visit this site from a web3-enabled browser.</Message>
   } else if (!active) {
-    return <Paragraph>Initializing...</Paragraph>
+    return <Message>Initializing...</Message>
   } else {
     return children
   }
