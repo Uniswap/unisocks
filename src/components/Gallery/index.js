@@ -8,8 +8,8 @@ const GalleryFrame = styled.div`
   height: 90vw;
   min-height: 200px;
   min-width: 200px;
-  max-height: 500px;
-  max-width: 500px;
+  max-height: 250px;
+  max-width: 250px;
   display: flex;
   align-items: center;
   flex-direction: center;

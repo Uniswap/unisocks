@@ -106,6 +106,16 @@ const CheckoutFrame = styled.form`
   border-color: ${props => props.theme.black};
   color: ${props => props.theme.primary};
 
+  @media only screen and (min-device-width: 768px) {
+    max-width: 375px;
+    margin: 5% auto; /* Will not center vertically and won't work in IE6/7. */
+    left: 0;
+    right: 0;
+    border-radius: 20px 20px;
+
+    bottom: ${props => (props.isVisible ? '20%' : '-100%')};
+  }
+
   p {
     margin-top: 0px;
   }
@@ -114,6 +124,7 @@ const CheckoutFrame = styled.form`
 const CheckoutBackground = styled.div`
   position: fixed;
   top: 0px;
+  left: 0px;
   opacity: ${props => (props.isVisible ? '.2' : '0')};
   width: 100vw;
   height: 100vh;

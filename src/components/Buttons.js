@@ -6,13 +6,7 @@ import { useAppContext } from '../context'
 import { TRADE_TYPES } from '../utils'
 
 const BuyButtonFrame = styled.form`
-  /* left: 0;
-  right: 0;
-  position: absolute;
-  bottom: 0px; */
-  /* width: 100%; */
-  margin: 2rem 2rem 0.5rem 2rem;
-  /* margin-bottom: 1rem; */
+  margin: 1.5rem 0rem 0.5rem 0rem;
   display: flex;
   align-items: center;
   flex-direction: center;
@@ -21,6 +15,11 @@ const BuyButtonFrame = styled.form`
 
   div {
     width: 100%;
+  }
+
+  @media only screen and (max-width: 480px) {
+    /* For mobile phones: */
+    margin: 1.5rem 2rem 0.5rem 2rem;
   }
 `
 const ButtonFrame = styled(Button)`
@@ -32,8 +31,10 @@ const Shim = styled.div`
   height: 2rem;
 `
 
-export default function BuyButtons() {
+export default function BuyButtons(props) {
   const [, setState] = useAppContext()
+
+  // console.log(props.balanceSOCKS)
 
   function handleToggleCheckout(tradeType) {
     setState(state => ({ ...state, visible: !state.visible, tradeType }))
@@ -42,6 +43,7 @@ export default function BuyButtons() {
   return (
     <BuyButtonFrame>
       <ButtonFrame
+        disabled={false}
         text={'Buy SOCKS'}
         type={'cta'}
         onClick={() => {
@@ -50,6 +52,7 @@ export default function BuyButtons() {
       />
       <Shim />
       <ButtonFrame
+        disabled={props.balance > 0 ? false : true}
         text={'Sell SOCKS'}
         type={'cta'}
         onClick={() => {
