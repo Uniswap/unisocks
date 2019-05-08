@@ -42,6 +42,7 @@ export default function SelectToken({ selectedTokenSymbol, setSelectedTokenSymbo
       value={{ value: selectedTokenSymbol, label: selectedTokenSymbol }}
       className="react-select-container"
       classNamePrefix="react-select"
+      isSearchable={false}
       onChange={({ value }) => {
         setSelectedTokenSymbol(value)
       }}
