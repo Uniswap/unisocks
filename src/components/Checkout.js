@@ -14,11 +14,15 @@ export function useCount() {
     setState(state => ({ ...state, count: state.count + 1 }))
   }
   function decrement() {
-    if (state.count > 1) {
+    if (state.count >= 1) {
       setState(state => ({ ...state, count: state.count - 1 }))
     }
   }
-  return [state.count, increment, decrement]
+
+  function setCount(val) {
+    setState(state => ({ ...state, count: val }))
+  }
+  return [state.count, increment, decrement, setCount]
 }
 
 function getValidationErrorMessage(validationError) {
@@ -148,7 +152,6 @@ export default function Checkout({
           <div>↓</div>
           <IncrementToken />
         </CheckoutControls>
-        <p>{errorMessage}</p>
         {shouldRenderUnlock ? (
           <Button
             text={`Unlock ${buying ? selectedTokenSymbol : 'SOCKS'}`}
@@ -157,6 +160,7 @@ export default function Checkout({
           />
         ) : (
           <Button
+            className="button"
             disabled={validationError !== null}
             text={`${buying ? 'Buy' : 'Sell'} SOCKS`}
             type={'cta'}
@@ -170,6 +174,7 @@ export default function Checkout({
             }}
           />
         )}
+        <ErrorFrame>{errorMessage}</ErrorFrame>
       </CheckoutFrame>
       <CheckoutBackground
         onClick={() => setState(state => ({ ...state, visible: !state.visible }))}
@@ -185,7 +190,7 @@ const CheckoutFrame = styled.form`
   z-index: ${props => (props.isVisible ? '2' : '-1  ')};
   transition: bottom 0.3s;
   width: 100%;
-  height: 50vh;
+  height: 40vh;
   border-radius: 20px;
   padding: 2rem;
   box-sizing: border-box;
@@ -218,6 +223,13 @@ const CheckoutInfo = styled.div`
 `
 
 const CheckoutPrompt = styled.p`
+  font-weight: 400;
+  /* margin-bottom: 2rem; */
+`
+
+const ErrorFrame = styled.p`
+  position: absolute;
+  bottom: 0px;
   font-weight: 400;
   margin-bottom: 2rem;
 `

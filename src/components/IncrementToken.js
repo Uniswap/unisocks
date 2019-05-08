@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-
 import { useCount } from './Checkout'
 
 const SelectFrame = styled.div`
@@ -10,6 +9,7 @@ const SelectFrame = styled.div`
   justify-content: center;
   width: 100%;
   margin-top: 1rem;
+  margin-bottom: 1rem;
 `
 
 const SelectMenu = styled.input`
@@ -29,6 +29,7 @@ const SelectMenu = styled.input`
   background-color: #fff;
   border: none;
   padding: 0px 1rem 0px 1rem;
+  pointer: ;
 `
 
 const IncrementButton = styled.span`
@@ -41,16 +42,18 @@ const IncrementButton = styled.span`
 `
 
 export default function IncrementToken(props) {
-  const [count, incrementCount, decrementCount] = useCount()
+  const [count, incrementCount, decrementCount, setCount] = useCount()
+
+  const updateField = e => {
+    setCount(e.target.value)
+  }
 
   return (
     <SelectFrame>
       <IncrementButton justify={'flex-start'} onClick={decrementCount}>
         -
       </IncrementButton>
-      <SelectMenu defaultValue={count} value={count} type="text" />
-
-      {/* <SelectMenu>{count}</SelectMenu> */}
+      <SelectMenu name="count" value={count} type="number" min="0" step="1" onChange={e => updateField(e)} />
       <IncrementButton justify={'flex-end'} onClick={incrementCount}>
         +
       </IncrementButton>

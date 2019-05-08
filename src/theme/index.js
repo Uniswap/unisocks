@@ -19,9 +19,9 @@ const theme = {
   primary: '#2B2B2B',
   secondary: '#F1F2F6',
   text: '#000',
+  textDisabled: '#737373',
   orange: '#CF2C0A',
   green: '#66BB66',
-  black: '#000',
   grey: '#F1F2F6',
   blue: '#2F80ED',
   white: '#FFF'

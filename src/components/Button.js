@@ -16,10 +16,10 @@ const ButtonFrame = styled.button`
   font-weight: 700;
   line-height: 1;
   border-width: 1px;
-  cursor: pointer;
+  opacity: ${props => (props.disabled ? 0.2 : 1)};
+  pointer-events: ${props => (props.disabled ? 'none' : 'auto')};
   background-color: ${props => props.theme.primary};
-  // border-color: ${props => props.theme.black};
-  color: ${props => (props.disabled ? props.theme.primary : props.theme.grey)};
+  color: ${props => props.theme.grey};
 `
 
 const CtaText = styled.span`
@@ -28,18 +28,16 @@ const CtaText = styled.span`
 
 export default function Button({ text, onClick, preventDefault = true, ...rest }) {
   return (
-    <div>
-      <ButtonFrame
-        onClick={e => {
-          if (preventDefault) {
-            e.preventDefault()
-          }
-          onClick(e)
-        }}
-        {...rest}
-      >
-        <CtaText>{text}</CtaText>
-      </ButtonFrame>
-    </div>
+    <ButtonFrame
+      onClick={e => {
+        if (preventDefault) {
+          e.preventDefault()
+        }
+        onClick(e)
+      }}
+      {...rest}
+    >
+      <CtaText>{text}</CtaText>
+    </ButtonFrame>
   )
 }
