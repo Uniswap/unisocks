@@ -186,6 +186,21 @@ export default function Main() {
 
   const [USDExchangeRateETH, setUSDExchangeRateETH] = useState()
   const [USDExchangeRateSelectedToken, setUSDExchangeRateSelectedToken] = useState()
+
+  const ready = !!(
+    allowanceSOCKS &&
+    (selectedTokenSymbol === 'ETH' || allowanceSelectedToken) &&
+    balanceETH &&
+    balanceSOCKS &&
+    balanceSelectedToken &&
+    reserveSOCKSETH &&
+    reserveSOCKSToken &&
+    (selectedTokenSymbol === 'ETH' || reserveSelectedTokenETH) &&
+    (selectedTokenSymbol === 'ETH' || reserveSelectedTokenToken) &&
+    selectedTokenSymbol &&
+    (USDExchangeRateETH || USDExchangeRateSelectedToken)
+  )
+
   useEffect(() => {
     try {
       const exchangeRateDAI = getExchangeRate(reserveDAIETH, reserveDAIToken)
@@ -220,7 +235,6 @@ export default function Main() {
   }
 
   const [dollarPrice, setDollarPrice] = useState()
-  dollarPrice && console.log(ethers.utils.formatEther(dollarPrice))
   useEffect(() => {
     try {
       const SOCKSExchangeRateETH = getExchangeRate(reserveSOCKSToken, reserveSOCKSETH)
@@ -233,21 +247,6 @@ export default function Main() {
       setDollarPrice()
     }
   }, [USDExchangeRateETH, reserveSOCKSETH, reserveSOCKSToken])
-
-  const ready = !!(
-    (allowanceSOCKS &&
-      (selectedTokenSymbol === 'ETH' || allowanceSelectedToken) &&
-      balanceETH &&
-      balanceSOCKS &&
-      balanceSelectedToken &&
-      reserveSOCKSETH &&
-      reserveSOCKSToken &&
-      (selectedTokenSymbol === 'ETH' || reserveSelectedTokenETH) &&
-      (selectedTokenSymbol === 'ETH' || reserveSelectedTokenToken) &&
-      selectedTokenSymbol &&
-      USDExchangeRateETH) ||
-    USDExchangeRateSelectedToken
-  )
 
   async function unlock(buyingSOCKS = true) {
     const contract = buyingSOCKS ? tokenContractSelectedToken : tokenContractSOCKS
@@ -286,37 +285,50 @@ export default function Main() {
           reserveSelectedTokenToken
         )
       } catch (error) {
-        error.code = ERROR_CODES.INVALID_EXCHANGE
+        error.code = ERROR_CODES.INVALID_TRADE
         throw error
       }
 
       // get max slippage amount
       const { maximum } = calculateSlippageBounds(requiredValueInSelectedToken)
 
+      // the following are 'non-breaking' errors that will still return the data
+      let errorAccumulator
       // validate minimum ether balance
-      if (balanceETH.lt(ethers.utils.parseEther('.01'))) {
+      if (balanceETH && balanceETH.lt(ethers.utils.parseEther('.01'))) {
         const error = Error()
-        error.code = ERROR_CODES.INSUFFICIENT_ETH_BALANCE
-        throw error
+        error.code = ERROR_CODES.INSUFFICIENT_ETH_GAS
+        if (!errorAccumulator) {
+          errorAccumulator = error
+        }
       }
 
       // validate minimum selected token balance
-      if (balanceSelectedToken.lt(maximum)) {
+      if (balanceSelectedToken && maximum && balanceSelectedToken.lt(maximum)) {
         const error = Error()
-        error.code = ERROR_CODES.INSUFFICIENT_TOKEN_BALANCE
-        throw error
+        error.code = ERROR_CODES.INSUFFICIENT_SELECTED_TOKEN_BALANCE
+        if (!errorAccumulator) {
+          errorAccumulator = error
+        }
       }
 
       // validate allowance
       if (selectedTokenSymbol !== 'ETH') {
-        if (allowanceSelectedToken.lt(maximum)) {
+        if (allowanceSelectedToken && maximum && allowanceSelectedToken.lt(maximum)) {
           const error = Error()
           error.code = ERROR_CODES.INSUFFICIENT_ALLOWANCE
-          throw error
+          if (!errorAccumulator) {
+            errorAccumulator = error
+          }
         }
       }
 
-      return { inputValue: requiredValueInSelectedToken, maximumInputValue: maximum, outputValue: parsedValue }
+      return {
+        inputValue: requiredValueInSelectedToken,
+        maximumInputValue: maximum,
+        outputValue: parsedValue,
+        error: errorAccumulator
+      }
     },
     [
       allowanceSelectedToken,
@@ -398,28 +410,41 @@ export default function Main() {
       // slippage-ized
       const { minimum } = calculateSlippageBounds(requiredValueInSelectedToken)
 
+      // the following are 'non-breaking' errors that will still return the data
+      let errorAccumulator
       // validate minimum ether balance
       if (balanceETH.lt(ethers.utils.parseEther('.01'))) {
         const error = Error()
-        error.code = ERROR_CODES.INSUFFICIENT_ETH_BALANCE
-        throw error
+        error.code = ERROR_CODES.INSUFFICIENT_ETH_GAS
+        if (!errorAccumulator) {
+          errorAccumulator = error
+        }
       }
 
       // validate minimum socks balance
       if (balanceSOCKS.lt(parsedValue)) {
         const error = Error()
-        error.code = ERROR_CODES.INSUFFICIENT_TOKEN_BALANCE
-        throw error
+        error.code = ERROR_CODES.INSUFFICIENT_SELECTED_TOKEN_BALANCE
+        if (!errorAccumulator) {
+          errorAccumulator = error
+        }
       }
 
       // validate allowance
       if (allowanceSOCKS.lt(parsedValue)) {
         const error = Error()
         error.code = ERROR_CODES.INSUFFICIENT_ALLOWANCE
-        throw error
+        if (!errorAccumulator) {
+          errorAccumulator = error
+        }
       }
 
-      return { inputValue: parsedValue, outputValue: requiredValueInSelectedToken, minimumOutputValue: minimum }
+      return {
+        inputValue: parsedValue,
+        outputValue: requiredValueInSelectedToken,
+        minimumOutputValue: minimum,
+        error: errorAccumulator
+      }
     },
     [
       allowanceSOCKS,
