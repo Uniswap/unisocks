@@ -4,13 +4,14 @@ import styled from 'styled-components'
 import Gallery from '../../components/Gallery'
 import BuyButtons from '../../components/Buttons'
 import Checkout from '../../components/Checkout'
+import { amountFormatter } from '../../utils'
 
-function Header() {
+function Header({ ready, dollarPrice }) {
   return (
     <HeaderFrame>
-      <Status />
+      <Status ready={ready} />
       <Title>unisocks token (SOCKS)</Title>
-      <CurrentPrice>$15 USD↗</CurrentPrice>
+      <CurrentPrice>{dollarPrice && `$${amountFormatter(dollarPrice, 18, 2)} USD↗`}</CurrentPrice>
       <Tagline>dynamically priced socks</Tagline>
     </HeaderFrame>
   )
@@ -25,12 +26,15 @@ export default function Body({
   buy,
   validateSell,
   sell,
-  dollarize
+  dollarize,
+  dollarPrice,
+  balanceSOCKS,
+  reserveSOCKSToken
 }) {
   return (
     <AppWrapper>
       <Bar />
-      <Header />
+      <Header ready={ready} dollarPrice={dollarPrice} />
       <Gallery />
       <Intro>
         purchasing a <b>SOCKS</b> entitles you to 1{' '}
@@ -39,7 +43,8 @@ export default function Body({
         </i>{' '}
         pair of limited edition socks shipped anywhere in the US.
       </Intro>
-      <SockCount>64/500 available</SockCount>
+      <SockCount>{reserveSOCKSToken && `${amountFormatter(reserveSOCKSToken, 18, 0)}/500 available`}</SockCount>
+      <SockCount>{balanceSOCKS && `${amountFormatter(balanceSOCKS, 18, 0)} owned`}</SockCount>
       <BuyButtons />
       <Checkout
         selectedTokenSymbol={selectedTokenSymbol}
@@ -80,13 +85,13 @@ const Status = styled.div`
   top: 16px;
   right: 24px;
   border-radius: 100%;
-  background-color: ${props => props.theme.green};
+  background-color: ${props => (props.ready ? props.theme.green : props.theme.orange)};
 `
 
 const HeaderFrame = styled.div`
   text-align: left;
   padding-top: 4vh;
-  width: 100vwl
+  width: 100vwl;
   margin: 0px;
   padding: 10vw;
   font-size: 1.25rem;
@@ -108,6 +113,7 @@ const Tagline = styled.p`
 const CurrentPrice = styled.p`
   font-weight: 700;
   margin: 0px;
+  height: 1.125rem;
 `
 
 const Intro = styled.p`
@@ -124,4 +130,5 @@ const SockCount = styled.p`
   padding-left: 10vw;
   font-size: 0.75rem;
   color: ${props => props.theme.blue};
+  height: 0.5rem;
 `
