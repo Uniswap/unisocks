@@ -349,12 +349,10 @@ export default function Main() {
       const estimatedGasLimit = await exchangeContractSOCKS.estimate.ethToTokenSwapOutput(outputValue, deadline, {
         value: maximumInputValue
       })
-      return exchangeContractSOCKS
-        .ethToTokenSwapOutput(outputValue, deadline, {
-          value: maximumInputValue,
-          gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
-        })
-        .then(({ hash }) => hash)
+      return exchangeContractSOCKS.ethToTokenSwapOutput(outputValue, deadline, {
+        value: maximumInputValue,
+        gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
+      })
     } else {
       const estimatedGasLimit = await exchangeContractSelectedToken.estimate.tokenToTokenSwapOutput(
         outputValue,
@@ -363,18 +361,16 @@ export default function Main() {
         deadline,
         TOKEN_ADDRESSES.SOCKS
       )
-      return exchangeContractSelectedToken
-        .tokenToTokenSwapOutput(
-          outputValue,
-          maximumInputValue,
-          ethers.constants.MaxUint256,
-          deadline,
-          TOKEN_ADDRESSES.SOCKS,
-          {
-            gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
-          }
-        )
-        .then(({ hash }) => hash)
+      return exchangeContractSelectedToken.tokenToTokenSwapOutput(
+        outputValue,
+        maximumInputValue,
+        ethers.constants.MaxUint256,
+        deadline,
+        TOKEN_ADDRESSES.SOCKS,
+        {
+          gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
+        }
+      )
     }
   }
 
@@ -467,11 +463,9 @@ export default function Main() {
         minimumOutputValue,
         deadline
       )
-      return exchangeContractSOCKS
-        .tokenToEthSwapInput(inputValue, minimumOutputValue, deadline, {
-          gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
-        })
-        .then(({ hash }) => hash)
+      return exchangeContractSOCKS.tokenToEthSwapInput(inputValue, minimumOutputValue, deadline, {
+        gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
+      })
     } else {
       const estimatedGasLimit = await exchangeContractSOCKS.estimate.tokenToTokenSwapInput(
         inputValue,
@@ -480,18 +474,16 @@ export default function Main() {
         deadline,
         TOKEN_ADDRESSES[selectedTokenSymbol]
       )
-      return exchangeContractSOCKS
-        .tokenToTokenSwapInput(
-          inputValue,
-          minimumOutputValue,
-          ethers.constants.One,
-          deadline,
-          TOKEN_ADDRESSES[selectedTokenSymbol],
-          {
-            gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
-          }
-        )
-        .then(({ hash }) => hash)
+      return exchangeContractSOCKS.tokenToTokenSwapInput(
+        inputValue,
+        minimumOutputValue,
+        ethers.constants.One,
+        deadline,
+        TOKEN_ADDRESSES[selectedTokenSymbol],
+        {
+          gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
+        }
+      )
     }
   }
 

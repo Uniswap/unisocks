@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import Gallery from '../../components/Gallery'
@@ -31,6 +31,14 @@ export default function Body({
   balanceSOCKS,
   reserveSOCKSToken
 }) {
+  const [currentTransaction, _setCurrentTransaction] = useState({})
+  function setCurrentTransaction(hash, type, amount) {
+    _setCurrentTransaction({ hash, type, amount })
+  }
+  function clearCurrentTransaction() {
+    _setCurrentTransaction({})
+  }
+
   return (
     <AppWrapper>
       <Bar />
@@ -56,6 +64,9 @@ export default function Body({
         validateSell={validateSell}
         sell={sell}
         dollarize={dollarize}
+        currentTransaction={currentTransaction}
+        setCurrentTransaction={setCurrentTransaction}
+        clearCurrentTransaction={clearCurrentTransaction}
       />
     </AppWrapper>
   )

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
+import { useWeb3Context } from 'web3-react'
 
-import Button from './Button'
-import SelectToken from './SelectToken'
-import IncrementToken from './IncrementToken'
+import BuyAndSell from './BuyAndSell'
+import Pending from './Pending'
+import Confirmed from './Confirmed'
 import { useAppContext } from '../context'
-import { ERROR_CODES, amountFormatter, TRADE_TYPES } from '../utils'
 
 export function useCount() {
   const [state, setState] = useAppContext()
@@ -25,33 +25,6 @@ export function useCount() {
   return [state.count, increment, decrement, setCount]
 }
 
-function getValidationErrorMessage(validationError) {
-  if (!validationError) {
-    return null
-  } else {
-    switch (validationError.code) {
-      case ERROR_CODES.INVALID_AMOUNT: {
-        return 'Invalid Amount'
-      }
-      case ERROR_CODES.INVALID_TRADE: {
-        return 'Invalid Trade'
-      }
-      case ERROR_CODES.INSUFFICIENT_ALLOWANCE: {
-        return 'Set Allowance to Continue'
-      }
-      case ERROR_CODES.INSUFFICIENT_ETH_GAS: {
-        return 'Not Enough ETH to Pay Gas'
-      }
-      case ERROR_CODES.INSUFFICIENT_SELECTED_TOKEN_BALANCE: {
-        return 'Not Enough of Selected Token'
-      }
-      default: {
-        return 'Unknown Error'
-      }
-    }
-  }
-}
-
 export default function Checkout({
   selectedTokenSymbol,
   setSelectedTokenSymbol,
@@ -61,124 +34,50 @@ export default function Checkout({
   buy,
   validateSell,
   sell,
-  dollarize
+  dollarize,
+  currentTransaction,
+  setCurrentTransaction,
+  clearCurrentTransaction
 }) {
+  const { library } = useWeb3Context()
   const [state, setState] = useAppContext()
 
-  const buying = state.tradeType === TRADE_TYPES.BUY
-  const selling = !buying
+  const [pending, setPending] = useState(true)
 
-  const [buyValidationState, setBuyValidationState] = useState({}) // { maximumInputValue, inputValue, outputValue }
-  const [sellValidationState, setSellValidationState] = useState({}) // { inputValue, outputValue, minimumOutputValue }
-  const [validationError, setValidationError] = useState()
-
-  // buy state validation
   useEffect(() => {
-    if (ready && buying) {
-      try {
-        const { error: validationError, ...validationState } = validateBuy(String(state.count))
-        setBuyValidationState(validationState)
-        setValidationError(validationError || null)
-
-        return () => {
-          setBuyValidationState({})
-          setValidationError()
-        }
-      } catch (error) {
-        setBuyValidationState({})
-        setValidationError(error)
-      }
+    if (currentTransaction.hash) {
+      library.waitForTransaction(currentTransaction.hash).then(() => {
+        setPending(false)
+      })
     }
-  }, [ready, buying, validateBuy, state.count])
-
-  // sell state validation
-  useEffect(() => {
-    if (ready && selling) {
-      try {
-        const { error: validationError, ...validationState } = validateSell(String(state.count))
-        setSellValidationState(validationState)
-        setValidationError(validationError || null)
-
-        return () => {
-          setSellValidationState({})
-          setValidationError()
-        }
-      } catch (error) {
-        setSellValidationState({})
-        setValidationError(error)
-      }
-    }
-  }, [ready, selling, validateSell, state.count])
-
-  const shouldRenderUnlock = validationError && validationError.code === ERROR_CODES.INSUFFICIENT_ALLOWANCE
-
-  const errorMessage = getValidationErrorMessage(validationError)
-
-  function renderFormData() {
-    let conditionalRender
-    if (buying && buyValidationState.inputValue) {
-      conditionalRender = (
-        <>
-          <p>
-            {amountFormatter(buyValidationState.inputValue, 18, 4)} {selectedTokenSymbol} • $
-            {ready && amountFormatter(dollarize(buyValidationState.inputValue), 18, 2)}
-          </p>
-        </>
-      )
-    } else if (selling && sellValidationState.outputValue) {
-      conditionalRender = (
-        <>
-          <p>
-            {amountFormatter(sellValidationState.outputValue, 18, 4)} {selectedTokenSymbol} • $
-            {ready && amountFormatter(dollarize(sellValidationState.outputValue), 18, 2)}
-          </p>
-        </>
-      )
-    }
-
-    return (
-      <>
-        <p>{state.count} SOCKS</p>
-        {conditionalRender}
-      </>
-    )
-  }
+  }, [currentTransaction.hash, library])
 
   return (
     <div>
       <CheckoutFrame isVisible={state.visible}>
-        <CheckoutInfo>{renderFormData()}</CheckoutInfo>
-        <CheckoutPrompt>
-          <i>{buying ? 'How do you want to pay?' : 'What token do you want to receive?'}</i>
-        </CheckoutPrompt>
-        <CheckoutControls buying={buying}>
-          <SelectToken selectedTokenSymbol={selectedTokenSymbol} setSelectedTokenSymbol={setSelectedTokenSymbol} />
-          <div>↓</div>
-          <IncrementToken />
-        </CheckoutControls>
-        {shouldRenderUnlock ? (
-          <Button
-            text={`Unlock ${buying ? selectedTokenSymbol : 'SOCKS'}`}
-            type={'cta'}
-            onClick={() => unlock(buying)}
-          />
-        ) : (
-          <Button
-            className="button"
-            disabled={validationError !== null}
-            text={`${buying ? 'Buy' : 'Sell'} SOCKS`}
-            type={'cta'}
-            onClick={() => {
-              ;(buying
-                ? buy(buyValidationState.maximumInputValue, buyValidationState.outputValue)
-                : sell(sellValidationState.inputValue, sellValidationState.minimumOutputValue)
-              ).then(({ hash }) => {
-                console.log(hash)
-              })
-            }}
+        {!currentTransaction.hash && (
+          <BuyAndSell
+            selectedTokenSymbol={selectedTokenSymbol}
+            setSelectedTokenSymbol={setSelectedTokenSymbol}
+            ready={ready}
+            unlock={unlock}
+            validateBuy={validateBuy}
+            buy={buy}
+            validateSell={validateSell}
+            sell={sell}
+            dollarize={dollarize}
+            setCurrentTransaction={setCurrentTransaction}
           />
         )}
-        <ErrorFrame>{errorMessage}</ErrorFrame>
+        {currentTransaction.hash && pending ? (
+          <Pending type={currentTransaction.type} amount={currentTransaction.amount} />
+        ) : (
+          <Confirmed
+            type={currentTransaction.type}
+            amount={currentTransaction.amount}
+            clearCurrentTransaction={clearCurrentTransaction}
+          />
+        )}
       </CheckoutFrame>
       <CheckoutBackground
         onClick={() => setState(state => ({ ...state, visible: !state.visible }))}
@@ -209,33 +108,6 @@ const CheckoutFrame = styled.form`
     margin-top: 0px;
     font-weight: 600;
   }
-`
-
-const CheckoutControls = styled.span`
-  width: 100%;
-  display: flex;
-  flex-direction: ${props => (props.buying ? 'column' : 'column-reverse')};
-  align-items: center;
-  justify-content: space-between;
-`
-
-const CheckoutInfo = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-`
-
-const CheckoutPrompt = styled.p`
-  font-weight: 400;
-  /* margin-bottom: 2rem; */
-`
-
-const ErrorFrame = styled.p`
-  position: absolute;
-  bottom: 0px;
-  font-weight: 400;
-  margin-bottom: 2rem;
 `
 
 const CheckoutBackground = styled.div`
