@@ -13,7 +13,7 @@ const ButtonFrame = styled.button`
   align-items: center;
   flex-direction: center;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1;
   border-width: 1px;
   opacity: ${props => (props.disabled ? 0.2 : 1)};

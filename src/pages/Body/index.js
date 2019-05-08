@@ -43,9 +43,16 @@ export default function Body({
         </i>{' '}
         pair of limited edition socks shipped anywhere in the US.
       </Intro>
-      <SockCount>{reserveSOCKSToken && `${amountFormatter(reserveSOCKSToken, 18, 0)}/500 available`}</SockCount>
-      <SockCount>{balanceSOCKS && `${amountFormatter(balanceSOCKS, 18, 0)} owned`}</SockCount>
       <BuyButtons />
+      <MarketData>
+        <SockCount>{reserveSOCKSToken && `${amountFormatter(reserveSOCKSToken, 18, 0)}/200 available`}</SockCount>
+        {balanceSOCKS > 0 ? (
+          <SockCount>&nbsp; • &nbsp; {balanceSOCKS && `${amountFormatter(balanceSOCKS, 18, 0)} owned`}</SockCount>
+        ) : (
+          ''
+        )}
+      </MarketData>
+      <Redeem>Have a sock? Redeem it now</Redeem>
       <Checkout
         selectedTokenSymbol={selectedTokenSymbol}
         setSelectedTokenSymbol={setSelectedTokenSymbol}
@@ -61,9 +68,18 @@ export default function Body({
   )
 }
 
+const MarketData = styled.div`
+  padding-left: 10vw;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+`
+
 const AppWrapper = styled.div`
-  width: 100wh;
+  width: 100vw;
   height: 100vh;
+  margin-bottom: 1rem;
   // display: flex;
   // flex-direction: row;
   // flex-wrap: wrap;
@@ -106,8 +122,9 @@ const Title = styled.p`
 
 const Tagline = styled.p`
   font-weight: 500;
-  font-size: 1.125rem;
-  margin-bottom: 10px;
+  font-size: 1rem;
+  margin-bottom: 0px;
+  margin-top: 2rem;
 `
 
 const CurrentPrice = styled.p`
@@ -119,6 +136,7 @@ const CurrentPrice = styled.p`
 const Intro = styled.p`
   padding-left: 10vw;
   margin-top: 2rem;
+  margin-bottom: 0px;
   max-width: 250px;
   line-height: 180%;
   font-weight: 500;
@@ -127,8 +145,13 @@ const Intro = styled.p`
 
 const SockCount = styled.p`
   font-weight: 500;
-  padding-left: 10vw;
   font-size: 0.75rem;
   color: ${props => props.theme.blue};
   height: 0.5rem;
+`
+
+const Redeem = styled.p`
+  font-weight: 500;
+  padding-left: 10vw;
+  margin-bottom: 2rem;
 `

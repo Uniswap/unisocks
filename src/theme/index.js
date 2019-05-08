@@ -11,6 +11,7 @@ export default createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-family: Inter, sans-serif;
+    background-color: #F1F2F6;
   }
 `
 
@@ -24,7 +25,8 @@ const theme = {
   green: '#66BB66',
   grey: '#F1F2F6',
   blue: '#2F80ED',
-  white: '#FFF'
+  white: '#FFF',
+  black: '#000'
 }
 
 export function ThemeProvider({ children }) {

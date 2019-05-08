@@ -29,7 +29,6 @@ const SelectMenu = styled.input`
   background-color: #fff;
   border: none;
   padding: 0px 1rem 0px 1rem;
-  pointer: ;
 `
 
 const IncrementButton = styled.span`

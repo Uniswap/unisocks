@@ -157,13 +157,13 @@ export default function Checkout({
           <IncrementToken />
         </CheckoutControls>
         {shouldRenderUnlock ? (
-          <Button
+          <ButtonFrame
             text={`Unlock ${buying ? selectedTokenSymbol : 'SOCKS'}`}
             type={'cta'}
             onClick={() => unlock(buying)}
           />
         ) : (
-          <Button
+          <ButtonFrame
             className="button"
             disabled={validationError !== null}
             text={`${buying ? 'Buy' : 'Sell'} SOCKS`}
@@ -178,7 +178,7 @@ export default function Checkout({
             }}
           />
         )}
-        <ErrorFrame>{errorMessage}</ErrorFrame>
+        <ErrorFrame>{errorMessage ? errorMessage : 'niiiice'}</ErrorFrame>
       </CheckoutFrame>
       <CheckoutBackground
         onClick={() => setState(state => ({ ...state, visible: !state.visible }))}
@@ -190,12 +190,12 @@ export default function Checkout({
 
 const CheckoutFrame = styled.form`
   position: fixed;
-  bottom: ${props => (props.isVisible ? '0px' : '-50vh')};
+  bottom: ${props => (props.isVisible ? '0px' : '-100%')};
   z-index: ${props => (props.isVisible ? '2' : '-1  ')};
   transition: bottom 0.3s;
   width: 100%;
-  height: 40vh;
-  border-radius: 20px;
+  margin: 0px;
+  border-radius: 20px 20px 0px 0px;
   padding: 2rem;
   box-sizing: border-box;
   display: flex;
@@ -207,7 +207,7 @@ const CheckoutFrame = styled.form`
 
   p {
     margin-top: 0px;
-    font-weight: 600;
+    /* font-weight: 600; */
   }
 `
 
@@ -221,14 +221,16 @@ const CheckoutControls = styled.span`
 
 const CheckoutInfo = styled.div`
   width: 100%;
+  font-weight: 600;
+
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 `
 
 const CheckoutPrompt = styled.p`
-  font-weight: 400;
-  /* margin-bottom: 2rem; */
+  font-weight: 500;
+  margin-bottom: 0.5px;
 `
 
 const ErrorFrame = styled.p`
@@ -236,6 +238,10 @@ const ErrorFrame = styled.p`
   bottom: 0px;
   font-weight: 400;
   margin-bottom: 2rem;
+`
+
+const ButtonFrame = styled(Button)`
+  margin-top: 1rem;
 `
 
 const CheckoutBackground = styled.div`
