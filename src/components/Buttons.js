@@ -6,18 +6,18 @@ import { useAppContext } from '../context'
 import { TRADE_TYPES } from '../utils'
 
 const BuyButtonFrame = styled.form`
-  // width: 100%;
-  height: 48px;
-  // padding: 2rem;
-  margin-top: 4px;
-  margin-left: 2rem;
-  margin-right: 2rem;
-  box-sizing: bordser-box;
+  /* left: 0;
+  right: 0;
+  position: absolute;
+  bottom: 0px; */
+  /* width: 100%; */
+  margin: 2rem 2rem 0.5rem 2rem;
+  /* margin-bottom: 1rem; */
   display: flex;
   align-items: center;
   flex-direction: center;
   flex-direction: row;
-  color: ${props => props.theme.grey};
+  color: ${props => props.theme.black};
 
   div {
     width: 100%;

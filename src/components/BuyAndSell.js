@@ -157,9 +157,13 @@ export default function BuyAndSell({
         <IncrementToken />
       </CheckoutControls>
       {shouldRenderUnlock ? (
-        <Button text={`Unlock ${buying ? selectedTokenSymbol : 'SOCKS'}`} type={'cta'} onClick={() => unlock(buying)} />
+        <ButtonFrame
+          text={`Unlock ${buying ? selectedTokenSymbol : 'SOCKS'}`}
+          type={'cta'}
+          onClick={() => unlock(buying)}
+        />
       ) : (
-        <Button
+        <ButtonFrame
           className="button"
           disabled={validationError !== null}
           text={buying ? 'Buy SOCKS' : 'Sell SOCKS'}
@@ -178,7 +182,7 @@ export default function BuyAndSell({
           }}
         />
       )}
-      <ErrorFrame>{errorMessage}</ErrorFrame>
+      <ErrorFrame>{errorMessage ? errorMessage : 'niiiice'}</ErrorFrame>
     </>
   )
 }
@@ -193,14 +197,15 @@ const CheckoutControls = styled.span`
 
 const CheckoutInfo = styled.div`
   width: 100%;
+  font-weight: 600;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 `
 
 const CheckoutPrompt = styled.p`
-  font-weight: 400;
-  /* margin-bottom: 2rem; */
+  font-weight: 500;
+  margin-bottom: 0.5px;
 `
 
 const ErrorFrame = styled.p`
@@ -208,4 +213,8 @@ const ErrorFrame = styled.p`
   bottom: 0px;
   font-weight: 400;
   margin-bottom: 2rem;
+`
+
+const ButtonFrame = styled(Button)`
+  margin-top: 1rem;
 `
