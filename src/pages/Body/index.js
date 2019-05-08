@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
 
 import Gallery from '../../components/Gallery'
@@ -31,6 +31,14 @@ export default function Body({
   balanceSOCKS,
   reserveSOCKSToken
 }) {
+  const [currentTransaction, _setCurrentTransaction] = useState({})
+  const setCurrentTransaction = useCallback((hash, type, amount) => {
+    _setCurrentTransaction({ hash, type, amount })
+  }, [])
+  const clearCurrentTransaction = useCallback(() => {
+    _setCurrentTransaction({})
+  }, [])
+
   return (
     <AppWrapper>
       <Bar />
@@ -63,6 +71,11 @@ export default function Body({
         validateSell={validateSell}
         sell={sell}
         dollarize={dollarize}
+        currentTransactionHash={currentTransaction.hash}
+        currentTransactionType={currentTransaction.type}
+        currentTransactionAmount={currentTransaction.amount}
+        setCurrentTransaction={setCurrentTransaction}
+        clearCurrentTransaction={clearCurrentTransaction}
       />
     </AppWrapper>
   )
@@ -80,9 +93,6 @@ const AppWrapper = styled.div`
   width: 100vw;
   height: 100vh;
   margin-bottom: 1rem;
-  // display: flex;
-  // flex-direction: row;
-  // flex-wrap: wrap;
   background-color: ${props => props.theme.secondary};
 `
 
