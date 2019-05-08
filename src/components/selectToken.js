@@ -11,14 +11,24 @@ const SelectMenu = styled(Select)`
   margin: 1rem;
   font-family: sans-serif;
   font-weight: 700;
-  padding: 0.6em 1.4em 0.5em 0.8em;
   width: 100%;
   height: 48px;
   max-width: 100%;
   box-sizing: border-box;
+  border: none;
   margin: 0;
+  margin-bottom: 1rem;
   appearance: none;
   background-color: #fff;
+  display: flex;
+  flex-direction: row;
+
+  .react-select__control {
+    border: none;
+    width: 100%;
+    border-radius: 24px;
+    padding: 0px 0.5rem 0px 0.5rem;
+  }
 `
 
 const options = Object.keys(TOKEN_SYMBOLS)
@@ -29,6 +39,8 @@ export default function SelectToken({ selectedTokenSymbol, setSelectedTokenSymbo
   return (
     <SelectMenu
       value={{ value: selectedTokenSymbol, label: selectedTokenSymbol }}
+      className="react-select-container"
+      classNamePrefix="react-select"
       onChange={({ value }) => {
         setSelectedTokenSymbol(value)
       }}

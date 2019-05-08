@@ -9,10 +9,10 @@ const BuyButtonFrame = styled.form`
   // width: 100%;
   height: 48px;
   // padding: 2rem;
-  margin-top: 64px;
+  margin-top: 4px;
   margin-left: 2rem;
   margin-right: 2rem;
-  box-sizing: border-box;
+  box-sizing: bordser-box;
   display: flex;
   align-items: center;
   flex-direction: center;

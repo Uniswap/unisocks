@@ -8,13 +8,13 @@ const GalleryFrame = styled.div`
   height: 90vw;
   min-height: 200px;
   min-width: 200px;
-  max-height: 1000px;
-  max-width: 1000px;
+  max-height: 500px;
+  max-width: 500px;
   display: flex;
   align-items: center;
   flex-direction: center;
   background-color: ${props => props.theme.black};
-  box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.05);
+  // box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.05);
 `
 
 const ImgStyle = styled.img`

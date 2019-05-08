@@ -11,6 +11,7 @@ function Header() {
       <Status />
       <Title>unisocks token (SOCKS)</Title>
       <CurrentPrice>$15 USD↗</CurrentPrice>
+      <Tagline>dynamically priced socks</Tagline>
     </HeaderFrame>
   )
 }
@@ -28,6 +29,7 @@ export default function Body({
 }) {
   return (
     <AppWrapper>
+      <Bar />
       <Header />
       <Gallery />
       <Intro>
@@ -57,9 +59,18 @@ export default function Body({
 const AppWrapper = styled.div`
   width: 100wh;
   height: 100vh;
-  /* overflow: hidden; */
-  // padding: 10vw;
+  // display: flex;
+  // flex-direction: row;
+  // flex-wrap: wrap;
   background-color: ${props => props.theme.secondary};
+`
+
+const Bar = styled.div`
+  position: fixed;
+  right: 0px;
+  width: 0.5rem;
+  height: 100vh;
+  background-color: ${props => props.theme.primary};
 `
 
 const Status = styled.div`
@@ -67,7 +78,7 @@ const Status = styled.div`
   height: 12px;
   position: fixed;
   top: 16px;
-  right: 16px;
+  right: 24px;
   border-radius: 100%;
   background-color: ${props => props.theme.green};
 `
@@ -88,6 +99,12 @@ const Title = styled.p`
   margin-bottom: 10px;
 `
 
+const Tagline = styled.p`
+  font-weight: 500;
+  font-size: 1.125rem;
+  margin-bottom: 10px;
+`
+
 const CurrentPrice = styled.p`
   font-weight: 700;
   margin: 0px;
@@ -95,7 +112,7 @@ const CurrentPrice = styled.p`
 
 const Intro = styled.p`
   padding-left: 10vw;
-  // margin-top: -2vh;
+  margin-top: 2rem;
   max-width: 250px;
   line-height: 180%;
   font-weight: 500;

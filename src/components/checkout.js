@@ -112,11 +112,15 @@ export default function Checkout({
     if (buying && buyValidationState.inputValue) {
       return (
         <>
-          <p>Buying {state.count} SOCKS</p>
+          <p>{state.count} SOCKS</p>
           <p>
+            {amountFormatter(buyValidationState.inputValue, 18, 4)} {selectedTokenSymbol} • $
+            {ready && amountFormatter(dollarize(buyValidationState.inputValue), 18, 4)}
+          </p>
+          {/* <p>
             For {amountFormatter(buyValidationState.inputValue, 18, 4)} {selectedTokenSymbol}
           </p>
-          <p>Which is ${ready && amountFormatter(dollarize(buyValidationState.inputValue), 18, 4)}</p>
+          <p>Which is ${ready && amountFormatter(dollarize(buyValidationState.inputValue), 18, 4)}</p> */}
         </>
       )
     } else if (selling && sellValidationState.inputValue && sellValidationState.outputValue) {
@@ -135,10 +139,10 @@ export default function Checkout({
   return (
     <div>
       <CheckoutFrame isVisible={state.visible}>
-        <div>{renderFormData()}</div>
-        <div>
-          <p>{buying ? 'How do you want to pay?' : 'What token do you want to receive?'}</p>
-        </div>
+        <CheckoutInfo>{renderFormData()}</CheckoutInfo>
+        <CheckoutPrompt>
+          <i>{buying ? 'How do you want to pay?' : 'What token do you want to receive?'}</i>
+        </CheckoutPrompt>
         <CheckoutControls buying={buying}>
           <SelectToken selectedTokenSymbol={selectedTokenSymbol} setSelectedTokenSymbol={setSelectedTokenSymbol} />
           <div>↓</div>
@@ -183,7 +187,7 @@ const CheckoutFrame = styled.form`
   width: 100%;
   height: 50vh;
   border-radius: 20px;
-  padding: 1rem;
+  padding: 2rem;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -191,13 +195,31 @@ const CheckoutFrame = styled.form`
   background-color: ${props => props.theme.grey};
   border-color: ${props => props.theme.black};
   color: ${props => props.theme.primary};
+
+  p {
+    margin-top: 0px;
+    font-weight: 600;
+  }
 `
 
 const CheckoutControls = styled.span`
   width: 100%;
   display: flex;
   flex-direction: ${props => (props.buying ? 'column' : 'column-reverse')};
-  align-items: flex-start;
+  align-items: center;
+  justify-content: space-between;
+`
+
+const CheckoutInfo = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`
+
+const CheckoutPrompt = styled.p`
+  font-weight: 400;
+  margin-bottom: 2rem;
 `
 
 const CheckoutBackground = styled.div`

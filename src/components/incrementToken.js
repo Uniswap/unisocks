@@ -9,31 +9,35 @@ const SelectFrame = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
+  margin-top: 1rem;
 `
 
-const SelectMenu = styled.div`
-  display: block;
-  font-size: 16px;
+const SelectMenu = styled.input`
+  font-size: 1rem;
   border-radius: 24px;
   margin: 1rem;
   font-family: sans-serif;
   font-weight: 700;
-  padding: 0.6em 1.4em 0.5em 0.8em;
   width: 100%;
   height: 48px;
-  max-width: 100%;
   box-sizing: border-box;
   margin: 0;
   appearance: none;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
   background-color: #fff;
+  border: none;
+  padding: 0px 1rem 0px 1rem;
 `
 
 const IncrementButton = styled.span`
-  width: 48px;
+  width: 56px;
   height: 48px;
+  font-size: 1.5rem;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: ${props => props.justify};
 `
 
 export default function IncrementToken(props) {
@@ -41,9 +45,15 @@ export default function IncrementToken(props) {
 
   return (
     <SelectFrame>
-      <IncrementButton onClick={decrementCount}>-</IncrementButton>
-      <SelectMenu>{count}</SelectMenu>
-      <IncrementButton onClick={incrementCount}>+</IncrementButton>
+      <IncrementButton justify={'flex-start'} onClick={decrementCount}>
+        -
+      </IncrementButton>
+      <SelectMenu defaultValue={count} value={count} type="text" />
+
+      {/* <SelectMenu>{count}</SelectMenu> */}
+      <IncrementButton justify={'flex-end'} onClick={incrementCount}>
+        +
+      </IncrementButton>
     </SelectFrame>
   )
 }
