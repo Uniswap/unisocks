@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
 
 import Gallery from '../../components/Gallery'
@@ -32,12 +32,12 @@ export default function Body({
   reserveSOCKSToken
 }) {
   const [currentTransaction, _setCurrentTransaction] = useState({})
-  function setCurrentTransaction(hash, type, amount) {
+  const setCurrentTransaction = useCallback((hash, type, amount) => {
     _setCurrentTransaction({ hash, type, amount })
-  }
-  function clearCurrentTransaction() {
+  }, [])
+  const clearCurrentTransaction = useCallback(() => {
     _setCurrentTransaction({})
-  }
+  }, [])
 
   return (
     <AppWrapper>
@@ -64,7 +64,9 @@ export default function Body({
         validateSell={validateSell}
         sell={sell}
         dollarize={dollarize}
-        currentTransaction={currentTransaction}
+        currentTransactionHash={currentTransaction.hash}
+        currentTransactionType={currentTransaction.type}
+        currentTransactionAmount={currentTransaction.amount}
         setCurrentTransaction={setCurrentTransaction}
         clearCurrentTransaction={clearCurrentTransaction}
       />

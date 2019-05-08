@@ -35,7 +35,9 @@ export default function Checkout({
   validateSell,
   sell,
   dollarize,
-  currentTransaction,
+  currentTransactionHash,
+  currentTransactionType,
+  currentTransactionAmount,
   setCurrentTransaction,
   clearCurrentTransaction
 }) {
@@ -45,17 +47,17 @@ export default function Checkout({
   const [pending, setPending] = useState(true)
 
   useEffect(() => {
-    if (currentTransaction.hash) {
-      library.waitForTransaction(currentTransaction.hash).then(() => {
+    if (currentTransactionHash) {
+      library.waitForTransaction(currentTransactionHash).then(() => {
         setPending(false)
       })
     }
-  }, [currentTransaction.hash, library])
+  }, [currentTransactionHash, library])
 
   return (
     <div>
       <CheckoutFrame isVisible={state.visible}>
-        {!currentTransaction.hash && (
+        {!currentTransactionHash && (
           <BuyAndSell
             selectedTokenSymbol={selectedTokenSymbol}
             setSelectedTokenSymbol={setSelectedTokenSymbol}
@@ -69,15 +71,16 @@ export default function Checkout({
             setCurrentTransaction={setCurrentTransaction}
           />
         )}
-        {currentTransaction.hash && pending ? (
-          <Pending type={currentTransaction.type} amount={currentTransaction.amount} />
-        ) : (
-          <Confirmed
-            type={currentTransaction.type}
-            amount={currentTransaction.amount}
-            clearCurrentTransaction={clearCurrentTransaction}
-          />
-        )}
+        {currentTransactionHash &&
+          (pending ? (
+            <Pending type={currentTransactionType} amount={currentTransactionAmount} />
+          ) : (
+            <Confirmed
+              type={currentTransactionType}
+              amount={currentTransactionAmount}
+              clearCurrentTransaction={clearCurrentTransaction}
+            />
+          ))}
       </CheckoutFrame>
       <CheckoutBackground
         onClick={() => setState(state => ({ ...state, visible: !state.visible }))}

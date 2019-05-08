@@ -4,13 +4,13 @@ import { useAppContext } from '../context'
 import { amountFormatter, TRADE_TYPES } from '../utils'
 
 export default function Confirmed({ type, amount, clearCurrentTransaction }) {
-  const [state, setState] = useAppContext()
+  const [state] = useAppContext()
 
   useEffect(() => {
     if (!state.visible) {
       clearCurrentTransaction()
     }
-  })
+  }, [state.visible, clearCurrentTransaction])
 
   return (
     <>
