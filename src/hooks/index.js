@@ -45,7 +45,15 @@ export function useExchangeContract(tokenAddress, withSignerIfPossible = true) {
   const [exchangeAddress, setExchangeAddress] = useState()
   useEffect(() => {
     if (isAddress(tokenAddress)) {
-      getTokenExchangeAddressFromFactory(tokenAddress, library).then(setExchangeAddress)
+      let stale = false
+      getTokenExchangeAddressFromFactory(tokenAddress, library).then(exchangeAddress => {
+        if (!stale) {
+          setExchangeAddress(exchangeAddress)
+        }
+      })
+      return () => {
+        stale = true
+      }
     }
   }, [account, library, tokenAddress])
 
@@ -58,28 +66,34 @@ export function useExchangeContract(tokenAddress, withSignerIfPossible = true) {
   }, [exchangeAddress, library, withSignerIfPossible, account])
 }
 
-export function useAddressBalance(address, tokenAddress) {
+export function useAddressBalance(address, tokenAddress, ff) {
   const { library } = useWeb3Context()
 
   const [balance, setBalance] = useState()
 
   const updateBalance = useCallback(() => {
     if (isAddress(address) && (tokenAddress === 'ETH' || isAddress(tokenAddress))) {
+      let stale = false
+
       ;(tokenAddress === 'ETH' ? getEtherBalance(address, library) : getTokenBalance(tokenAddress, address, library))
         .then(value => {
-          setBalance(value)
+          if (!stale) {
+            setBalance(value)
+          }
         })
         .catch(() => {
-          setBalance(null)
+          if (!stale) {
+            setBalance(null)
+          }
         })
+      return () => {
+        stale = true
+      }
     }
   }, [address, library, tokenAddress])
 
   useEffect(() => {
-    updateBalance()
-    return () => {
-      setBalance()
-    }
+    return updateBalance()
   }, [updateBalance])
 
   useBlockEffect(updateBalance)
@@ -94,21 +108,24 @@ export function useAddressAllowance(address, tokenAddress, spenderAddress) {
 
   const updateAllowance = useCallback(() => {
     if (isAddress(address) && isAddress(tokenAddress) && isAddress(spenderAddress)) {
+      let stale = false
+
       getTokenAllowance(address, tokenAddress, spenderAddress, library)
         .then(allowance => {
-          setAllowance(allowance)
+          if (!stale) {
+            setAllowance(allowance)
+          }
         })
         .catch(() => {
-          setAllowance(null)
+          if (!stale) {
+            setAllowance(null)
+          }
         })
     }
   }, [address, library, spenderAddress, tokenAddress])
 
   useEffect(() => {
-    updateAllowance()
-    return () => {
-      setAllowance()
-    }
+    return updateAllowance()
   }, [updateAllowance])
 
   useBlockEffect(updateAllowance)

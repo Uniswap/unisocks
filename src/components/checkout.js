@@ -74,14 +74,14 @@ export default function Checkout({
       try {
         setBuyValidationState(validateBuy(String(state.count)))
         setValidationError(null)
+
+        return () => {
+          setBuyValidationState({})
+          setValidationError()
+        }
       } catch (error) {
         setBuyValidationState({})
         setValidationError(error)
-      }
-
-      return () => {
-        setBuyValidationState({})
-        setValidationError()
       }
     }
   }, [ready, buying, state.count, validateBuy])
@@ -92,14 +92,14 @@ export default function Checkout({
       try {
         setSellValidationState(validateSell(String(state.count)))
         setValidationError(null)
+
+        return () => {
+          setBuyValidationState({})
+          setValidationError()
+        }
       } catch (error) {
         setSellValidationState({})
         setValidationError(error)
-      }
-
-      return () => {
-        setSellValidationState({})
-        setValidationError()
       }
     }
   }, [ready, selling, state.count, validateSell])
@@ -108,26 +108,36 @@ export default function Checkout({
 
   const errorMessage = getValidationErrorMessage(validationError)
 
+  function renderFormData() {
+    if (buying && buyValidationState.inputValue) {
+      return (
+        <>
+          <p>Buying {state.count} SOCKS</p>
+          <p>
+            For {amountFormatter(buyValidationState.inputValue, 18, 4)} {selectedTokenSymbol}
+          </p>
+          <p>Which is ${ready && amountFormatter(dollarize(buyValidationState.inputValue), 18, 4)}</p>
+        </>
+      )
+    } else if (selling && sellValidationState.inputValue && sellValidationState.outputValue) {
+      return (
+        <>
+          <p>Selling {state.count} SOCKS</p>
+          <p>
+            For {amountFormatter(sellValidationState.outputValue, 18, 4)} {selectedTokenSymbol}
+          </p>
+          <p>Which is ${ready && amountFormatter(dollarize(sellValidationState.outputValue), 18, 4)}</p>
+        </>
+      )
+    }
+  }
+
   return (
     <div>
       <CheckoutFrame isVisible={state.visible}>
+        <div>{renderFormData()}</div>
         <div>
-          <p>{state.count} SOCKS</p>
-          <p>
-            {buying
-              ? buyValidationState.inputValue &&
-                `${amountFormatter(buyValidationState.inputValue, 18, 4)} ${selectedTokenSymbol}`
-              : sellValidationState.inputValue && `${amountFormatter(sellValidationState.inputValue, 18, 4)} SOCKS`}
-          </p>
-          <p>
-            {ready && buying
-              ? buyValidationState.inputValue && `$${amountFormatter(dollarize(buyValidationState.inputValue), 18, 4)}`
-              : sellValidationState.inputValue &&
-                `$${amountFormatter(dollarize(sellValidationState.inputValue), 18, 4)}`}
-          </p>
-        </div>
-        <div>
-          <p>How do you want to pay?</p>
+          <p>{buying ? 'How do you want to pay?' : 'What token do you want to receive?'}</p>
         </div>
         <SelectToken selectedTokenSymbol={selectedTokenSymbol} setSelectedTokenSymbol={setSelectedTokenSymbol} />
         <div>↓</div>
@@ -135,16 +145,23 @@ export default function Checkout({
         <p>{errorMessage}</p>
         {shouldRenderUnlock ? (
           <Button
-            text={`Unlock ${state.tradeType === TRADE_TYPES.BUY ? selectedTokenSymbol : 'SOCKS'}`}
+            text={`Unlock ${buying ? selectedTokenSymbol : 'SOCKS'}`}
             type={'cta'}
-            onClick={() => unlock()}
+            onClick={() => unlock(buying)}
           />
         ) : (
           <Button
             disabled={validationError !== null}
-            text={`${buy ? 'Buy' : 'Sell'} SOCKS`}
+            text={`${buying ? 'Buy' : 'Sell'} SOCKS`}
             type={'cta'}
-            onClick={() => buy(buyValidationState.maximumInputValue, buyValidationState.outputValue)}
+            onClick={() => {
+              ;(buying
+                ? buy(buyValidationState.maximumInputValue, buyValidationState.outputValue)
+                : sell(sellValidationState.inputValue, sellValidationState.minimumOutputValue)
+              ).then(({ hash }) => {
+                console.log(hash)
+              })
+            }}
           />
         )}
       </CheckoutFrame>

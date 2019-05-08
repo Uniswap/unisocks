@@ -180,7 +180,8 @@ export default function Main() {
   )
   const reserveSelectedTokenToken = useAddressBalance(
     exchangeContractSelectedToken && exchangeContractSelectedToken.address,
-    TOKEN_ADDRESSES[selectedTokenSymbol]
+    TOKEN_ADDRESSES[selectedTokenSymbol],
+    'ff'
   )
   const reserveDAIETH = useAddressBalance(exchangeContractDAI && exchangeContractDAI.address, TOKEN_ADDRESSES.ETH)
   const reserveDAIToken = useAddressBalance(exchangeContractDAI && exchangeContractDAI.address, TOKEN_ADDRESSES.DAI)
@@ -194,6 +195,7 @@ export default function Main() {
         setUSDExchangeRate(exchangeRateDAI)
       } else {
         const exchangeRateSelectedToken = getExchangeRate(reserveSelectedTokenETH, reserveSelectedTokenToken)
+        // console.log('reserves', reserveSelectedTokenETH, reserveSelectedTokenToken, exchangeRateSelectedToken)
         if (exchangeRateDAI && exchangeRateSelectedToken) {
           setUSDExchangeRate(
             exchangeRateDAI
@@ -211,18 +213,23 @@ export default function Main() {
     return amount.mul(USDExchangeRate).div(ethers.utils.bigNumberify(10).pow(ethers.utils.bigNumberify(18)))
   }
 
-  const ready =
+  const ready = !!(
     allowanceSOCKS &&
     (selectedTokenSymbol === 'ETH' || allowanceSelectedToken) &&
     balanceETH &&
     balanceSOCKS &&
     balanceSelectedToken &&
     reserveSOCKSETH &&
+    !reserveSOCKSETH.isZero() &&
     reserveSOCKSToken &&
-    (selectedTokenSymbol === 'ETH' || reserveSelectedTokenToken) &&
+    !reserveSOCKSToken.isZero() &&
     (selectedTokenSymbol === 'ETH' || reserveSelectedTokenETH) &&
+    (selectedTokenSymbol === 'ETH' || !reserveSelectedTokenETH.isZero()) &&
+    (selectedTokenSymbol === 'ETH' || reserveSelectedTokenToken) &&
+    (selectedTokenSymbol === 'ETH' || !reserveSelectedTokenToken.isZero()) &&
     selectedTokenSymbol &&
     USDExchangeRate
+  )
 
   async function unlock(buyingSOCKS = true) {
     const contract = buyingSOCKS ? tokenContractSelectedToken : tokenContractSOCKS
