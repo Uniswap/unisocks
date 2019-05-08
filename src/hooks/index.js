@@ -8,7 +8,8 @@ import {
   getTokenExchangeAddressFromFactory,
   getEtherBalance,
   getTokenBalance,
-  getTokenAllowance
+  getTokenAllowance,
+  TOKEN_ADDRESSES
 } from '../utils'
 
 export function useBlockEffect(functionToRun) {
@@ -53,9 +54,10 @@ export function useExchangeContract(tokenAddress, withSignerIfPossible = true) {
       })
       return () => {
         stale = true
+        setExchangeAddress()
       }
     }
-  }, [account, library, tokenAddress])
+  }, [library, tokenAddress])
 
   return useMemo(() => {
     try {
@@ -66,7 +68,7 @@ export function useExchangeContract(tokenAddress, withSignerIfPossible = true) {
   }, [exchangeAddress, library, withSignerIfPossible, account])
 }
 
-export function useAddressBalance(address, tokenAddress, ff) {
+export function useAddressBalance(address, tokenAddress) {
   const { library } = useWeb3Context()
 
   const [balance, setBalance] = useState()
@@ -88,6 +90,7 @@ export function useAddressBalance(address, tokenAddress, ff) {
         })
       return () => {
         stale = true
+        setBalance()
       }
     }
   }, [address, library, tokenAddress])
@@ -99,6 +102,15 @@ export function useAddressBalance(address, tokenAddress, ff) {
   useBlockEffect(updateBalance)
 
   return balance
+}
+
+export function useExchangeReserves(tokenAddress) {
+  const exchangeContract = useExchangeContract(tokenAddress)
+
+  const reserveETH = useAddressBalance(exchangeContract && exchangeContract.address, TOKEN_ADDRESSES.ETH)
+  const reserveToken = useAddressBalance(exchangeContract && exchangeContract.address, tokenAddress)
+
+  return { reserveETH, reserveToken }
 }
 
 export function useAddressAllowance(address, tokenAddress, spenderAddress) {
@@ -121,6 +133,11 @@ export function useAddressAllowance(address, tokenAddress, spenderAddress) {
             setAllowance(null)
           }
         })
+
+      return () => {
+        stale = true
+        setAllowance()
+      }
     }
   }, [address, library, spenderAddress, tokenAddress])
 
@@ -131,4 +148,10 @@ export function useAddressAllowance(address, tokenAddress, spenderAddress) {
   useBlockEffect(updateAllowance)
 
   return allowance
+}
+
+export function useExchangeAllowance(address, tokenAddress) {
+  const exchangeContract = useExchangeContract(tokenAddress)
+
+  return useAddressAllowance(address, tokenAddress, exchangeContract && exchangeContract.address)
 }

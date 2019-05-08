@@ -3,7 +3,14 @@ import { useWeb3Context } from 'web3-react'
 import { ethers } from 'ethers'
 
 import { TOKEN_SYMBOLS, TOKEN_ADDRESSES, ERROR_CODES } from '../../utils'
-import { useTokenContract, useExchangeContract, useAddressBalance, useAddressAllowance } from '../../hooks'
+import {
+  useTokenContract,
+  useExchangeContract,
+  useAddressBalance,
+  useAddressAllowance,
+  useExchangeReserves,
+  useExchangeAllowance
+} from '../../hooks'
 import Body from '../Body'
 
 // denominated in bips
@@ -162,11 +169,7 @@ export default function Main() {
     TOKEN_ADDRESSES.SOCKS,
     exchangeContractSOCKS && exchangeContractSOCKS.address
   )
-  const allowanceSelectedToken = useAddressAllowance(
-    account,
-    TOKEN_ADDRESSES[selectedTokenSymbol],
-    exchangeContractSelectedToken && exchangeContractSelectedToken.address
-  )
+  const allowanceSelectedToken = useExchangeAllowance(account, TOKEN_ADDRESSES[selectedTokenSymbol])
 
   // get reserves
   const reserveSOCKSETH = useAddressBalance(exchangeContractSOCKS && exchangeContractSOCKS.address, TOKEN_ADDRESSES.ETH)
@@ -174,15 +177,10 @@ export default function Main() {
     exchangeContractSOCKS && exchangeContractSOCKS.address,
     TOKEN_ADDRESSES.SOCKS
   )
-  const reserveSelectedTokenETH = useAddressBalance(
-    exchangeContractSelectedToken && exchangeContractSelectedToken.address,
-    TOKEN_ADDRESSES.ETH
+  const { reserveETH: reserveSelectedTokenETH, reserveToken: reserveSelectedTokenToken } = useExchangeReserves(
+    TOKEN_ADDRESSES[selectedTokenSymbol]
   )
-  const reserveSelectedTokenToken = useAddressBalance(
-    exchangeContractSelectedToken && exchangeContractSelectedToken.address,
-    TOKEN_ADDRESSES[selectedTokenSymbol],
-    'ff'
-  )
+
   const reserveDAIETH = useAddressBalance(exchangeContractDAI && exchangeContractDAI.address, TOKEN_ADDRESSES.ETH)
   const reserveDAIToken = useAddressBalance(exchangeContractDAI && exchangeContractDAI.address, TOKEN_ADDRESSES.DAI)
 
@@ -195,7 +193,6 @@ export default function Main() {
         setUSDExchangeRate(exchangeRateDAI)
       } else {
         const exchangeRateSelectedToken = getExchangeRate(reserveSelectedTokenETH, reserveSelectedTokenToken)
-        // console.log('reserves', reserveSelectedTokenETH, reserveSelectedTokenToken, exchangeRateSelectedToken)
         if (exchangeRateDAI && exchangeRateSelectedToken) {
           setUSDExchangeRate(
             exchangeRateDAI
@@ -220,13 +217,9 @@ export default function Main() {
     balanceSOCKS &&
     balanceSelectedToken &&
     reserveSOCKSETH &&
-    !reserveSOCKSETH.isZero() &&
     reserveSOCKSToken &&
-    !reserveSOCKSToken.isZero() &&
     (selectedTokenSymbol === 'ETH' || reserveSelectedTokenETH) &&
-    (selectedTokenSymbol === 'ETH' || !reserveSelectedTokenETH.isZero()) &&
     (selectedTokenSymbol === 'ETH' || reserveSelectedTokenToken) &&
-    (selectedTokenSymbol === 'ETH' || !reserveSelectedTokenToken.isZero()) &&
     selectedTokenSymbol &&
     USDExchangeRate
   )
