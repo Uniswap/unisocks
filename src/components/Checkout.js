@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useWeb3Context } from 'web3-react'
 
+import Connect from './Connect'
 import BuyAndSell from './BuyAndSell'
 import Pending from './Pending'
 import Confirmed from './Confirmed'
@@ -53,34 +54,42 @@ export default function Checkout({
     }
   }, [currentTransactionHash, library])
 
+  const [showConnect, setShowConnect] = useState(false)
+  function renderContent() {
+    if (showConnect) {
+      return <Connect setShowConnect={setShowConnect} />
+    } else if (currentTransactionHash) {
+      return pending ? (
+        <Pending type={currentTransactionType} amount={currentTransactionAmount} />
+      ) : (
+        <Confirmed
+          type={currentTransactionType}
+          amount={currentTransactionAmount}
+          clearCurrentTransaction={clearCurrentTransaction}
+        />
+      )
+    } else {
+      return (
+        <BuyAndSell
+          selectedTokenSymbol={selectedTokenSymbol}
+          setSelectedTokenSymbol={setSelectedTokenSymbol}
+          ready={ready}
+          unlock={unlock}
+          validateBuy={validateBuy}
+          buy={buy}
+          validateSell={validateSell}
+          sell={sell}
+          dollarize={dollarize}
+          setCurrentTransaction={setCurrentTransaction}
+          setShowConnect={setShowConnect}
+        />
+      )
+    }
+  }
+
   return (
     <div>
-      <CheckoutFrame isVisible={state.visible}>
-        {!currentTransactionHash && (
-          <BuyAndSell
-            selectedTokenSymbol={selectedTokenSymbol}
-            setSelectedTokenSymbol={setSelectedTokenSymbol}
-            ready={ready}
-            unlock={unlock}
-            validateBuy={validateBuy}
-            buy={buy}
-            validateSell={validateSell}
-            sell={sell}
-            dollarize={dollarize}
-            setCurrentTransaction={setCurrentTransaction}
-          />
-        )}
-        {currentTransactionHash &&
-          (pending ? (
-            <Pending type={currentTransactionType} amount={currentTransactionAmount} />
-          ) : (
-            <Confirmed
-              type={currentTransactionType}
-              amount={currentTransactionAmount}
-              clearCurrentTransaction={clearCurrentTransaction}
-            />
-          ))}
-      </CheckoutFrame>
+      <CheckoutFrame isVisible={state.visible}>{renderContent()}</CheckoutFrame>
       <CheckoutBackground
         onClick={() => setState(state => ({ ...state, visible: !state.visible }))}
         isVisible={state.visible}

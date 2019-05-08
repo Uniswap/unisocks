@@ -188,11 +188,11 @@ export default function Main() {
   const [USDExchangeRateSelectedToken, setUSDExchangeRateSelectedToken] = useState()
 
   const ready = !!(
-    allowanceSOCKS &&
+    (account === null || allowanceSOCKS) &&
     (selectedTokenSymbol === 'ETH' || allowanceSelectedToken) &&
-    balanceETH &&
-    balanceSOCKS &&
-    balanceSelectedToken &&
+    (account === null || balanceETH) &&
+    (account === null || balanceSOCKS) &&
+    (account === null || balanceSelectedToken) &&
     reserveSOCKSETH &&
     reserveSOCKSToken &&
     (selectedTokenSymbol === 'ETH' || reserveSelectedTokenETH) &&

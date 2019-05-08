@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
+import { useWeb3Context } from 'web3-react'
 
 import Button from './Button'
 import SelectToken from './SelectToken'
@@ -62,9 +63,11 @@ export default function BuyAndSell({
   validateSell,
   sell,
   dollarize,
-  setCurrentTransaction
+  setCurrentTransaction,
+  setShowConnect
 }) {
   const [state] = useAppContext()
+  const { account } = useWeb3Context()
 
   const buying = state.tradeType === TRADE_TYPES.BUY
   const selling = !buying
@@ -170,24 +173,28 @@ export default function BuyAndSell({
         <ButtonFrame
           className="button"
           disabled={validationError !== null}
-          text={buying ? 'Buy SOCKS' : 'Sell SOCKS'}
+          text={account === null ? 'Connect Wallet' : buying ? 'Buy SOCKS' : 'Sell SOCKS'}
           type={'cta'}
           onClick={() => {
-            ;(buying
-              ? buy(buyValidationState.maximumInputValue, buyValidationState.outputValue)
-              : sell(sellValidationState.inputValue, sellValidationState.minimumOutputValue)
-            ).then(response => {
-              setCurrentTransaction(
-                response.hash,
-                buying ? TRADE_TYPES.BUY : TRADE_TYPES.SELL,
-                buying ? buyValidationState.outputValue : sellValidationState.inputValue
-              )
-            })
+            if (account === null) {
+              setShowConnect(true)
+            } else {
+              ;(buying
+                ? buy(buyValidationState.maximumInputValue, buyValidationState.outputValue)
+                : sell(sellValidationState.inputValue, sellValidationState.minimumOutputValue)
+              ).then(response => {
+                setCurrentTransaction(
+                  response.hash,
+                  buying ? TRADE_TYPES.BUY : TRADE_TYPES.SELL,
+                  buying ? buyValidationState.outputValue : sellValidationState.inputValue
+                )
+              })
+            }
           }}
         />
       )}
       <ErrorFrame>
-        <p>{errorMessage ? errorMessage : ''}</p>
+        <p>{account === null ? 'Connect a Wallet' : errorMessage ? errorMessage : ''}</p>
       </ErrorFrame>
     </>
   )

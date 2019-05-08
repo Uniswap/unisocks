@@ -6,9 +6,12 @@ import { Message } from './styles'
 export default function Web3ReactManager({ children }) {
   const { setConnector, error, active } = useWeb3Context()
 
+  // initialize infura on launch
   useEffect(() => {
-    setConnector('Injected')
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    if (!active) {
+      setConnector('Network')
+    }
+  }, [active, setConnector])
 
   const [showLoader, setShowLoader] = useState(false)
   useEffect(() => {
@@ -22,7 +25,7 @@ export default function Web3ReactManager({ children }) {
 
   if (error) {
     console.error(error)
-    return <Message>Please visit this site from a web3-enabled browser.</Message>
+    return <Message>Connection Error.</Message>
   } else if (!active) {
     return showLoader ? <Message>Initializing...</Message> : null
   } else {
