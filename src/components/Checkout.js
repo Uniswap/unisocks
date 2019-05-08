@@ -29,17 +29,17 @@ function getValidationErrorMessage(validationError) {
       case ERROR_CODES.INVALID_AMOUNT: {
         return 'Invalid Amount'
       }
-      case ERROR_CODES.INVALID_EXCHANGE: {
-        return 'Invalid Exchange'
+      case ERROR_CODES.INVALID_TRADE: {
+        return 'Invalid Trade'
       }
       case ERROR_CODES.INSUFFICIENT_ALLOWANCE: {
-        return 'Insufficient Allowance'
+        return 'Set Allowance to Continue'
       }
-      case ERROR_CODES.INSUFFICIENT_ETH_BALANCE: {
-        return 'Insufficient ETH Balance'
+      case ERROR_CODES.INSUFFICIENT_ETH_GAS: {
+        return 'Not Enough ETH to Pay Gas'
       }
-      case ERROR_CODES.INSUFFICIENT_TOKEN_BALANCE: {
-        return 'Insufficient Token Balance'
+      case ERROR_CODES.INSUFFICIENT_SELECTED_TOKEN_BALANCE: {
+        return 'Not Enough of Selected Token'
       }
       default: {
         return 'Unknown Error'
@@ -72,8 +72,9 @@ export default function Checkout({
   useEffect(() => {
     if (ready && buying) {
       try {
-        setBuyValidationState(validateBuy(String(state.count)))
-        setValidationError(null)
+        const { error: validationError, ...validationState } = validateBuy(String(state.count))
+        setBuyValidationState(validationState)
+        setValidationError(validationError || null)
 
         return () => {
           setBuyValidationState({})
@@ -84,17 +85,18 @@ export default function Checkout({
         setValidationError(error)
       }
     }
-  }, [ready, buying, state.count, validateBuy])
+  }, [ready, buying, validateBuy, state.count])
 
   // sell state validation
   useEffect(() => {
     if (ready && selling) {
       try {
-        setSellValidationState(validateSell(String(state.count)))
-        setValidationError(null)
+        const { error: validationError, ...validationState } = validateSell(String(state.count))
+        setSellValidationState(validationState)
+        setValidationError(validationError || null)
 
         return () => {
-          setBuyValidationState({})
+          setSellValidationState({})
           setValidationError()
         }
       } catch (error) {
@@ -102,38 +104,40 @@ export default function Checkout({
         setValidationError(error)
       }
     }
-  }, [ready, selling, state.count, validateSell])
+  }, [ready, selling, validateSell, state.count])
 
   const shouldRenderUnlock = validationError && validationError.code === ERROR_CODES.INSUFFICIENT_ALLOWANCE
 
   const errorMessage = getValidationErrorMessage(validationError)
 
   function renderFormData() {
+    let conditionalRender
     if (buying && buyValidationState.inputValue) {
-      return (
+      conditionalRender = (
         <>
-          <p>{state.count} SOCKS</p>
           <p>
             {amountFormatter(buyValidationState.inputValue, 18, 4)} {selectedTokenSymbol} • $
-            {ready && amountFormatter(dollarize(buyValidationState.inputValue), 18, 4)}
+            {ready && amountFormatter(dollarize(buyValidationState.inputValue), 18, 2)}
           </p>
-          {/* <p>
-            For {amountFormatter(buyValidationState.inputValue, 18, 4)} {selectedTokenSymbol}
-          </p>
-          <p>Which is ${ready && amountFormatter(dollarize(buyValidationState.inputValue), 18, 4)}</p> */}
         </>
       )
-    } else if (selling && sellValidationState.inputValue && sellValidationState.outputValue) {
-      return (
+    } else if (selling && sellValidationState.outputValue) {
+      conditionalRender = (
         <>
-          <p>Selling {state.count} SOCKS</p>
           <p>
-            For {amountFormatter(sellValidationState.outputValue, 18, 4)} {selectedTokenSymbol}
+            {amountFormatter(sellValidationState.outputValue, 18, 4)} {selectedTokenSymbol} • $
+            {ready && amountFormatter(dollarize(sellValidationState.outputValue), 18, 2)}
           </p>
-          <p>Which is ${ready && amountFormatter(dollarize(sellValidationState.outputValue), 18, 4)}</p>
         </>
       )
     }
+
+    return (
+      <>
+        <p>{state.count} SOCKS</p>
+        {conditionalRender}
+      </>
+    )
   }
 
   return (
