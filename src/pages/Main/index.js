@@ -184,17 +184,18 @@ export default function Main() {
   const reserveDAIETH = useAddressBalance(exchangeContractDAI && exchangeContractDAI.address, TOKEN_ADDRESSES.ETH)
   const reserveDAIToken = useAddressBalance(exchangeContractDAI && exchangeContractDAI.address, TOKEN_ADDRESSES.DAI)
 
-  const [USDExchangeRate, setUSDExchangeRate] = useState()
+  const [USDExchangeRateETH, setUSDExchangeRateETH] = useState()
+  const [USDExchangeRateSelectedToken, setUSDExchangeRateSelectedToken] = useState()
   useEffect(() => {
     try {
       const exchangeRateDAI = getExchangeRate(reserveDAIETH, reserveDAIToken)
 
       if (selectedTokenSymbol === TOKEN_SYMBOLS.ETH) {
-        setUSDExchangeRate(exchangeRateDAI)
+        setUSDExchangeRateETH(exchangeRateDAI)
       } else {
         const exchangeRateSelectedToken = getExchangeRate(reserveSelectedTokenETH, reserveSelectedTokenToken)
         if (exchangeRateDAI && exchangeRateSelectedToken) {
-          setUSDExchangeRate(
+          setUSDExchangeRateSelectedToken(
             exchangeRateDAI
               .mul(ethers.utils.bigNumberify(10).pow(ethers.utils.bigNumberify(18)))
               .div(exchangeRateSelectedToken)
@@ -202,26 +203,50 @@ export default function Main() {
         }
       }
     } catch {
-      setUSDExchangeRate()
+      setUSDExchangeRateETH()
+      setUSDExchangeRateSelectedToken()
     }
   }, [reserveDAIETH, reserveDAIToken, reserveSelectedTokenETH, reserveSelectedTokenToken, selectedTokenSymbol])
 
-  function dollarize(amount) {
-    return amount.mul(USDExchangeRate).div(ethers.utils.bigNumberify(10).pow(ethers.utils.bigNumberify(18)))
+  function _dollarize(amount, exchangeRate) {
+    return amount.mul(exchangeRate).div(ethers.utils.bigNumberify(10).pow(ethers.utils.bigNumberify(18)))
   }
 
+  function dollarize(amount) {
+    return _dollarize(
+      amount,
+      selectedTokenSymbol === TOKEN_SYMBOLS.ETH ? USDExchangeRateETH : USDExchangeRateSelectedToken
+    )
+  }
+
+  const [dollarPrice, setDollarPrice] = useState()
+  dollarPrice && console.log(ethers.utils.formatEther(dollarPrice))
+  useEffect(() => {
+    try {
+      const SOCKSExchangeRateETH = getExchangeRate(reserveSOCKSToken, reserveSOCKSETH)
+      setDollarPrice(
+        SOCKSExchangeRateETH.mul(USDExchangeRateETH).div(
+          ethers.utils.bigNumberify(10).pow(ethers.utils.bigNumberify(18))
+        )
+      )
+    } catch {
+      setDollarPrice()
+    }
+  }, [USDExchangeRateETH, reserveSOCKSETH, reserveSOCKSToken])
+
   const ready = !!(
-    allowanceSOCKS &&
-    (selectedTokenSymbol === 'ETH' || allowanceSelectedToken) &&
-    balanceETH &&
-    balanceSOCKS &&
-    balanceSelectedToken &&
-    reserveSOCKSETH &&
-    reserveSOCKSToken &&
-    (selectedTokenSymbol === 'ETH' || reserveSelectedTokenETH) &&
-    (selectedTokenSymbol === 'ETH' || reserveSelectedTokenToken) &&
-    selectedTokenSymbol &&
-    USDExchangeRate
+    (allowanceSOCKS &&
+      (selectedTokenSymbol === 'ETH' || allowanceSelectedToken) &&
+      balanceETH &&
+      balanceSOCKS &&
+      balanceSelectedToken &&
+      reserveSOCKSETH &&
+      reserveSOCKSToken &&
+      (selectedTokenSymbol === 'ETH' || reserveSelectedTokenETH) &&
+      (selectedTokenSymbol === 'ETH' || reserveSelectedTokenToken) &&
+      selectedTokenSymbol &&
+      USDExchangeRateETH) ||
+    USDExchangeRateSelectedToken
   )
 
   async function unlock(buyingSOCKS = true) {
@@ -456,6 +481,9 @@ export default function Main() {
       validateSell={validateSell}
       sell={sell}
       dollarize={dollarize}
+      dollarPrice={dollarPrice}
+      balanceSOCKS={balanceSOCKS}
+      reserveSOCKSToken={reserveSOCKSToken}
     />
   )
 }
