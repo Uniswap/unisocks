@@ -5,7 +5,7 @@ const ButtonFrame = styled.button`
   padding: 0;
   text-align: center;
   border-radius: 24px;
-  margin: 1rem;
+  // margin: 1rem;
   box-sizing: border-box;
   height: 48px;
   width: 100%;
@@ -17,9 +17,9 @@ const ButtonFrame = styled.button`
   line-height: 1;
   border-width: 1px;
   cursor: pointer;
-  background-color: ${props => props.theme.black};
-  border-color: ${props => props.theme.black};
-  color: ${props => (props.disabled ? props.theme.grey : props.theme.orange)};
+  background-color: ${props => props.theme.primary};
+  // border-color: ${props => props.theme.black};
+  color: ${props => (props.disabled ? props.theme.primary : props.theme.grey)};
 `
 
 const CtaText = styled.span`

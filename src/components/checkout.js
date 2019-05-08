@@ -139,9 +139,11 @@ export default function Checkout({
         <div>
           <p>{buying ? 'How do you want to pay?' : 'What token do you want to receive?'}</p>
         </div>
-        <SelectToken selectedTokenSymbol={selectedTokenSymbol} setSelectedTokenSymbol={setSelectedTokenSymbol} />
-        <div>↓</div>
-        <IncrementToken />
+        <CheckoutControls buying={buying}>
+          <SelectToken selectedTokenSymbol={selectedTokenSymbol} setSelectedTokenSymbol={setSelectedTokenSymbol} />
+          <div>↓</div>
+          <IncrementToken />
+        </CheckoutControls>
         <p>{errorMessage}</p>
         {shouldRenderUnlock ? (
           <Button
@@ -183,9 +185,19 @@ const CheckoutFrame = styled.form`
   border-radius: 20px;
   padding: 1rem;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   background-color: ${props => props.theme.grey};
   border-color: ${props => props.theme.black};
-  color: ${props => props.theme.orange};
+  color: ${props => props.theme.primary};
+`
+
+const CheckoutControls = styled.span`
+  width: 100%;
+  display: flex;
+  flex-direction: ${props => (props.buying ? 'column' : 'column-reverse')};
+  align-items: flex-start;
 `
 
 const CheckoutBackground = styled.div`

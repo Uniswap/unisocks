@@ -10,16 +10,20 @@ export default createGlobalStyle`
     font-family: sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-family: Roboto, sans-serif;
+    font-family: Inter, sans-serif;
   }
 `
 
 const theme = {
   uniswapPink: '#DC6BE5',
+  primary: '#2B2B2B',
+  secondary: '#F1F2F6',
+  text: '#000',
   orange: '#CF2C0A',
   green: '#66BB66',
   black: '#000',
-  grey: '#F2F2F2',
+  grey: '#F1F2F6',
+  blue: '#2F80ED',
   white: '#FFF'
 }
 

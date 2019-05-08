@@ -1,11 +1,11 @@
 import * as React from 'react'
 import styled from 'styled-components'
 
-import test from './test.jpg'
+import test from './test.png'
 
 const GalleryFrame = styled.div`
-  width: 80vw;
-  height: 80vw;
+  width: 90vw;
+  height: 90vw;
   min-height: 200px;
   min-width: 200px;
   max-height: 1000px;
@@ -14,12 +14,12 @@ const GalleryFrame = styled.div`
   align-items: center;
   flex-direction: center;
   background-color: ${props => props.theme.black};
-  box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.05);
 `
 
 const ImgStyle = styled.img`
   width: 100%;
-  padding: 2rem;
+  // padding: 2rem;
   box-sizing: border-box;
   background-color: ${props => props.theme.black};
 `
