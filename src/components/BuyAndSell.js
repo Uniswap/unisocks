@@ -160,11 +160,11 @@ export default function BuyAndSell({
         <ButtonFrame
           text={`Unlock ${buying ? selectedTokenSymbol : 'SOCKS'}`}
           type={'cta'}
-          onClick={() =>
+          onClick={() => {
             unlock(buying).then(({ hash }) => {
               setCurrentTransaction(hash, TRADE_TYPES.UNLOCK, undefined)
             })
-          }
+          }}
         />
       ) : (
         <ButtonFrame
