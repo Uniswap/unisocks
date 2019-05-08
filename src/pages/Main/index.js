@@ -254,11 +254,9 @@ export default function Main() {
 
     const estimatedGasLimit = await contract.estimate.approve(spenderAddress, ethers.constants.MaxUint256)
 
-    return contract
-      .approve(spenderAddress, ethers.constants.MaxUint256, {
-        gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
-      })
-      .then(({ hash }) => hash)
+    return contract.approve(spenderAddress, ethers.constants.MaxUint256, {
+      gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
+    })
   }
 
   // buy functionality

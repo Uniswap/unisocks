@@ -12,9 +12,11 @@ export default function Confirmed({ type, amount, clearCurrentTransaction }) {
     }
   }, [state.visible, clearCurrentTransaction])
 
-  return (
-    <>
-      <p>{`${type === TRADE_TYPES.BUY ? 'Bought' : 'Sold'} ${amountFormatter(amount, 18, 0)} SOCKS!`}</p>
-    </>
-  )
+  if (type === TRADE_TYPES.UNLOCK) {
+    return <p>Unlocked Token!</p>
+  } else if (type === TRADE_TYPES.BUY) {
+    return <p>{`Bought ${amountFormatter(amount, 18, 0)} SOCKS!`}</p>
+  } else if (type === TRADE_TYPES.SELL) {
+    return <p>{`Sold ${amountFormatter(amount, 18, 0)} SOCKS!`}</p>
+  }
 }

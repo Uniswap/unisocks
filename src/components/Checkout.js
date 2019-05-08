@@ -45,7 +45,6 @@ export default function Checkout({
   const [state, setState] = useAppContext()
 
   const [pending, setPending] = useState(true)
-
   useEffect(() => {
     if (currentTransactionHash) {
       library.waitForTransaction(currentTransactionHash).then(() => {

@@ -160,7 +160,11 @@ export default function BuyAndSell({
         <ButtonFrame
           text={`Unlock ${buying ? selectedTokenSymbol : 'SOCKS'}`}
           type={'cta'}
-          onClick={() => unlock(buying)}
+          onClick={() =>
+            unlock(buying).then(({ hash }) => {
+              setCurrentTransaction(hash, TRADE_TYPES.UNLOCK, undefined)
+            })
+          }
         />
       ) : (
         <ButtonFrame
@@ -172,9 +176,9 @@ export default function BuyAndSell({
             ;(buying
               ? buy(buyValidationState.maximumInputValue, buyValidationState.outputValue)
               : sell(sellValidationState.inputValue, sellValidationState.minimumOutputValue)
-            ).then(({ hash }) => {
+            ).then(response => {
               setCurrentTransaction(
-                hash,
+                response.hash,
                 buying ? TRADE_TYPES.BUY : TRADE_TYPES.SELL,
                 buying ? buyValidationState.outputValue : sellValidationState.inputValue
               )
@@ -182,7 +186,9 @@ export default function BuyAndSell({
           }}
         />
       )}
-      <ErrorFrame>{errorMessage ? errorMessage : 'niiiice'}</ErrorFrame>
+      <ErrorFrame>
+        <p>{errorMessage ? errorMessage : ''}</p>
+      </ErrorFrame>
     </>
   )
 }
@@ -208,11 +214,17 @@ const CheckoutPrompt = styled.p`
   margin-bottom: 0.5px;
 `
 
-const ErrorFrame = styled.p`
-  position: absolute;
+const ErrorFrame = styled.div`
+  width: 100%;
   bottom: 0px;
-  font-weight: 400;
-  margin-bottom: 2rem;
+  height: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+
+  p {
+    font-weight: 400;
+  }
 `
 
 const ButtonFrame = styled(Button)`

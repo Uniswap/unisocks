@@ -93,9 +93,6 @@ const AppWrapper = styled.div`
   width: 100vw;
   height: 100vh;
   margin-bottom: 1rem;
-  // display: flex;
-  // flex-direction: row;
-  // flex-wrap: wrap;
   background-color: ${props => props.theme.secondary};
 `
 
