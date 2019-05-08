@@ -51,7 +51,7 @@ export default function Body({
         </i>{' '}
         pair of limited edition socks shipped anywhere in the US.
       </Intro>
-      <BuyButtons />
+      <BuyButtons balance={balanceSOCKS} />
       <MarketData>
         <SockCount>{reserveSOCKSToken && `${amountFormatter(reserveSOCKSToken, 18, 0)}/200 available`}</SockCount>
         {balanceSOCKS > 0 ? (
@@ -60,7 +60,14 @@ export default function Body({
           ''
         )}
       </MarketData>
-      <Redeem>Have a sock? Redeem it now</Redeem>
+      <Redeem>
+        {balanceSOCKS > 0 ? `You have ${amountFormatter(balanceSOCKS, 18, 0)} SOCKS !! ` : 'Try clicking buyyyyy '}
+        <span>
+          <a href="">
+            <s>Redeem</s>
+          </a>
+        </span>
+      </Redeem>
       <Checkout
         selectedTokenSymbol={selectedTokenSymbol}
         setSelectedTokenSymbol={setSelectedTokenSymbol}
@@ -81,23 +88,29 @@ export default function Body({
   )
 }
 
-const MarketData = styled.div`
-  padding-left: 10vw;
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 0.5rem;
-  padding-bottom: 0.5rem;
-`
-
 const AppWrapper = styled.div`
   width: 100vw;
-  height: 100vh;
+  /* height: 100%; */
+  max-width: 640px;
+  margin: 0px auto;
   margin-bottom: 1rem;
-  background-color: ${props => props.theme.secondary};
+  /* background-color: ${props => props.theme.secondary}; */
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  padding-top: 20vh;
+  overflow: scroll;
+  @media only screen and (max-width: 480px) {
+    padding-top: 0px;
+  }
+  @media only screen and (min-device-width: 768px) {
+    max-height: 480px;
+  }
 `
 
 const Bar = styled.div`
   position: fixed;
+  top: 0px;
   right: 0px;
   width: 0.5rem;
   height: 100vh;
@@ -116,12 +129,15 @@ const Status = styled.div`
 
 const HeaderFrame = styled.div`
   text-align: left;
-  padding-top: 4vh;
-  width: 100vwl;
   margin: 0px;
-  padding: 10vw;
+  padding-bottom: 2vw;
   font-size: 1.25rem;
   color: ${props => props.theme.primary};
+  @media only screen and (max-width: 480px) {
+    /* For mobile phones: */
+    padding: 10vw;
+    /* padding-top: 10vh; */
+  }
 `
 
 const Title = styled.p`
@@ -144,13 +160,18 @@ const CurrentPrice = styled.p`
 `
 
 const Intro = styled.p`
-  padding-left: 10vw;
-  margin-top: 2rem;
-  margin-bottom: 0px;
-  max-width: 250px;
+  /* padding-left: 5vw; */
+  margin: 0px;
+  margin-top: 15vh;
+  max-width: 300px;
   line-height: 180%;
   font-weight: 500;
   color: ${props => props.theme.primary};
+  @media only screen and (max-width: 480px) {
+    /* For mobile phones: */
+    margin-top: 2rem;
+    padding-left: 10vw;
+  }
 `
 
 const SockCount = styled.p`
@@ -162,6 +183,23 @@ const SockCount = styled.p`
 
 const Redeem = styled.p`
   font-weight: 500;
-  padding-left: 10vw;
+  /* padding-left: 10vw; */
+  margin-top: 1rem;
   margin-bottom: 2rem;
+  @media only screen and (max-width: 480px) {
+    /* For mobile phones: */
+    /* margin-top: 2rem; */
+    padding-left: 10vw;
+  }
+`
+const MarketData = styled.div`
+  display: flex;
+  flex-direction: row;
+  /* padding-left: 5vw; */
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  @media only screen and (max-width: 480px) {
+    /* For mobile phones: */
+    padding-left: 10vw;
+  }
 `

@@ -16,6 +16,7 @@ const ButtonFrame = styled.button`
   font-weight: 500;
   line-height: 1;
   border-width: 1px;
+  cursor: pointer;
   opacity: ${props => (props.disabled ? 0.2 : 1)};
   pointer-events: ${props => (props.disabled ? 'none' : 'auto')};
   background-color: ${props => props.theme.primary};
@@ -27,6 +28,7 @@ const CtaText = styled.span`
 `
 
 export default function Button({ text, onClick, preventDefault = true, ...rest }) {
+  console.log(rest.disabled)
   return (
     <ButtonFrame
       onClick={e => {
