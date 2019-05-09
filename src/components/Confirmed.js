@@ -30,7 +30,7 @@ const Close = styled.span`
   right: 12px;
   width: 48px;
   height: 48px;
-  color: ${props => props.theme.textDisabled}
+  color: ${props => props.theme.textDisabled};
   cursor: pointer;
 `
 
