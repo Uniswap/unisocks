@@ -58,7 +58,7 @@ export default function Connect({ setShowConnect }) {
         }}
       />
       <QRCodeWrapper>{walletconnectUri && account === null ? <QRCode value={walletconnectUri} /> : null}</QRCodeWrapper>
-      <p>{connectorError && 'Connection Error.'}</p>
+      <p>{connectorError && 'Connection Error (Try a web3-enabled browser).'}</p>
     </>
   )
 }

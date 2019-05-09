@@ -64,9 +64,10 @@ export default function Checkout({
       return <Connect setShowConnect={setShowConnect} />
     } else if (currentTransactionHash) {
       return pending ? (
-        <Pending type={currentTransactionType} amount={currentTransactionAmount} />
+        <Pending hash={currentTransactionHash} type={currentTransactionType} amount={currentTransactionAmount} />
       ) : (
         <Confirmed
+          hash={currentTransactionHash}
           type={currentTransactionType}
           amount={currentTransactionAmount}
           clearCurrentTransaction={clearCurrentTransaction}

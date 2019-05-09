@@ -27,7 +27,7 @@ const CtaText = styled.span`
   width: 100%;
 `
 
-export default function Button({ text, onClick, preventDefault = true, ...rest }) {
+export default function Button({ text, onClick = () => {}, preventDefault = true, ...rest }) {
   return (
     <ButtonFrame
       onClick={e => {
