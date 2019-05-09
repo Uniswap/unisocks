@@ -18,7 +18,7 @@ export default function Connect({ setShowConnect }) {
   }
 
   function activateWalletConnect() {
-    setConnector('WalletConnect').catch(error => {
+    setConnector('WalletConnect', { suppressAndThrowErrors: true }).catch(error => {
       setConnectorError(error)
     })
   }

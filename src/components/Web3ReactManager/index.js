@@ -5,11 +5,7 @@ import { ethers } from 'ethers'
 import { Message } from './styles'
 
 export default function Web3ReactManager({ children }) {
-  const { connector, setConnector, error, active } = useWeb3Context()
-
-  console.log(active)
-  console.log(error)
-  console.log(connector)
+  const { setConnector, error, active } = useWeb3Context()
 
   // initialization management
   useEffect(() => {
@@ -32,12 +28,6 @@ export default function Web3ReactManager({ children }) {
       }
     }
   }, [active, setConnector])
-
-  useEffect(() => {
-    if (!active) {
-      setConnector('Network')
-    }
-  })
 
   const [showLoader, setShowLoader] = useState(false)
   useEffect(() => {
