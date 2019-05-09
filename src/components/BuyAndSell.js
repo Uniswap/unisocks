@@ -126,8 +126,8 @@ export default function BuyAndSell({
       conditionalRender = (
         <>
           <p>
-            {amountFormatter(buyValidationState.inputValue, 18, 4)} {selectedTokenSymbol} • $
-            {ready && amountFormatter(dollarize(buyValidationState.inputValue), 18, 2)}
+            {amountFormatter(buyValidationState.inputValue, 18, 4)} {selectedTokenSymbol} ($
+            {ready && amountFormatter(dollarize(buyValidationState.inputValue), 18, 2)})
           </p>
         </>
       )
@@ -135,8 +135,8 @@ export default function BuyAndSell({
       conditionalRender = (
         <>
           <p>
-            {amountFormatter(sellValidationState.outputValue, 18, 4)} {selectedTokenSymbol} • $
-            {ready && amountFormatter(dollarize(sellValidationState.outputValue), 18, 2)}
+            {amountFormatter(sellValidationState.outputValue, 18, 4)} {selectedTokenSymbol} ($
+            {ready && amountFormatter(dollarize(sellValidationState.outputValue), 18, 2)})
           </p>
         </>
       )
@@ -152,6 +152,9 @@ export default function BuyAndSell({
 
   return (
     <>
+      <CheckoutPrompt>
+        <i>{buying ? 'You are buying' : 'You are selling'}</i>
+      </CheckoutPrompt>
       <CheckoutInfo>{renderFormData()}</CheckoutInfo>
       <CheckoutPrompt>
         <i>{buying ? 'How do you want to pay?' : 'What token do you want to receive?'}</i>
@@ -234,11 +237,13 @@ const CheckoutInfo = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin-top: 0.5rem;
 `
 
 const CheckoutPrompt = styled.p`
-  font-weight: 500;
-  margin-bottom: 0.5px;
+  font-weight: 400;
+  font-size: 14px;
+  margin-bottom: 0;
 `
 
 const ErrorFrame = styled.div`
@@ -246,7 +251,7 @@ const ErrorFrame = styled.div`
   bottom: 0px;
   height: 1rem;
   margin-top: 1rem;
-  margin-bottom: 1rem;
+  /* margin-bottom: 1rem; */
   text-align: center;
 
   p {

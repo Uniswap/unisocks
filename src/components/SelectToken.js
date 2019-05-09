@@ -17,8 +17,8 @@ const SelectMenu = styled(Select)`
   box-sizing: border-box;
   border: none;
   margin: 0;
-  margin-bottom: 1rem;
-  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
   appearance: none;
   background-color: #fff;
   display: flex;

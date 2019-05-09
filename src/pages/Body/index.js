@@ -91,11 +91,9 @@ export default function Body({
 
 const AppWrapper = styled.div`
   width: 100vw;
-  /* height: 100%; */
   max-width: 640px;
   margin: 0px auto;
   margin-bottom: 1rem;
-  /* background-color: ${props => props.theme.secondary}; */
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -138,7 +136,7 @@ const HeaderFrame = styled.div`
   @media only screen and (max-width: 480px) {
     /* For mobile phones: */
     padding: 10vw;
-    /* padding-top: 10vh; */
+    padding-top: 10vh;
   }
 `
 
@@ -186,7 +184,7 @@ const SockCount = styled.p`
 const Redeem = styled.p`
   font-weight: 500;
   /* padding-left: 10vw; */
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   margin-bottom: 2rem;
   @media only screen and (max-width: 480px) {
     /* For mobile phones: */
@@ -199,7 +197,8 @@ const MarketData = styled.div`
   flex-direction: row;
   /* padding-left: 5vw; */
   margin-bottom: 0.5rem;
-  padding-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  /* padding-bottom: 0.5rem; */
   @media only screen and (max-width: 480px) {
     /* For mobile phones: */
     padding-left: 10vw;

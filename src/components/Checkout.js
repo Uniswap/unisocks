@@ -106,10 +106,12 @@ const CheckoutFrame = styled.form`
   position: fixed;
   bottom: ${props => (props.isVisible ? '0px' : '-100%')};
   z-index: ${props => (props.isVisible ? '2' : '-1  ')};
+  opacity: ${props => (props.isVisible ? '1' : '0')};
+
   transition: bottom 0.3s;
   width: 100%;
   margin: 0px;
-  height: 420px;
+  height: 448px;
   border-radius: 20px 20px 0px 0px;
   padding: 2rem;
   box-sizing: border-box;
@@ -127,6 +129,8 @@ const CheckoutFrame = styled.form`
     left: 0;
     right: 0;
     border-radius: 20px 20px;
+    z-index: ${props => (props.isVisible ? '2' : '-1  ')};
+    opacity: ${props => (props.isVisible ? '1' : '0')};
 
     bottom: ${props => (props.isVisible ? '20%' : '-100%')};
   }

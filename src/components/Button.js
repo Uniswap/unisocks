@@ -5,7 +5,6 @@ const ButtonFrame = styled.button`
   padding: 0;
   text-align: center;
   border-radius: 24px;
-  // margin: 1rem;
   box-sizing: border-box;
   height: 48px;
   width: 100%;
