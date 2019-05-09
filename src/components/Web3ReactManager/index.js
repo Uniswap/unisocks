@@ -5,27 +5,39 @@ import { ethers } from 'ethers'
 import { Message } from './styles'
 
 export default function Web3ReactManager({ children }) {
-  const { setConnector, error, active } = useWeb3Context()
+  const { connector, setConnector, error, active } = useWeb3Context()
 
-  // launch initialization
+  console.log(active)
+  console.log(error)
+  console.log(connector)
+
+  // initialization management
   useEffect(() => {
-    if (window.ethereum) {
-      try {
-        const library = new ethers.providers.Web3Provider(window.ethereum)
-        library.listAccounts().then(accounts => {
-          if (accounts.length >= 1) {
-            setConnector('Injected', { suppressAndThrowErrors: true })
-          } else {
-            setConnector('Network')
-          }
-        })
-      } catch {
+    if (!active) {
+      if (window.ethereum) {
+        try {
+          const library = new ethers.providers.Web3Provider(window.ethereum)
+          library.listAccounts().then(accounts => {
+            if (accounts.length >= 1) {
+              setConnector('Injected', { suppressAndThrowErrors: true })
+            } else {
+              setConnector('Network')
+            }
+          })
+        } catch {
+          setConnector('Network')
+        }
+      } else {
         setConnector('Network')
       }
-    } else {
+    }
+  }, [active, setConnector])
+
+  useEffect(() => {
+    if (!active) {
       setConnector('Network')
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  })
 
   const [showLoader, setShowLoader] = useState(false)
   useEffect(() => {
