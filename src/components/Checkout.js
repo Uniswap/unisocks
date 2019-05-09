@@ -51,6 +51,10 @@ export default function Checkout({
       library.waitForTransaction(currentTransactionHash).then(() => {
         setPending(false)
       })
+
+      return () => {
+        setPending(true)
+      }
     }
   }, [currentTransactionHash, library])
 
