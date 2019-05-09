@@ -203,7 +203,15 @@ export default function BuyAndSell({
       <ErrorFrame>
         <p>
           {account === null ? (
-            'Connect a Wallet'
+            <>
+              Powered by{' '}
+              <Pink href="https://uniswap.io/" target="_blank" rel="noopener noreferrer">
+                Uniswap{' '}
+                <span role="img" aria-label="unicorn">
+                  🦄
+                </span>
+              </Pink>
+            </>
           ) : errorMessage ? (
             errorMessage
           ) : (
