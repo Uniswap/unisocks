@@ -116,6 +116,7 @@ const CheckoutFrame = styled.form`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: space-between;
   background-color: ${props => props.theme.grey};
   border-color: ${props => props.theme.black};
   color: ${props => props.theme.primary};

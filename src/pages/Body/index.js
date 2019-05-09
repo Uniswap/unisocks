@@ -64,11 +64,9 @@ export default function Body({
         )}
       </MarketData>
       <Redeem>
-        {balanceSOCKS > 0 ? `You have ${amountFormatter(balanceSOCKS, 18, 0)} SOCKS !! ` : 'Try clicking buyyyyy '}
+        {/* {balanceSOCKS > 0 ? `You have ${amountFormatter(balanceSOCKS, 18, 0)} SOCKS !! ` : 'Try clicking buyyyyy '} */}
         <span>
-          <a href="">
-            <s>Redeem</s>
-          </a>
+          <s>Redeem</s> Coming Soon!™
         </span>
       </Redeem>
       <Checkout

@@ -14,6 +14,7 @@ export function useCount() {
   function increment() {
     setState(state => ({ ...state, count: state.count + 1 }))
   }
+
   function decrement() {
     if (state.count >= 1) {
       setState(state => ({ ...state, count: state.count - 1 }))
@@ -21,7 +22,8 @@ export function useCount() {
   }
 
   function setCount(val) {
-    setState(state => ({ ...state, count: val }))
+    let int = val.toInt()
+    setState(state => ({ ...state, count: int }))
   }
   return [state.count, increment, decrement, setCount]
 }
@@ -196,7 +198,7 @@ export default function BuyAndSell({
         />
       )}
       <ErrorFrame>
-        <p>{account === null ? 'Connect a Wallet' : errorMessage ? errorMessage : ''}</p>
+        <p>{account === null ? 'Connect a Wallet' : errorMessage ? errorMessage : ':)'}</p>
       </ErrorFrame>
     </>
   )
