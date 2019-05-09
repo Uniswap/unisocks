@@ -33,6 +33,8 @@ const SelectMenu = styled.div`
 `
 
 const IncrementButton = styled.span`
+  cursor: pointer;
+  user-select: none;
   width: 56px;
   height: 48px;
   font-size: 1.5rem;

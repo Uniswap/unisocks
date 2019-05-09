@@ -208,7 +208,7 @@ export default function BuyAndSell({
             errorMessage
           ) : (
             <>
-              Powered By{' '}
+              Powered by{' '}
               <Pink href="https://uniswap.io/" target="_blank" rel="noopener noreferrer">
                 Uniswap{' '}
                 <span role="img" aria-label="unicorn">
@@ -251,7 +251,6 @@ const ErrorFrame = styled.div`
   bottom: 0px;
   height: 1rem;
   margin-top: 1rem;
-  /* margin-bottom: 1rem; */
   text-align: center;
 
   p {

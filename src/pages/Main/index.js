@@ -144,7 +144,7 @@ function calculateAmount(
 }
 
 export default function Main() {
-  const { account } = useWeb3Context()
+  const { library, account } = useWeb3Context()
 
   // selected token
   const [selectedTokenSymbol, setSelectedTokenSymbol] = useState(TOKEN_SYMBOLS.ETH)
@@ -253,9 +253,13 @@ export default function Main() {
     const spenderAddress = buyingSOCKS ? exchangeContractSelectedToken.address : exchangeContractSOCKS.address
 
     const estimatedGasLimit = await contract.estimate.approve(spenderAddress, ethers.constants.MaxUint256)
+    const estimatedGasPrice = await library
+      .getGasPrice()
+      .then(gasPrice => gasPrice.mul(ethers.utils.bigNumberify(150)).div(ethers.utils.bigNumberify(100)))
 
     return contract.approve(spenderAddress, ethers.constants.MaxUint256, {
-      gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
+      gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+      gasPrice: estimatedGasPrice
     })
   }
 
@@ -343,13 +347,18 @@ export default function Main() {
   async function buy(maximumInputValue, outputValue) {
     const deadline = Math.ceil(Date.now() / 1000) + DEADLINE_FROM_NOW
 
+    const estimatedGasPrice = await library
+      .getGasPrice()
+      .then(gasPrice => gasPrice.mul(ethers.utils.bigNumberify(150)).div(ethers.utils.bigNumberify(100)))
+
     if (selectedTokenSymbol === TOKEN_SYMBOLS.ETH) {
       const estimatedGasLimit = await exchangeContractSOCKS.estimate.ethToTokenSwapOutput(outputValue, deadline, {
         value: maximumInputValue
       })
       return exchangeContractSOCKS.ethToTokenSwapOutput(outputValue, deadline, {
         value: maximumInputValue,
-        gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
+        gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+        gasPrice: estimatedGasPrice
       })
     } else {
       const estimatedGasLimit = await exchangeContractSelectedToken.estimate.tokenToTokenSwapOutput(
@@ -366,7 +375,8 @@ export default function Main() {
         deadline,
         TOKEN_ADDRESSES.SOCKS,
         {
-          gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
+          gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+          gasPrice: estimatedGasPrice
         }
       )
     }
@@ -455,6 +465,10 @@ export default function Main() {
   async function sell(inputValue, minimumOutputValue) {
     const deadline = Math.ceil(Date.now() / 1000) + DEADLINE_FROM_NOW
 
+    const estimatedGasPrice = await library
+      .getGasPrice()
+      .then(gasPrice => gasPrice.mul(ethers.utils.bigNumberify(150)).div(ethers.utils.bigNumberify(100)))
+
     if (selectedTokenSymbol === TOKEN_SYMBOLS.ETH) {
       const estimatedGasLimit = await exchangeContractSOCKS.estimate.tokenToEthSwapInput(
         inputValue,
@@ -462,7 +476,8 @@ export default function Main() {
         deadline
       )
       return exchangeContractSOCKS.tokenToEthSwapInput(inputValue, minimumOutputValue, deadline, {
-        gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
+        gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+        gasPrice: estimatedGasPrice
       })
     } else {
       const estimatedGasLimit = await exchangeContractSOCKS.estimate.tokenToTokenSwapInput(
@@ -479,7 +494,8 @@ export default function Main() {
         deadline,
         TOKEN_ADDRESSES[selectedTokenSymbol],
         {
-          gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN)
+          gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+          gasPrice: estimatedGasPrice
         }
       )
     }
