@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { useAppContext } from '../context'
 import { amountFormatter, TRADE_TYPES } from '../utils'
 
-const ConfirmedFrame = styled.p`
+const ConfirmedFrame = styled.div`
   width: 100%;
   padding: 2rem;
   box-sizing: border-box;

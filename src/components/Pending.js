@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import { amountFormatter, TRADE_TYPES } from '../utils'
 
-const PendingFrame = styled.p`
+const PendingFrame = styled.div`
   width: 100%;
   padding: 2rem;
   box-sizing: border-box;
