@@ -56,7 +56,7 @@ export default function Body({
       </Intro>
       <BuyButtons balance={balanceSOCKS} />
       <MarketData>
-        <SockCount>{reserveSOCKSToken && `${amountFormatter(reserveSOCKSToken, 18, 0)}/5000 available`}</SockCount>
+        <SockCount>{reserveSOCKSToken && `${amountFormatter(reserveSOCKSToken, 18, 0)}/500 available`}</SockCount>
         {balanceSOCKS > 0 ? (
           <SockCount>&nbsp; • &nbsp; {balanceSOCKS && `${amountFormatter(balanceSOCKS, 18, 0)} owned`}</SockCount>
         ) : (
