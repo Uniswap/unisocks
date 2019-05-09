@@ -56,18 +56,21 @@ export default function Body({
       </Intro>
       <BuyButtons balance={balanceSOCKS} />
       <MarketData>
-        <SockCount>{reserveSOCKSToken && `${amountFormatter(reserveSOCKSToken, 18, 0)}/500 available`}</SockCount>
         {balanceSOCKS > 0 ? (
-          <SockCount>&nbsp; • &nbsp; {balanceSOCKS && `${amountFormatter(balanceSOCKS, 18, 0)} owned`}</SockCount>
+          <SockCount>
+            You own {balanceSOCKS && `${amountFormatter(balanceSOCKS, 18, 0)}`} SOCKS&nbsp; • &nbsp;
+          </SockCount>
         ) : (
           ''
         )}
+        <SockCount>{reserveSOCKSToken && `${amountFormatter(reserveSOCKSToken, 18, 0)}/500 available`}</SockCount>
       </MarketData>
       <Redeem>
         {/* {balanceSOCKS > 0 ? `You have ${amountFormatter(balanceSOCKS, 18, 0)} SOCKS !! ` : 'Try clicking buyyyyy '} */}
-        <span>
-          <s>Redeem</s> Coming Soon!™
-        </span>
+        <RedeemLink>
+          <s>Redeem</s>
+        </RedeemLink>
+        &nbsp;Coming Soon!™
       </Redeem>
       <Checkout
         selectedTokenSymbol={selectedTokenSymbol}
@@ -162,7 +165,7 @@ const CurrentPrice = styled.p`
 const Intro = styled.p`
   /* padding-left: 5vw; */
   margin: 0px;
-  margin-top: 15vh;
+  margin-top: 16.5vh;
   max-width: 300px;
   line-height: 180%;
   font-weight: 500;
@@ -177,21 +180,31 @@ const Intro = styled.p`
 const SockCount = styled.p`
   font-weight: 500;
   font-size: 0.75rem;
-  color: ${props => props.theme.blue};
+  color: ${props => props.theme.uniswapPink};
   height: 0.5rem;
 `
 
 const Redeem = styled.p`
   font-weight: 500;
   /* padding-left: 10vw; */
+  font-size: 1rem;
   margin-top: 0.5rem;
   margin-bottom: 2rem;
+  color: ${props => props.theme.primary};
   @media only screen and (max-width: 480px) {
     /* For mobile phones: */
     /* margin-top: 2rem; */
     padding-left: 10vw;
   }
 `
+
+const RedeemLink = styled.span`
+  /* font-size: 1rem; */
+  text-decoration: italic;
+  opacity: 1;
+  /* color: ${props => props.theme.blue}; */
+`
+
 const MarketData = styled.div`
   display: flex;
   flex-direction: row;

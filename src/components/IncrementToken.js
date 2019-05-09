@@ -12,7 +12,7 @@ const SelectFrame = styled.div`
   margin-bottom: 0.5rem;
 `
 
-const SelectMenu = styled.input`
+const SelectMenu = styled.div`
   font-size: 1rem;
   border-radius: 24px;
   margin: 1rem;
@@ -44,16 +44,13 @@ const IncrementButton = styled.span`
 export default function IncrementToken(props) {
   const [count, incrementCount, decrementCount, setCount] = useCount()
 
-  const updateField = e => {
-    setCount(e.target.value)
-  }
-
   return (
     <SelectFrame>
       <IncrementButton justify={'flex-start'} onClick={decrementCount}>
         -
       </IncrementButton>
-      <SelectMenu name="count" value={count} type="number" min="0" step="1" onChange={e => updateField(e)} />
+      <SelectMenu>{count + ' SOCKS'}</SelectMenu>
+
       <IncrementButton justify={'flex-end'} onClick={incrementCount}>
         +
       </IncrementButton>
