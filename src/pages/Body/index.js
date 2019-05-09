@@ -14,7 +14,7 @@ function Header({ ready, dollarPrice }) {
     <HeaderFrame>
       <Status ready={ready} account={account} />
       <Title>unisocks token (SOCKS)</Title>
-      <CurrentPrice>{dollarPrice && `$${amountFormatter(dollarPrice, 18, 2)} USD↗`}</CurrentPrice>
+      <CurrentPrice>{dollarPrice && `$${amountFormatter(dollarPrice, 18, 2)} USD`}</CurrentPrice>
       <Tagline>dynamically priced socks</Tagline>
     </HeaderFrame>
   )

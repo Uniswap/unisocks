@@ -152,4 +152,5 @@ const CheckoutBackground = styled.div`
   pointer-events: ${props => (props.isVisible ? 'all' : 'none')};
   background-color: ${props => props.theme.black};
   transition: opacity 0.3s;
+  pointer-events: ${props => (props.isVisible ? 'all' : 'none')};
 `
