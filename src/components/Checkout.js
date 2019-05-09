@@ -15,7 +15,7 @@ export function useCount() {
     setState(state => ({ ...state, count: state.count + 1 }))
   }
   function decrement() {
-    if (state.count >= 1) {
+    if (state.count > 1) {
       setState(state => ({ ...state, count: state.count - 1 }))
     }
   }
