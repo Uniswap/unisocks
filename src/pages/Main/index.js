@@ -255,7 +255,7 @@ export default function Main() {
     const estimatedGasLimit = await contract.estimate.approve(spenderAddress, ethers.constants.MaxUint256)
     const estimatedGasPrice = await library
       .getGasPrice()
-      .then(gasPrice => gasPrice.mul(ethers.utils.bigNumberify(120)).div(ethers.utils.bigNumberify(100)))
+      .then(gasPrice => gasPrice.mul(ethers.utils.bigNumberify(150)).div(ethers.utils.bigNumberify(100)))
 
     return contract.approve(spenderAddress, ethers.constants.MaxUint256, {
       gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
@@ -349,7 +349,7 @@ export default function Main() {
 
     const estimatedGasPrice = await library
       .getGasPrice()
-      .then(gasPrice => gasPrice.mul(ethers.utils.bigNumberify(120)).div(ethers.utils.bigNumberify(100)))
+      .then(gasPrice => gasPrice.mul(ethers.utils.bigNumberify(150)).div(ethers.utils.bigNumberify(100)))
 
     if (selectedTokenSymbol === TOKEN_SYMBOLS.ETH) {
       const estimatedGasLimit = await exchangeContractSOCKS.estimate.ethToTokenSwapOutput(outputValue, deadline, {
@@ -467,7 +467,7 @@ export default function Main() {
 
     const estimatedGasPrice = await library
       .getGasPrice()
-      .then(gasPrice => gasPrice.mul(ethers.utils.bigNumberify(120)).div(ethers.utils.bigNumberify(100)))
+      .then(gasPrice => gasPrice.mul(ethers.utils.bigNumberify(150)).div(ethers.utils.bigNumberify(100)))
 
     if (selectedTokenSymbol === TOKEN_SYMBOLS.ETH) {
       const estimatedGasLimit = await exchangeContractSOCKS.estimate.tokenToEthSwapInput(
