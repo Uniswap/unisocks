@@ -198,7 +198,23 @@ export default function BuyAndSell({
         />
       )}
       <ErrorFrame>
-        <p>{account === null ? 'Connect a Wallet' : errorMessage ? errorMessage : ':)'}</p>
+        <p>
+          {account === null ? (
+            'Connect a Wallet'
+          ) : errorMessage ? (
+            errorMessage
+          ) : (
+            <>
+              Powered By{' '}
+              <Pink href="https://uniswap.io/" target="_blank" rel="noopener noreferrer">
+                Uniswap{' '}
+                <span role="img" aria-label="unicorn">
+                  🦄
+                </span>
+              </Pink>
+            </>
+          )}
+        </p>
       </ErrorFrame>
     </>
   )
@@ -236,6 +252,11 @@ const ErrorFrame = styled.div`
   p {
     font-weight: 400;
   }
+`
+
+const Pink = styled.a`
+  text-decoration: none;
+  color: ${props => props.theme.uniswapPink};
 `
 
 const ButtonFrame = styled(Button)`

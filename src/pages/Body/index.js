@@ -52,7 +52,7 @@ export default function Body({
         <i>
           <b>real</b>
         </i>{' '}
-        pair of limited edition socks shipped anywhere in the US.
+        pair of limited edition socks, shipped anywhere in the world.
       </Intro>
       <BuyButtons balance={balanceSOCKS} />
       <MarketData>
