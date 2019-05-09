@@ -107,6 +107,7 @@ const AppWrapper = styled.div`
   }
   @media only screen and (min-device-width: 768px) {
     max-height: 480px;
+    overflow: hidden;
   }
 `
 

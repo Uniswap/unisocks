@@ -149,6 +149,7 @@ const CheckoutBackground = styled.div`
   width: 100vw;
   height: 100vh;
   z-index: ${props => (props.isVisible ? '1' : '-1')};
+  pointer-events: ${props => (props.isVisible ? 'all' : 'none')};
   background-color: ${props => props.theme.black};
   transition: opacity 0.3s;
 `
