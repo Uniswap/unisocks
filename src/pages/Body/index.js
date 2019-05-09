@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
+import { useWeb3Context } from 'web3-react'
 
 import Gallery from '../../components/Gallery'
 import BuyButtons from '../../components/Buttons'
@@ -7,9 +8,11 @@ import Checkout from '../../components/Checkout'
 import { amountFormatter } from '../../utils'
 
 function Header({ ready, dollarPrice }) {
+  const { account } = useWeb3Context()
+
   return (
     <HeaderFrame>
-      <Status ready={ready} />
+      <Status ready={ready} account={account} />
       <Title>unisocks token (SOCKS)</Title>
       <CurrentPrice>{dollarPrice && `$${amountFormatter(dollarPrice, 18, 2)} USD↗`}</CurrentPrice>
       <Tagline>dynamically priced socks</Tagline>
@@ -124,7 +127,8 @@ const Status = styled.div`
   top: 16px;
   right: 24px;
   border-radius: 100%;
-  background-color: ${props => (props.ready ? props.theme.green : props.theme.orange)};
+  background-color: ${props =>
+    props.account === null ? props.theme.orange : props.ready ? props.theme.green : props.theme.orange};
 `
 
 const HeaderFrame = styled.div`

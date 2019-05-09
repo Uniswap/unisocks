@@ -189,7 +189,7 @@ export default function Main() {
 
   const ready = !!(
     (account === null || allowanceSOCKS) &&
-    (selectedTokenSymbol === 'ETH' || allowanceSelectedToken) &&
+    (selectedTokenSymbol === 'ETH' || account === null || allowanceSelectedToken) &&
     (account === null || balanceETH) &&
     (account === null || balanceSOCKS) &&
     (account === null || balanceSelectedToken) &&

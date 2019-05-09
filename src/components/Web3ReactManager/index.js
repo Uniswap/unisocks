@@ -1,17 +1,31 @@
 import React, { useState, useEffect } from 'react'
 import { useWeb3Context } from 'web3-react'
+import { ethers } from 'ethers'
 
 import { Message } from './styles'
 
 export default function Web3ReactManager({ children }) {
   const { setConnector, error, active } = useWeb3Context()
 
-  // initialize infura on launch
+  // launch initialization
   useEffect(() => {
-    if (!active) {
+    if (window.ethereum) {
+      try {
+        const library = new ethers.providers.Web3Provider(window.ethereum)
+        library.listAccounts().then(accounts => {
+          if (accounts.length >= 1) {
+            setConnector('Injected', { suppressAndThrowErrors: true })
+          } else {
+            setConnector('Network')
+          }
+        })
+      } catch {
+        setConnector('Network')
+      }
+    } else {
       setConnector('Network')
     }
-  }, [active, setConnector])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [showLoader, setShowLoader] = useState(false)
   useEffect(() => {

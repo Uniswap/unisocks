@@ -18,11 +18,18 @@ export default function Connect({ setShowConnect }) {
   }
 
   function activateWalletConnect() {
-    setConnector('WalletConnect')
+    setConnector('WalletConnect').catch(error => {
+      setConnectorError(error)
+    })
   }
-
   const walletconnectUri = connector && connector.walletConnector && connector.walletConnector.uri
 
+  // unset the error on connector change
+  useEffect(() => {
+    setConnectorError()
+  }, [connector])
+
+  // once an account is connected, don't show this screen
   useEffect(() => {
     if (account !== null) {
       setShowConnect(false)
@@ -51,7 +58,7 @@ export default function Connect({ setShowConnect }) {
         }}
       />
       <QRCodeWrapper>{walletconnectUri && account === null ? <QRCode value={walletconnectUri} /> : null}</QRCodeWrapper>
-      <p>{connectorError && connectorError.toString()}</p>
+      <p>{connectorError && 'Connection Error.'}</p>
     </>
   )
 }
