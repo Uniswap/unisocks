@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useWeb3Context } from 'web3-react'
+import styled from 'styled-components'
 import QRCode from 'qrcode.react'
+
+import Button from './Button'
 
 export default function Connect({ setShowConnect }) {
   const { account, connector, setConnector } = useWeb3Context()
@@ -28,32 +31,37 @@ export default function Connect({ setShowConnect }) {
 
   return (
     <>
-      <button
-        onClick={e => {
-          e.preventDefault()
+      <Back
+        onClick={() => {
           setShowConnect(false)
         }}
       >
-        Back
-      </button>
-      <button
-        onClick={e => {
-          e.preventDefault()
+        ← Back
+      </Back>
+      <Button
+        text="Browser Wallet"
+        onClick={() => {
           activateInjected()
         }}
-      >
-        Set Injected
-      </button>
-      <button
-        onClick={e => {
-          e.preventDefault()
+      />
+      <Button
+        text="WalletConnect"
+        onClick={() => {
           activateWalletConnect()
         }}
-      >
-        Set WalletConnect
-      </button>
-      {walletconnectUri && account === null ? <QRCode value={walletconnectUri} /> : null}
+      />
+      <QRCodeWrapper>{walletconnectUri && account === null ? <QRCode value={walletconnectUri} /> : null}</QRCodeWrapper>
       <p>{connectorError && connectorError.toString()}</p>
     </>
   )
 }
+
+const Back = styled.p`
+  cursor: pointer;
+`
+
+const QRCodeWrapper = styled.div`
+  width: 100%;
+  text-align: center;
+  margin-top: 2rem;
+`

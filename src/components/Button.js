@@ -28,7 +28,6 @@ const CtaText = styled.span`
 `
 
 export default function Button({ text, onClick, preventDefault = true, ...rest }) {
-  console.log(rest.disabled)
   return (
     <ButtonFrame
       onClick={e => {

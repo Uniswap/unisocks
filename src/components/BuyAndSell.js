@@ -67,7 +67,7 @@ export default function BuyAndSell({
   setShowConnect
 }) {
   const [state] = useAppContext()
-  const { account } = useWeb3Context()
+  const { account, setConnector } = useWeb3Context()
 
   const buying = state.tradeType === TRADE_TYPES.BUY
   const selling = !buying
@@ -177,7 +177,9 @@ export default function BuyAndSell({
           type={'cta'}
           onClick={() => {
             if (account === null) {
-              setShowConnect(true)
+              setConnector('Injected', { suppressAndThrowErrors: true }).catch(error => {
+                setShowConnect(true)
+              })
             } else {
               ;(buying
                 ? buy(buyValidationState.maximumInputValue, buyValidationState.outputValue)

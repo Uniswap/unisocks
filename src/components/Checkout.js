@@ -105,6 +105,7 @@ const CheckoutFrame = styled.form`
   transition: bottom 0.3s;
   width: 100%;
   margin: 0px;
+  height: 420px;
   border-radius: 20px 20px 0px 0px;
   padding: 2rem;
   box-sizing: border-box;
