@@ -23,9 +23,19 @@ const SubText = styled.p`
   font-size: 12px;
   font-style: italic;
 `
+const Close = styled.span`
+  position: absolute;
+  font-weight: 300;
+  top: 4px;
+  right: 12px;
+  width: 48px;
+  height: 48px;
+  color: ${props => props.theme.textDisabled}
+  cursor: pointer;
+`
 
 export default function Confirmed({ hash, type, amount, clearCurrentTransaction }) {
-  const [state] = useAppContext()
+  const [state, setState] = useAppContext()
 
   useEffect(() => {
     if (!state.visible) {
@@ -36,6 +46,7 @@ export default function Confirmed({ hash, type, amount, clearCurrentTransaction 
   if (type === TRADE_TYPES.UNLOCK) {
     return (
       <ConfirmedFrame>
+        <Close onClick={() => setState(state => ({ ...state, visible: !state.visible }))}>✗</Close>
         Unlocked Token!
         <EtherscanLink href={link(hash)} target="_blank" rel="noopener noreferrer">
           transaction details ↗
@@ -45,6 +56,7 @@ export default function Confirmed({ hash, type, amount, clearCurrentTransaction 
   } else if (type === TRADE_TYPES.BUY) {
     return (
       <ConfirmedFrame>
+        <Close onClick={() => setState(state => ({ ...state, visible: !state.visible }))}>✗</Close>
         <Emoji>
           <span role="img" aria-label="sock">
             🧦
@@ -60,6 +72,7 @@ export default function Confirmed({ hash, type, amount, clearCurrentTransaction 
   } else {
     return (
       <ConfirmedFrame>
+        <Close onClick={() => setState(state => ({ ...state, visible: !state.visible }))}>✗</Close>
         <Emoji>
           <span role="img" aria-label="sock">
             🧦
