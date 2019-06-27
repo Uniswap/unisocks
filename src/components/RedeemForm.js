@@ -47,7 +47,7 @@ const defaultState = {
   [email]: ''
 }
 
-const recaptchaEnabled = true
+const recaptchaEnabled = false
 
 export default function RedeemForm({ setHasConfirmedAddress }) {
   const { library, account } = useWeb3Context()
