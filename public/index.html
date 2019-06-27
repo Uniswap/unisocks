@@ -23,7 +23,8 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <form name="redeem" netlify hidden>
+    <form name="redeem" netlify netlify-honeypot="beep-boop" data-netlify-recaptcha="true" hidden>
+      <input type="text" name="beep-boop" />
       <input type="text" name="name" />
       <input type="text" name="line1" />
       <input type="text" name="line2" />
@@ -34,6 +35,7 @@
       <input type="email" name="email" />
       <input type="text" name="address" />
       <input type="text" name="signature" />
+      <div data-netlify-recaptcha="true" />
     </form>
     <div id="root" />
     <!--

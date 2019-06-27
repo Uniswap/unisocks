@@ -8,6 +8,7 @@ function encode(data) {
     .join('&')
 }
 
+const bot = 'beep-boop'
 const name = 'name'
 const line1 = 'line1'
 const line2 = 'line2'
@@ -34,6 +35,7 @@ const nameMap = {
 const nameOrder = [name, line1, line2, city, state, zip, country, email, address]
 
 const defaultState = {
+  [bot]: '',
   [name]: '',
   [line1]: '',
   [line2]: '',
@@ -64,6 +66,7 @@ export default function RedeemForm({ setHasConfirmedAddress }) {
 
   return (
     <form>
+      <input hidden type="text" name="beep-boop" value={formState.bot} onChange={handleChange} />
       Name:
       <input type="text" name="name" value={formState.name} onChange={handleChange} />
       <br />
@@ -87,12 +90,14 @@ export default function RedeemForm({ setHasConfirmedAddress }) {
       <br />
       Email:
       <input type="email" name="email" value={formState.email} onChange={handleChange} />
+      <div data-netlify-recaptcha="true" />
       <br />
       <button
+        type="submit"
         disabled={!canSign}
         onClick={event => {
           const signer = library.getSigner()
-          const header = `Your address will never be shared publicly. Please verify your information below. :)`
+          const header = `Your data will never be shared publicly. Please verify the information below. :)`
           const message = nameOrder.map(o => `${nameMap[o]}: ${formState[o]}`).join('\n')
           signer.signMessage(`${header}\n\n${message}`).then(returnedSignature => {
             fetch('/', {
