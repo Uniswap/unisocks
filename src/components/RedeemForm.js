@@ -62,17 +62,27 @@ export default function RedeemForm({ setHasConfirmedAddress }) {
     handleChange({ target: { name: [signature], value: userSignature } })
   }, [userSignature])
 
-  function handleSubmit() {
-    fetch('/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: encode({ 'form-name': 'redeem', ...formState })
-    })
-      .then(() => {
-        setHasConfirmedAddress(true)
+  // submit the form once the signature is logged
+  useEffect(() => {
+    if (userSignature) {
+      fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: encode({ 'form-name': 'redeem', ...formState })
       })
-      .catch(console.error)
-  }
+        .then(() => {
+          setHasConfirmedAddress(true)
+        })
+        .catch(console.error)
+    }
+  })
+
+  // unset signature on unmount
+  useEffect(() => {
+    return () => {
+      setUserSignature()
+    }
+  }, [])
 
   const canSign =
     true ||
@@ -112,7 +122,6 @@ export default function RedeemForm({ setHasConfirmedAddress }) {
           const message = nameOrder.map(o => `${nameMap[o]}: ${formState[o]}`).join('\n')
           signer.signMessage(`${header}\n\n${message}`).then(returnedSignature => {
             setUserSignature(returnedSignature)
-            handleSubmit()
           })
 
           event.preventDefault()
