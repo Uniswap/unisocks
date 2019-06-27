@@ -6941,6 +6941,13 @@ hmac-drbg@^1.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.1"
 
+hoist-non-react-statics@^3.0.1:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.0.tgz#b09178f0122184fb95acf525daaecb4d8f45958b"
+  integrity sha512-0XsbTXxgiaCDYDIWFcwkmerZPSwywfUqYmwT4jzewKTQSWoE6FCMoUVOeBJWK3E/CrWbxRG3m5GzY4lnIwGRBA==
+  dependencies:
+    react-is "^16.7.0"
+
 home-or-tmp@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/home-or-tmp/-/home-or-tmp-2.0.0.tgz#e36c3f2d2cae7d746a857e38d18d5f32a7882db8"
@@ -10814,7 +10821,7 @@ prompts@^2.0.1:
     kleur "^3.0.2"
     sisteransi "^1.0.0"
 
-prop-types@^15.5.4, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.2:
+prop-types@^15.5.0, prop-types@^15.5.4, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -11092,6 +11099,14 @@ react-app-polyfill@^1.0.0:
     regenerator-runtime "0.13.2"
     whatwg-fetch "3.0.0"
 
+react-async-script@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/react-async-script/-/react-async-script-1.0.1.tgz#a3996e313a1352b7e96087405e40ebb877f9caf0"
+  integrity sha512-EosAKCTgHc6oWPx7ONv4IjtaIKRi30DjR71iJfoGfb13+naFYGjLutH6dFC5rRaYX8odW57zmC9ekf/WuLiyOQ==
+  dependencies:
+    hoist-non-react-statics "^3.0.1"
+    prop-types "^15.5.0"
+
 react-dev-utils@^9.0.0:
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-9.0.0.tgz#356d95db442441c5d4748e0e49f4fd1e71aecbbd"
@@ -11138,6 +11153,14 @@ react-error-overlay@^5.1.5:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-5.1.5.tgz#884530fd055476c764eaa8ab13b8ecf1f57bbf2c"
   integrity sha512-O9JRum1Zq/qCPFH5qVEvDDrVun8Jv9vbHtZXCR1EuRj9sKg1xJTlHxBzU6AkCzpvxRLuiY4OKImy3cDLQ+UTdg==
 
+react-google-recaptcha@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/react-google-recaptcha/-/react-google-recaptcha-1.0.5.tgz#fc5a1c5c9fd678ccea11c9a47b22f38a8b9d3c88"
+  integrity sha512-IUIIQVUIKgsG7Ok1AiqBdJZVpFRpIWOM3H/36fAJHMd52l+X0pn4sTxvm2YJEN01QXWR1jg79+93J8mQef7hfw==
+  dependencies:
+    prop-types "^15.5.0"
+    react-async-script "^1.0.0"
+
 react-input-autosize@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/react-input-autosize/-/react-input-autosize-2.2.1.tgz#ec428fa15b1592994fb5f9aa15bb1eb6baf420f8"
@@ -11145,7 +11168,7 @@ react-input-autosize@^2.2.1:
   dependencies:
     prop-types "^15.5.8"
 
-react-is@^16.6.0, react-is@^16.8.4:
+react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.4:
   version "16.8.6"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.8.6.tgz#5bbc1e2d29141c9fbdfed456343fe2bc430a6a16"
   integrity sha512-aUk3bHfZ2bRSVFFbbeVS4i+lNPZr3/WM5jT2J5omUVV1zzcs1nAaf3l51ctA5FFvCRbhrH0bdAsRRQddFJZPtA==

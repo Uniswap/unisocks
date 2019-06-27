@@ -67,7 +67,7 @@ export default function Body({
         )}
         <SockCount>{reserveSOCKSToken && `${amountFormatter(reserveSOCKSToken, 18, 0)}/500 available`}</SockCount>
       </MarketData>
-      <RedeemButton balance={balanceSOCKS} />
+      <RedeemButton balanceSOCKS={balanceSOCKS} />
       <Checkout
         selectedTokenSymbol={selectedTokenSymbol}
         setSelectedTokenSymbol={setSelectedTokenSymbol}

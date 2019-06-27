@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useWeb3Context } from 'web3-react'
+import ReCAPTCHA from 'react-google-recaptcha'
 
 // https://www.netlify.com/blog/2017/07/20/how-to-integrate-netlifys-form-handling-in-a-react-app/
 function encode(data) {
@@ -46,8 +47,11 @@ const defaultState = {
   [email]: ''
 }
 
+const recaptchaEnabled = false
+
 export default function RedeemForm({ setHasConfirmedAddress }) {
   const { library, account } = useWeb3Context()
+  const [recaptcha, setRecaptcha] = useState()
   const [formState, setFormState] = useState({ ...defaultState, [address]: account })
 
   function handleChange(event) {
@@ -64,36 +68,42 @@ export default function RedeemForm({ setHasConfirmedAddress }) {
     true ||
     (formState.name && formState.line1 && formState.city && formState.state && formState.zip && formState.country)
 
+  function onRecaptcha(value) {
+    if (value) {
+      setRecaptcha(value)
+    }
+  }
+
   return (
     <form>
       <input hidden type="text" name="beep-boop" value={formState.bot} onChange={handleChange} />
-      Name:
-      <input type="text" name="name" value={formState.name} onChange={handleChange} />
+      <input required type="text" name={name} value={formState.name} onChange={handleChange} placeholder={name} />
       <br />
-      Line1:
-      <input type="text" name="line1" value={formState.line1} onChange={handleChange} />
+      <input required type="text" name={line1} value={formState.line1} onChange={handleChange} placeholder={line1} />
       <br />
-      Line2:
-      <input type="text" name="line2" value={formState.line2} onChange={handleChange} />
+      <input type="text" name={line2} value={formState.line2} onChange={handleChange} placeholder={line2} />
       <br />
-      City:
-      <input type="text" name="city" value={formState.city} onChange={handleChange} />
+      <input required type="text" name={city} value={formState.city} onChange={handleChange} placeholder={city} />
       <br />
-      State:
-      <input type="text" name="state" value={formState.state} onChange={handleChange} />
+      <input required type="text" name={state} value={formState.state} onChange={handleChange} placeholder={state} />
       <br />
-      Zip:
-      <input type="text" name="zip" value={formState.zip} onChange={handleChange} />
+      <input required type="text" name={zip} value={formState.zip} onChange={handleChange} placeholder={zip} />
       <br />
-      Country:
-      <input type="text" name="country" value={formState.country} onChange={handleChange} />
+      <input
+        required
+        type="text"
+        name={country}
+        value={formState.country}
+        onChange={handleChange}
+        placeholder={country}
+      />
       <br />
-      Email:
-      <input type="email" name="email" value={formState.email} onChange={handleChange} />
+      <input type="email" name={email} value={formState.email} onChange={handleChange} placeholder={email} />
       <br />
+      {recaptchaEnabled && <ReCAPTCHA sitekey={process.env.REACT_APP_SITE_RECAPTCHA_KEY} onChange={onRecaptcha} />}
       <button
         type="submit"
-        disabled={!canSign}
+        disabled={!canSign || (recaptchaEnabled && !!!recaptcha)}
         onClick={event => {
           const signer = library.getSigner()
           const header = `Your data will never be shared publicly. Please verify the information below. :)`
@@ -102,7 +112,14 @@ export default function RedeemForm({ setHasConfirmedAddress }) {
             fetch('/', {
               method: 'POST',
               headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-              body: encode({ 'form-name': 'redeem', ...{ ...formState, [signature]: returnedSignature } })
+              body: encode({
+                'form-name': 'redeem',
+                ...{
+                  ...formState,
+                  [signature]: returnedSignature,
+                  ...(recaptchaEnabled ? { 'g-recaptcha-response': recaptcha } : {})
+                }
+              })
             })
               .then(() => {
                 setHasConfirmedAddress(true)
