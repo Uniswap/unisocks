@@ -38,7 +38,7 @@ export const ERROR_CODES = [
   return o
 }, {})
 
-export const TRADE_TYPES = ['BUY', 'SELL', 'UNLOCK'].reduce((o, k, i) => {
+export const TRADE_TYPES = ['BUY', 'SELL', 'UNLOCK', 'REDEEM'].reduce((o, k, i) => {
   o[k] = i
   return o
 }, {})

@@ -501,6 +501,21 @@ export default function Main() {
     }
   }
 
+  async function burn(amount) {
+    const parsedAmount = ethers.utils.parseUnits(amount, 18)
+
+    const estimatedGasPrice = await library
+      .getGasPrice()
+      .then(gasPrice => gasPrice.mul(ethers.utils.bigNumberify(150)).div(ethers.utils.bigNumberify(100)))
+
+    const estimatedGasLimit = await tokenContractSOCKS.estimate.burn(parsedAmount)
+
+    return tokenContractSOCKS.burn(parsedAmount, {
+      gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+      gasPrice: estimatedGasPrice
+    })
+  }
+
   return (
     <Body
       selectedTokenSymbol={selectedTokenSymbol}
@@ -511,6 +526,7 @@ export default function Main() {
       buy={buy}
       validateSell={validateSell}
       sell={sell}
+      burn={burn}
       dollarize={dollarize}
       dollarPrice={dollarPrice}
       balanceSOCKS={balanceSOCKS}

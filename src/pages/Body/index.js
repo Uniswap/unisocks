@@ -4,6 +4,7 @@ import { useWeb3Context } from 'web3-react'
 
 import Gallery from '../../components/Gallery'
 import BuyButtons from '../../components/Buttons'
+import RedeemButton from '../../components/RedeemButton'
 import Checkout from '../../components/Checkout'
 import { amountFormatter } from '../../utils'
 
@@ -29,6 +30,7 @@ export default function Body({
   buy,
   validateSell,
   sell,
+  burn,
   dollarize,
   dollarPrice,
   balanceSOCKS,
@@ -65,13 +67,7 @@ export default function Body({
         )}
         <SockCount>{reserveSOCKSToken && `${amountFormatter(reserveSOCKSToken, 18, 0)}/500 available`}</SockCount>
       </MarketData>
-      <Redeem>
-        {/* {balanceSOCKS > 0 ? `You have ${amountFormatter(balanceSOCKS, 18, 0)} SOCKS !! ` : 'Try clicking buyyyyy '} */}
-        <RedeemLink>
-          <s>Redeem</s>
-        </RedeemLink>
-        &nbsp;Coming Soon!™
-      </Redeem>
+      <RedeemButton balance={balanceSOCKS} />
       <Checkout
         selectedTokenSymbol={selectedTokenSymbol}
         setSelectedTokenSymbol={setSelectedTokenSymbol}
@@ -81,6 +77,8 @@ export default function Body({
         buy={buy}
         validateSell={validateSell}
         sell={sell}
+        burn={burn}
+        balanceSOCKS={balanceSOCKS}
         dollarize={dollarize}
         currentTransactionHash={currentTransaction.hash}
         currentTransactionType={currentTransaction.type}
@@ -181,29 +179,8 @@ const Intro = styled.p`
 const SockCount = styled.p`
   font-weight: 500;
   font-size: 0.75rem;
-  color: ${props => props.theme.uniswapPink};
+  color: ${({ theme, color }) => color || theme.uniswapPink};
   height: 0.5rem;
-`
-
-const Redeem = styled.p`
-  font-weight: 500;
-  /* padding-left: 10vw; */
-  font-size: 1rem;
-  margin-top: 0.5rem;
-  margin-bottom: 2rem;
-  color: ${props => props.theme.primary};
-  @media only screen and (max-width: 480px) {
-    /* For mobile phones: */
-    /* margin-top: 2rem; */
-    padding-left: 10vw;
-  }
-`
-
-const RedeemLink = styled.span`
-  /* font-size: 1rem; */
-  text-decoration: italic;
-  opacity: 1;
-  /* color: ${props => props.theme.blue}; */
 `
 
 const MarketData = styled.div`

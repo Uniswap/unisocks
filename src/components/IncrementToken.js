@@ -43,8 +43,8 @@ const IncrementButton = styled.span`
   justify-content: ${props => props.justify};
 `
 
-export default function IncrementToken() {
-  const [count, incrementCount, decrementCount] = useCount()
+export default function IncrementToken({ initialValue, max }) {
+  const [count, incrementCount, decrementCount] = useCount(initialValue, max)
 
   return (
     <SelectFrame>

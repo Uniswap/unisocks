@@ -4,16 +4,33 @@ import { useWeb3Context } from 'web3-react'
 
 import Connect from './Connect'
 import BuyAndSell from './BuyAndSell'
+import Redeem from './Redeem'
 import Pending from './Pending'
 import Confirmed from './Confirmed'
 import { useAppContext } from '../context'
+import { TRADE_TYPES } from '../utils'
+import { ethers } from 'ethers'
 
-export function useCount() {
+export function useCount(initialValue, max) {
   const [state, setState] = useAppContext()
 
   function increment() {
-    setState(state => ({ ...state, count: state.count + 1 }))
+    setState(state => {
+      const newCount = state.count + 1
+      if (
+        !max ||
+        ethers.utils
+          .bigNumberify(newCount)
+          .mul(ethers.utils.bigNumberify(10).pow(18))
+          .lte(max)
+      ) {
+        return { ...state, count: state.count + 1 }
+      } else {
+        return state
+      }
+    })
   }
+
   function decrement() {
     if (state.count > 1) {
       setState(state => ({ ...state, count: state.count - 1 }))
@@ -23,6 +40,14 @@ export function useCount() {
   function setCount(val) {
     setState(state => ({ ...state, count: val }))
   }
+
+  // ok to disable exhaustive-deps for `setState` b/c it's actually just a useState setter
+  useEffect(() => {
+    if (initialValue) {
+      setState(state => ({ ...state, count: initialValue }))
+    }
+  }, [initialValue]) // eslint-disable-line react-hooks/exhaustive-deps
+
   return [state.count, increment, decrement, setCount]
 }
 
@@ -35,6 +60,8 @@ export default function Checkout({
   buy,
   validateSell,
   sell,
+  burn,
+  balanceSOCKS,
   dollarize,
   currentTransactionHash,
   currentTransactionType,
@@ -44,6 +71,8 @@ export default function Checkout({
 }) {
   const { library } = useWeb3Context()
   const [state, setState] = useAppContext()
+
+  const redeeming = state.tradeType === TRADE_TYPES.REDEEM
 
   const [pending, setPending] = useState(true)
   useEffect(() => {
@@ -74,21 +103,34 @@ export default function Checkout({
         />
       )
     } else {
-      return (
-        <BuyAndSell
-          selectedTokenSymbol={selectedTokenSymbol}
-          setSelectedTokenSymbol={setSelectedTokenSymbol}
-          ready={ready}
-          unlock={unlock}
-          validateBuy={validateBuy}
-          buy={buy}
-          validateSell={validateSell}
-          sell={sell}
-          dollarize={dollarize}
-          setCurrentTransaction={setCurrentTransaction}
-          setShowConnect={setShowConnect}
-        />
-      )
+      if (!redeeming) {
+        return (
+          <BuyAndSell
+            selectedTokenSymbol={selectedTokenSymbol}
+            setSelectedTokenSymbol={setSelectedTokenSymbol}
+            ready={ready}
+            unlock={unlock}
+            validateBuy={validateBuy}
+            buy={buy}
+            validateSell={validateSell}
+            sell={sell}
+            dollarize={dollarize}
+            setCurrentTransaction={setCurrentTransaction}
+            setShowConnect={setShowConnect}
+          />
+        )
+      } else {
+        return (
+          <Redeem
+            ready={ready}
+            burn={burn}
+            balanceSOCKS={balanceSOCKS}
+            dollarize={dollarize}
+            setCurrentTransaction={setCurrentTransaction}
+            setShowConnect={setShowConnect}
+          />
+        )
+      }
     }
   }
 
@@ -103,7 +145,7 @@ export default function Checkout({
   )
 }
 
-const CheckoutFrame = styled.form`
+const CheckoutFrame = styled.div`
   position: fixed;
   bottom: ${props => (props.isVisible ? '0px' : '-100%')};
   z-index: ${props => (props.isVisible ? '2' : '-1  ')};
