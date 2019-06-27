@@ -90,7 +90,6 @@ export default function RedeemForm({ setHasConfirmedAddress }) {
       <br />
       Email:
       <input type="email" name="email" value={formState.email} onChange={handleChange} />
-      <div data-netlify-recaptcha="true" />
       <br />
       <button
         type="submit"
