@@ -46,43 +46,17 @@ const defaultState = {
 
 export default function RedeemForm({ setHasConfirmedAddress }) {
   const { library, account } = useWeb3Context()
-  const [userSignature, setUserSignature] = useState()
-  const [formState, setFormState] = useState({ ...defaultState, [address]: account, [signature]: userSignature })
+  const [formState, setFormState] = useState({ ...defaultState, [address]: account })
 
   function handleChange(event) {
     const { name, value } = event.target
     setFormState(state => ({ ...state, [name]: value }))
   }
 
-  // keep acount and signature in sync
+  // keep acount in sync
   useEffect(() => {
     handleChange({ target: { name: [address], value: account } })
   }, [account])
-  useEffect(() => {
-    handleChange({ target: { name: [signature], value: userSignature } })
-  }, [userSignature])
-
-  // submit the form once the signature is logged
-  useEffect(() => {
-    if (userSignature) {
-      fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: encode({ 'form-name': 'redeem', ...formState })
-      })
-        .then(() => {
-          setHasConfirmedAddress(true)
-        })
-        .catch(console.error)
-    }
-  })
-
-  // unset signature on unmount
-  useEffect(() => {
-    return () => {
-      setUserSignature()
-    }
-  }, [])
 
   const canSign =
     true ||
@@ -115,13 +89,21 @@ export default function RedeemForm({ setHasConfirmedAddress }) {
       <input type="email" name="email" value={formState.email} onChange={handleChange} />
       <br />
       <button
-        disabled={!canSign || !!userSignature}
+        disabled={!canSign}
         onClick={event => {
           const signer = library.getSigner()
           const header = `Your address will never be shared publicly. Please verify your information below. :)`
           const message = nameOrder.map(o => `${nameMap[o]}: ${formState[o]}`).join('\n')
           signer.signMessage(`${header}\n\n${message}`).then(returnedSignature => {
-            setUserSignature(returnedSignature)
+            fetch('/', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              body: encode({ 'form-name': 'redeem', ...{ ...formState, [signature]: returnedSignature } })
+            })
+              .then(() => {
+                setHasConfirmedAddress(true)
+              })
+              .catch(console.error)
           })
 
           event.preventDefault()
