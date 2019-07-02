@@ -106,6 +106,7 @@ export default function Checkout({
 const CheckoutFrame = styled.form`
   position: fixed;
   bottom: ${props => (props.isVisible ? '0px' : '-100%')};
+  left: 0px;
   z-index: ${props => (props.isVisible ? '2' : '-1  ')};
   opacity: ${props => (props.isVisible ? '1' : '0')};
 
