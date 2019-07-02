@@ -44,34 +44,35 @@ export default function Body({
 
   return (
     <AppWrapper>
-      <Bar />
       <Header ready={ready} dollarPrice={dollarPrice} />
       <Gallery />
-      <Intro>
-        purchasing a <b>SOCKS</b> entitles you to 1{' '}
-        <i>
-          <b>real</b>
-        </i>{' '}
-        pair of limited edition socks, shipped anywhere in the world.
-      </Intro>
-      <BuyButtons balance={balanceSOCKS} />
-      <MarketData>
-        {balanceSOCKS > 0 ? (
-          <SockCount>
-            You own {balanceSOCKS && `${amountFormatter(balanceSOCKS, 18, 0)}`} SOCKS&nbsp; • &nbsp;
-          </SockCount>
-        ) : (
-          ''
-        )}
-        <SockCount>{reserveSOCKSToken && `${amountFormatter(reserveSOCKSToken, 18, 0)}/500 available`}</SockCount>
-      </MarketData>
-      <Redeem>
-        {/* {balanceSOCKS > 0 ? `You have ${amountFormatter(balanceSOCKS, 18, 0)} SOCKS !! ` : 'Try clicking buyyyyy '} */}
-        <RedeemLink>
-          <s>Redeem</s>
-        </RedeemLink>
-        &nbsp;Coming Soon!™
-      </Redeem>
+      <div>
+        <Intro>
+          purchasing a <b>SOCKS</b> entitles you to 1{' '}
+          <i>
+            <b>real</b>
+          </i>{' '}
+          pair of limited edition socks, shipped anywhere in the world.
+        </Intro>
+        <BuyButtons balance={balanceSOCKS} />
+        <MarketData>
+          {balanceSOCKS > 0 ? (
+            <SockCount>
+              You own {balanceSOCKS && `${amountFormatter(balanceSOCKS, 18, 0)}`} SOCKS&nbsp; • &nbsp;
+            </SockCount>
+          ) : (
+            ''
+          )}
+          <SockCount>{reserveSOCKSToken && `${amountFormatter(reserveSOCKSToken, 18, 0)}/500 available`}</SockCount>
+        </MarketData>
+        <Redeem>
+          {/* {balanceSOCKS > 0 ? `You have ${amountFormatter(balanceSOCKS, 18, 0)} SOCKS !! ` : 'Try clicking buyyyyy '} */}
+          <RedeemLink>
+            <s>Redeem</s>
+          </RedeemLink>
+          &nbsp;Coming Soon!™
+        </Redeem>
+      </div>
       <Checkout
         selectedTokenSymbol={selectedTokenSymbol}
         setSelectedTokenSymbol={setSelectedTokenSymbol}
@@ -98,26 +99,28 @@ const AppWrapper = styled.div`
   margin: 0px auto;
   margin-bottom: 1rem;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   flex-wrap: wrap;
+  justify-content: space-between;
   padding-top: 20vh;
   overflow: scroll;
-  @media only screen and (max-width: 480px) {
-    padding-top: 0px;
-  }
   @media only screen and (min-device-width: 768px) {
     max-height: 480px;
     overflow: hidden;
+    height: 100%;
   }
-`
-
-const Bar = styled.div`
-  position: fixed;
-  top: 0px;
-  right: 0px;
-  width: 0.5rem;
-  height: 100vh;
-  background-color: ${props => props.theme.primary};
+  @media only screen and (max-width: 640px) {
+    /* padding-top: 0px; */
+    overflow: hidden;
+    padding-left: 2rem;
+    max-height: 640px;
+  }
+  @media only screen and (max-width: 480px) {
+    padding-top: 0px;
+    padding-left: 0px;
+    overflow: hidden;
+    max-height: 800px;
+  }
 `
 
 const Status = styled.div`
@@ -134,8 +137,8 @@ const Status = styled.div`
 const HeaderFrame = styled.div`
   text-align: left;
   margin: 0px;
-  padding-bottom: 2vw;
   font-size: 1.25rem;
+  width: 100%;
   color: ${props => props.theme.primary};
   @media only screen and (max-width: 480px) {
     /* For mobile phones: */
@@ -166,7 +169,6 @@ const CurrentPrice = styled.p`
 const Intro = styled.p`
   /* padding-left: 5vw; */
   margin: 0px;
-  margin-top: 20%;
   max-width: 300px;
   line-height: 180%;
   font-weight: 500;
