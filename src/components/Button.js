@@ -4,7 +4,7 @@ import styled from 'styled-components'
 const ButtonFrame = styled.button`
   padding: 0;
   text-align: center;
-  border-radius: 24px;
+  border-radius: 8px;
   box-sizing: border-box;
   height: 48px;
   width: 100%;
@@ -17,10 +17,17 @@ const ButtonFrame = styled.button`
   border-width: 1px;
   border: none;
   cursor: pointer;
+  border-style: solid;
   opacity: ${props => (props.disabled ? 0.2 : 1)};
   pointer-events: ${props => (props.disabled ? 'none' : 'auto')};
-  background-color: ${props => props.theme.primary};
-  color: ${props => props.theme.grey};
+  border-width: ${props => (props.type === 'cta' ? '0px' : '1px')};
+  border-color: ${props => (props.type === 'cta' ? 'none' : props.theme.uniswapPink)};
+  background-color: ${props => (props.type === 'cta' ? props.theme.uniswapPink : 'none')};
+  color: ${props => (props.type === 'cta' ? props.theme.grey : props.theme.uniswapPink)};
+
+  :hover {
+    opacity: 0.8;
+  }
 `
 
 const CtaText = styled.span`

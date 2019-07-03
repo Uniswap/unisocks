@@ -11,12 +11,12 @@ export default createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-family: Inter, sans-serif;
-    background-color: #F1F2F6;
+    /* background-color: #F1F2F6; */
   }
 `
 
 const theme = {
-  uniswapPink: '#DC6BE5',
+  uniswapPink: '#FE6DDE',
   primary: '#2B2B2B',
   secondary: '#F1F2F6',
   text: '#000',

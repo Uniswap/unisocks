@@ -8,7 +8,7 @@ import { useAppContext } from '../context'
 import { TRADE_TYPES } from '../utils'
 
 const BuyButtonFrame = styled.div`
-  margin: 1.5rem 0rem 0.5rem 0rem;
+  margin: 0.5rem 0rem 0.5rem 0rem;
   display: flex;
   align-items: center;
   flex-direction: center;
@@ -28,6 +28,11 @@ const ButtonFrame = styled(Button)`
   width: 100%;
 `
 
+const Shim = styled.div`
+  width: 1rem !important;
+  height: 1rem;
+`
+
 export default function RedeemButton({ balanceSOCKS }) {
   const [, setState] = useAppContext()
   const { account } = useWeb3Context()
@@ -39,13 +44,22 @@ export default function RedeemButton({ balanceSOCKS }) {
   return (
     <BuyButtonFrame>
       <ButtonFrame
+        disabled={balanceSOCKS > 0 ? false : true}
+        text={'Sell'}
+        type={'secondary'}
+        onClick={() => {
+          handleToggleCheckout(TRADE_TYPES.SELL)
+        }}
+      />
+      <Shim />
+      <ButtonFrame
         disabled={
           account === null ||
           !balanceSOCKS ||
           balanceSOCKS.lt(ethers.utils.bigNumberify(10).pow(ethers.utils.bigNumberify(18)))
         }
-        text={'Redeem SOCKS'}
-        type={'cta'}
+        text={'Redeem'}
+        type={'secondary'}
         onClick={() => {
           handleToggleCheckout(TRADE_TYPES.REDEEM)
         }}

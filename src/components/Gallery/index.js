@@ -4,12 +4,13 @@ import styled from 'styled-components'
 import test from './test.png'
 
 const GalleryFrame = styled.div`
-  width: 90vw;
-  height: 90vw;
+  width: 100%;
+  height: 80%;
+  /* height: 90vw; */
   min-height: 200px;
   min-width: 200px;
-  max-height: 250px;
-  max-width: 250px;
+  /* max-height: 250px;
+  max-width: 250px; */
   display: flex;
   align-items: center;
   flex-direction: center;

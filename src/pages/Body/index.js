@@ -2,24 +2,77 @@ import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { useWeb3Context } from 'web3-react'
 
-import Gallery from '../../components/Gallery'
+import Card from '../../components/Card'
 import BuyButtons from '../../components/Buttons'
 import RedeemButton from '../../components/RedeemButton'
 import Checkout from '../../components/Checkout'
 import { amountFormatter } from '../../utils'
 
-function Header({ ready, dollarPrice }) {
+function Header({ ready, dollarPrice, balanceSOCKS }) {
   const { account } = useWeb3Context()
 
   return (
     <HeaderFrame>
-      <Status ready={ready} account={account} />
-      <Title>unisocks token (SOCKS)</Title>
-      <CurrentPrice>{dollarPrice && `$${amountFormatter(dollarPrice, 18, 2)} USD`}</CurrentPrice>
-      <Tagline>dynamically priced socks</Tagline>
+      <Unicorn>🦄 Pay</Unicorn>
+      <Account>
+        {balanceSOCKS > 0 ? (
+          <SockCount>{balanceSOCKS && `${amountFormatter(balanceSOCKS, 18, 0)}`} SOCKS</SockCount>
+        ) : (
+          ''
+        )}
+        <Status ready={ready} account={account} />
+      </Account>
     </HeaderFrame>
   )
 }
+
+const HeaderFrame = styled.div`
+  /* text-align: left; */
+  width: 100vw;
+  box-sizing: border-box;
+  margin: 0px;
+  /* padding-bottom: 2vw; */
+  font-size: 1.25rem;
+  color: ${props => props.theme.primary};
+  display: flex;
+  flex-direction: row;
+  /* flex-wrap: wrap; */
+  justify-content: space-between;
+  margin: 1rem;
+  /* align-items: center; */
+  @media only screen and (max-width: 480px) {
+    /* For mobile phones: */
+    /* padding: 10vw;
+    padding-top: 10vh; */
+  }
+`
+
+const Account = styled.div`
+  background-color: #f1f2f6;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-right: 2rem;
+`
+
+const SockCount = styled.p`
+  color: #6c7284;
+  font-weight: 500;
+  margin: 0px;
+  font-size: 14px;
+  float: left;
+`
+
+const Status = styled.div`
+  width: 12px;
+  height: 12px;
+
+  border-radius: 100%;
+  margin-left: 12px;
+  margin-top: 2px;
+  float: right;
+  background-color: ${props =>
+    props.account === null ? props.theme.orange : props.ready ? props.theme.green : props.theme.orange};
+`
 
 export default function Body({
   selectedTokenSymbol,
@@ -46,28 +99,12 @@ export default function Body({
 
   return (
     <AppWrapper>
-      <Bar />
-      <Header ready={ready} dollarPrice={dollarPrice} />
-      <Gallery />
-      <Intro>
-        purchasing a <b>SOCKS</b> entitles you to 1{' '}
-        <i>
-          <b>real</b>
-        </i>{' '}
-        pair of limited edition socks, shipped anywhere in the world.
-      </Intro>
-      <BuyButtons balance={balanceSOCKS} />
-      <MarketData>
-        {balanceSOCKS > 0 ? (
-          <SockCount>
-            You own {balanceSOCKS && `${amountFormatter(balanceSOCKS, 18, 0)}`} SOCKS&nbsp; • &nbsp;
-          </SockCount>
-        ) : (
-          ''
-        )}
-        <SockCount>{reserveSOCKSToken && `${amountFormatter(reserveSOCKSToken, 18, 0)}/500 available`}</SockCount>
-      </MarketData>
-      <RedeemButton balanceSOCKS={balanceSOCKS} />
+      <Header ready={ready} dollarPrice={dollarPrice} balanceSOCKS={balanceSOCKS} />
+      <Content>
+        <Card dollarPrice={dollarPrice} reserveSOCKSToken={reserveSOCKSToken} />
+        <BuyButtons balanceSOCKS={balanceSOCKS} />
+        <RedeemButton balanceSOCKS={balanceSOCKS} />
+      </Content>
       <Checkout
         selectedTokenSymbol={selectedTokenSymbol}
         setSelectedTokenSymbol={setSelectedTokenSymbol}
@@ -92,106 +129,26 @@ export default function Body({
 
 const AppWrapper = styled.div`
   width: 100vw;
-  max-width: 640px;
+  /* max-width: 640px; */
   margin: 0px auto;
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  padding-top: 20vh;
+  justify-content: center;
+  align-items: center;
+  /* padding-top: 20vh; */
   overflow: scroll;
-  @media only screen and (max-width: 480px) {
-    padding-top: 0px;
-  }
-  @media only screen and (min-device-width: 768px) {
-    max-height: 480px;
-    overflow: hidden;
-  }
 `
 
-const Bar = styled.div`
-  position: fixed;
-  top: 0px;
-  right: 0px;
-  width: 0.5rem;
-  height: 100vh;
-  background-color: ${props => props.theme.primary};
+const Content = styled.div`
+  max-width: 640px;
+  margin-top: 20vh;
 `
 
-const Status = styled.div`
-  width: 12px;
-  height: 12px;
-  position: fixed;
-  top: 16px;
-  right: 24px;
-  border-radius: 100%;
-  background-color: ${props =>
-    props.account === null ? props.theme.orange : props.ready ? props.theme.green : props.theme.orange};
-`
-
-const HeaderFrame = styled.div`
-  text-align: left;
+const Unicorn = styled.p`
+  color: #6c7284;
+  font-weight: 600;
   margin: 0px;
-  padding-bottom: 2vw;
-  font-size: 1.25rem;
-  color: ${props => props.theme.primary};
-  @media only screen and (max-width: 480px) {
-    /* For mobile phones: */
-    padding: 10vw;
-    padding-top: 10vh;
-  }
-`
-
-const Title = styled.p`
-  font-weight: 500;
-  margin: 0px;
-  margin-bottom: 10px;
-`
-
-const Tagline = styled.p`
-  font-weight: 500;
-  font-size: 1rem;
-  margin-bottom: 0px;
-  margin-top: 2rem;
-`
-
-const CurrentPrice = styled.p`
-  font-weight: 700;
-  margin: 0px;
-  height: 1.125rem;
-`
-
-const Intro = styled.p`
-  /* padding-left: 5vw; */
-  margin: 0px;
-  margin-top: 20%;
-  max-width: 300px;
-  line-height: 180%;
-  font-weight: 500;
-  color: ${props => props.theme.primary};
-  @media only screen and (max-width: 480px) {
-    /* For mobile phones: */
-    margin-top: 2rem;
-    padding-left: 10vw;
-  }
-`
-
-const SockCount = styled.p`
-  font-weight: 500;
-  font-size: 0.75rem;
-  color: ${({ theme, color }) => color || theme.uniswapPink};
-  height: 0.5rem;
-`
-
-const MarketData = styled.div`
-  display: flex;
-  flex-direction: row;
-  /* padding-left: 5vw; */
-  margin-bottom: 0.5rem;
-  margin-top: 0.5rem;
-  /* padding-bottom: 0.5rem; */
-  @media only screen and (max-width: 480px) {
-    /* For mobile phones: */
-    padding-left: 10vw;
-  }
+  font-size: 18px;
 `

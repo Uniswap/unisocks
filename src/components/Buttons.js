@@ -26,10 +26,10 @@ const ButtonFrame = styled(Button)`
   width: 100%;
 `
 
-const Shim = styled.div`
-  width: 2rem !important;
-  height: 2rem;
-`
+// const Shim = styled.div`
+//   width: 2rem !important;
+//   height: 2rem;
+// `
 
 export default function BuyButtons(props) {
   const [, setState] = useAppContext()
@@ -42,19 +42,10 @@ export default function BuyButtons(props) {
     <BuyButtonFrame>
       <ButtonFrame
         disabled={false}
-        text={'Buy SOCKS'}
+        text={'Buy'}
         type={'cta'}
         onClick={() => {
           handleToggleCheckout(TRADE_TYPES.BUY)
-        }}
-      />
-      <Shim />
-      <ButtonFrame
-        disabled={props.balance > 0 ? false : true}
-        text={'Sell SOCKS'}
-        type={'cta'}
-        onClick={() => {
-          handleToggleCheckout(TRADE_TYPES.SELL)
         }}
       />
     </BuyButtonFrame>
