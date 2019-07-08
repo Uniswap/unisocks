@@ -19,7 +19,7 @@ const BuyButtonFrame = styled.div`
 
   @media only screen and (max-width: 480px) {
     /* For mobile phones: */
-    margin: 1.5rem 2rem 0.5rem 2rem;
+    /* margin: 1.5rem 2rem 0.5rem 2rem; */
   }
 `
 const ButtonFrame = styled(Button)`

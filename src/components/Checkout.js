@@ -62,6 +62,8 @@ export default function Checkout({
   sell,
   burn,
   balanceSOCKS,
+  dollarPrice,
+  reserveSOCKSToken,
   dollarize,
   currentTransactionHash,
   currentTransactionType,
@@ -117,6 +119,8 @@ export default function Checkout({
             dollarize={dollarize}
             setCurrentTransaction={setCurrentTransaction}
             setShowConnect={setShowConnect}
+            dollarPrice={dollarPrice}
+            reserveSOCKSToken={reserveSOCKSToken}
           />
         )
       } else {
@@ -154,32 +158,44 @@ const CheckoutFrame = styled.div`
   transition: bottom 0.3s;
   width: 100%;
   margin: 0px;
-  height: 448px;
-  border-radius: 20px 20px 0px 0px;
-  padding: 2rem;
+  height: 524px;
+  height: fit-content;
+  border-radius: 8px 8px 0px 0px;
+  /* padding: 2rem; */
   box-sizing: border-box;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
-  background-color: ${props => props.theme.grey};
+  /* background-color: ${props => props.theme.grey}; */
+  background-color: #fff;
   border-color: ${props => props.theme.black};
   color: ${props => props.theme.primary};
 
   @media only screen and (min-device-width: 768px) {
     max-width: 375px;
-    margin: 5% auto; /* Will not center vertically and won't work in IE6/7. */
+    /* margin: 5% auto; Will not center vertically and won't work in IE6/7. */
     left: 0;
     right: 0;
-    border-radius: 20px 20px;
+    border-radius: 8px 8px;
     z-index: ${props => (props.isVisible ? '2' : '-1  ')};
     opacity: ${props => (props.isVisible ? '1' : '0')};
 
     bottom: ${props => (props.isVisible ? '20%' : '-100%')};
+
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    -ms-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+    width: 100%;
   }
 
   p {
     margin-top: 0px;
+    margin: 0px;
   }
 `
 

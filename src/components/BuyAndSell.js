@@ -7,6 +7,7 @@ import SelectToken from './SelectToken'
 import IncrementToken from './IncrementToken'
 import { useAppContext } from '../context'
 import { ERROR_CODES, amountFormatter, TRADE_TYPES } from '../utils'
+import test from './Gallery/test.png'
 
 export function useCount() {
   const [state, setState] = useAppContext()
@@ -63,6 +64,8 @@ export default function BuyAndSell({
   validateBuy,
   buy,
   validateSell,
+  dollarPrice,
+  reserveSOCKSToken,
   sell,
   dollarize,
   setCurrentTransaction,
@@ -126,8 +129,8 @@ export default function BuyAndSell({
       conditionalRender = (
         <>
           <p>
-            {amountFormatter(buyValidationState.inputValue, 18, 4)} {selectedTokenSymbol} ($
-            {ready && amountFormatter(dollarize(buyValidationState.inputValue), 18, 2)})
+            ${ready && amountFormatter(dollarize(buyValidationState.inputValue), 18, 2)}
+            {/* ({amountFormatter(buyValidationState.inputValue, 18, 4)} {selectedTokenSymbol}) */}
           </p>
         </>
       )
@@ -135,8 +138,8 @@ export default function BuyAndSell({
       conditionalRender = (
         <>
           <p>
-            {amountFormatter(sellValidationState.outputValue, 18, 4)} {selectedTokenSymbol} ($
-            {ready && amountFormatter(dollarize(sellValidationState.outputValue), 18, 2)})
+            ${ready && amountFormatter(dollarize(sellValidationState.outputValue), 18, 2)}
+            {/* ({amountFormatter(sellValidationState.outputValue, 18, 4)} {selectedTokenSymbol}) */}
           </p>
         </>
       )
@@ -144,25 +147,48 @@ export default function BuyAndSell({
 
     return (
       <>
-        <p>{state.count} SOCKS</p>
+        {/* <p>{state.count} SOCKS</p> */}
         {conditionalRender}
       </>
     )
   }
 
+  function TokenVal() {
+    if (buying && buyValidationState.inputValue) {
+      return amountFormatter(buyValidationState.inputValue, 18, 4)
+    } else if (selling && sellValidationState.outputValue) {
+      return amountFormatter(sellValidationState.outputValue, 18, 4)
+    }
+  }
+
   return (
     <>
-      <CheckoutPrompt>
-        <i>{buying ? 'You are buying' : 'You are selling'}</i>
-      </CheckoutPrompt>
-      <CheckoutInfo>{renderFormData()}</CheckoutInfo>
-      <CheckoutPrompt>
-        <i>{buying ? 'How do you want to pay?' : 'What token do you want to receive?'}</i>
-      </CheckoutPrompt>
+      <TopFrame>
+        <Unicorn>
+          <span role="img" aria-label="unicorn">
+            🦄
+          </span>{' '}
+          Pay
+        </Unicorn>
+        <ImgStyle src={test} alt="Logo" />
+        <InfoFrame>
+          <CurrentPrice>
+            {/* {dollarPrice && `$${amountFormatter(dollarPrice, 18, 2)} USD`} */}
+            <USDPrice>{renderFormData()}</USDPrice>
+            <SockCount>{reserveSOCKSToken && `${amountFormatter(reserveSOCKSToken, 18, 0)}/500 available`}</SockCount>
+          </CurrentPrice>
+          <IncrementToken />
+        </InfoFrame>
+      </TopFrame>
       <CheckoutControls buying={buying}>
-        <SelectToken selectedTokenSymbol={selectedTokenSymbol} setSelectedTokenSymbol={setSelectedTokenSymbol} />
-        <div>↓</div>
-        <IncrementToken />
+        <CheckoutPrompt>
+          <i>{buying ? 'How do you want to pay?' : 'What token do you want to receive?'}</i>
+        </CheckoutPrompt>
+        <SelectToken
+          selectedTokenSymbol={selectedTokenSymbol}
+          setSelectedTokenSymbol={setSelectedTokenSymbol}
+          prefix={TokenVal()}
+        />
       </CheckoutControls>
       {shouldRenderUnlock ? (
         <ButtonFrame
@@ -200,41 +226,83 @@ export default function BuyAndSell({
           }}
         />
       )}
-      <ErrorFrame>
-        <p>
-          {account === null ? (
-            <>
-              Powered by{' '}
-              <Pink href="https://uniswap.io/" target="_blank" rel="noopener noreferrer">
-                Uniswap{' '}
-                <span role="img" aria-label="unicorn">
-                  🦄
-                </span>
-              </Pink>
-            </>
-          ) : errorMessage ? (
-            errorMessage
-          ) : (
-            <>
-              Powered by{' '}
-              <Pink href="https://uniswap.io/" target="_blank" rel="noopener noreferrer">
-                Uniswap{' '}
-                <span role="img" aria-label="unicorn">
-                  🦄
-                </span>
-              </Pink>
-            </>
-          )}
-        </p>
-      </ErrorFrame>
+      {/* I think I fucked this up? */}
+      {account === null ? null : <ErrorFrame>{errorMessage}</ErrorFrame>}
     </>
   )
 }
 
-const CheckoutControls = styled.span`
+const TopFrame = styled.div`
+  width: 100%;
+  max-width: 375px;
+  background: #000000;
+  background: linear-gradient(162.92deg, #2b2b2b 12.36%, #000000 94.75%);
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+`
+
+const Unicorn = styled.p`
+  width: 100%;
+  color: #fff;
+  font-weight: 600;
+  margin: 0px;
+  font-size: 16px;
+`
+
+const InfoFrame = styled.div`
   width: 100%;
   display: flex;
-  flex-direction: ${props => (props.buying ? 'column' : 'column-reverse')};
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+`
+
+const ImgStyle = styled.img`
+  width: 275px;
+  padding: 2rem 0 2rem 0;
+  box-sizing: border-box;
+`
+const SockCount = styled.p`
+  color: #aeaeae;
+  font-weight: 400;
+  margin: 0px;
+  margin-top: 8px;
+  font-size: 12px;
+  font-feature-settings: 'tnum' on, 'onum' on;
+`
+
+const USDPrice = styled.p`
+  margin: 0px;
+  p {
+    margin: 0px;
+  }
+`
+
+const CurrentPrice = styled.p`
+  font-weight: 600;
+  font-size: 18px;
+  margin: 0px;
+  /* margin-bottom: 0.5rem; */
+  font-feature-settings: 'tnum' on, 'onum' on;
+  /* height: 1.125rem; */
+`
+
+const CheckoutControls = styled.span`
+  width: 100%;
+  margin: 16px;
+  margin-bottom: 0px;
+  display: flex;
+  /* flex-direction: ${props => (props.buying ? 'column' : 'column-reverse')}; */
+  flex-direction: column;
   align-items: center;
   justify-content: space-between;
 `
@@ -252,18 +320,25 @@ const CheckoutPrompt = styled.p`
   font-weight: 400;
   font-size: 14px;
   margin-bottom: 0;
+  text-align: left;
+  width: 100%;
 `
 
-const ErrorFrame = styled.div`
+const ErrorFrame = styled.p`
   width: 100%;
   bottom: 0px;
-  height: 1rem;
-  margin-top: 1rem;
+  font-size: 12px;
+  /* height: 1rem; */
+  /* margin-top: 1rem; */
   text-align: center;
+  font-weight: 400;
+  opacity: 0.5;
+  /* margin: 0px; */
 
-  p {
+  /* p {
     font-weight: 400;
-  }
+    margin: 0px;
+  } */
 `
 
 const Pink = styled.a`
@@ -272,5 +347,9 @@ const Pink = styled.a`
 `
 
 const ButtonFrame = styled(Button)`
-  margin-top: 1rem;
+  margin: 16px;
+  height: 48px;
+  padding: 16px;
+  background: linear-gradient(97.28deg, #fe6dde 2.08%, #ff9dea 106.51%);
+  box-shadow: 0px 4px 20px rgba(239, 162, 250, 0.7);
 `

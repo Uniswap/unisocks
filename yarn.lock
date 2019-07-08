@@ -89,7 +89,6 @@
 "@0x/web3-wrapper@^6.0.6":
   version "6.0.6"
   resolved "https://registry.yarnpkg.com/@0x/web3-wrapper/-/web3-wrapper-6.0.6.tgz#bf2b07ba9f309e4c7a25dd1b25b2e9de67d0afc9"
-  integrity sha512-cmDHgYnPGNs6ItMw5h+hLe3Cvqaj6V1RY14ZMCc87L7PrwUFQLnrmSfKcsjaqsNDEmbjLf2dNL25DVu6FN/uyw==
   dependencies:
     "@0x/assert" "^2.0.10"
     "@0x/json-schemas" "^3.0.10"

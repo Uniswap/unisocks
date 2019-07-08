@@ -13,7 +13,12 @@ function Header({ ready, dollarPrice, balanceSOCKS }) {
 
   return (
     <HeaderFrame>
-      <Unicorn>🦄 Pay</Unicorn>
+      <Unicorn>
+        <span role="img" aria-label="unicorn">
+          🦄
+        </span>{' '}
+        Pay
+      </Unicorn>
       <Account>
         {balanceSOCKS > 0 ? (
           <SockCount>{balanceSOCKS && `${amountFormatter(balanceSOCKS, 18, 0)}`} SOCKS</SockCount>
@@ -27,19 +32,16 @@ function Header({ ready, dollarPrice, balanceSOCKS }) {
 }
 
 const HeaderFrame = styled.div`
-  /* text-align: left; */
-  width: 100vw;
+  width: 100%;
   box-sizing: border-box;
   margin: 0px;
-  /* padding-bottom: 2vw; */
   font-size: 1.25rem;
   color: ${props => props.theme.primary};
   display: flex;
   flex-direction: row;
-  /* flex-wrap: wrap; */
   justify-content: space-between;
-  margin: 1rem;
-  /* align-items: center; */
+  padding: 1rem;
+  /* margin: 1rem; */
   @media only screen and (max-width: 480px) {
     /* For mobile phones: */
     /* padding: 10vw;
@@ -51,7 +53,6 @@ const Account = styled.div`
   background-color: #f1f2f6;
   padding: 0.75rem;
   border-radius: 6px;
-  margin-right: 2rem;
 `
 
 const SockCount = styled.p`
@@ -65,7 +66,6 @@ const SockCount = styled.p`
 const Status = styled.div`
   width: 12px;
   height: 12px;
-
   border-radius: 100%;
   margin-left: 12px;
   margin-top: 2px;
@@ -116,6 +116,8 @@ export default function Body({
         sell={sell}
         burn={burn}
         balanceSOCKS={balanceSOCKS}
+        dollarPrice={dollarPrice}
+        reserveSOCKSToken={reserveSOCKSToken}
         dollarize={dollarize}
         currentTransactionHash={currentTransaction.hash}
         currentTransactionType={currentTransaction.type}
@@ -129,7 +131,6 @@ export default function Body({
 
 const AppWrapper = styled.div`
   width: 100vw;
-  /* max-width: 640px; */
   margin: 0px auto;
   margin-bottom: 1rem;
   display: flex;
@@ -137,18 +138,21 @@ const AppWrapper = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  /* padding-top: 20vh; */
   overflow: scroll;
 `
 
 const Content = styled.div`
-  max-width: 640px;
-  margin-top: 20vh;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  width: 100%;
+  max-width: 375px;
 `
 
 const Unicorn = styled.p`
-  color: #6c7284;
+  color: ${props => props.theme.uniswapPink};
   font-weight: 600;
   margin: 0px;
-  font-size: 18px;
+  font-size: 16px;
 `

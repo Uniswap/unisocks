@@ -17,10 +17,11 @@ const SelectMenu = styled(Select)`
   box-sizing: border-box;
   border: none;
   margin: 0;
-  margin-bottom: 0.5rem;
-  margin-top: 0.5rem;
+  /* margin-bottom: 0.5rem; */
+  margin-top: 1rem;
   appearance: none;
   background-color: #fff;
+  background-color: ${props => props.theme.grey};
   display: flex;
   flex-direction: row;
 
@@ -28,7 +29,13 @@ const SelectMenu = styled(Select)`
     border: none;
     width: 100%;
     border-radius: 24px;
+    background-color: ${props => props.theme.grey};
+
     padding: 0px 0.5rem 0px 0.5rem;
+  }
+
+  .react-select__indicator-separator {
+    display: none;
   }
 `
 
@@ -36,10 +43,11 @@ const options = Object.keys(TOKEN_SYMBOLS)
   .filter(s => s !== 'SOCKS')
   .map(s => ({ value: s, label: s }))
 
-export default function SelectToken({ selectedTokenSymbol, setSelectedTokenSymbol }) {
+export default function SelectToken({ selectedTokenSymbol, setSelectedTokenSymbol, prefix }) {
+  const newVal = prefix + ' ' + selectedTokenSymbol
   return (
     <SelectMenu
-      value={{ value: selectedTokenSymbol, label: selectedTokenSymbol }}
+      value={{ value: selectedTokenSymbol, label: newVal }}
       className="react-select-container"
       classNamePrefix="react-select"
       isSearchable={false}

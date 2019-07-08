@@ -22,11 +22,18 @@ const ButtonFrame = styled.button`
   pointer-events: ${props => (props.disabled ? 'none' : 'auto')};
   border-width: ${props => (props.type === 'cta' ? '0px' : '1px')};
   border-color: ${props => (props.type === 'cta' ? 'none' : props.theme.uniswapPink)};
-  background-color: ${props => (props.type === 'cta' ? props.theme.uniswapPink : 'none')};
-  color: ${props => (props.type === 'cta' ? props.theme.grey : props.theme.uniswapPink)};
+  background: ${props => (props.type === 'cta' ? 'linear-gradient(97.28deg, #fe6dde 2.08%, #ff9dea 106.51%)' : 'none')};
+  box-shadow: ${props => (props.type === 'cta' ? '0px 4px 20px rgba(239, 162, 250, 0.7);' : 'none')};
+
+  color: ${props => (props.type === 'cta' ? props.theme.white : props.theme.uniswapPink)};
+  transform: scale(1);
+  transition: transform 0.3s ease;
 
   :hover {
-    opacity: 0.8;
+    transform: scale(0.99);
+    /* text-decoration: underline; */
+    /* background-color: #ea61cc; */
+    /* color: white; */
   }
 `
 
