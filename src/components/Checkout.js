@@ -89,6 +89,12 @@ export default function Checkout({
     }
   }, [currentTransactionHash, library])
 
+  function closeCheckout() {
+    if (state.visible) {
+      setState(state => ({ ...state, visible: !state.visible }))
+    }
+  }
+
   const [showConnect, setShowConnect] = useState(false)
   function renderContent() {
     if (showConnect) {
@@ -132,6 +138,7 @@ export default function Checkout({
             dollarize={dollarize}
             setCurrentTransaction={setCurrentTransaction}
             setShowConnect={setShowConnect}
+            closeCheckout={closeCheckout}
           />
         )
       }
@@ -152,12 +159,14 @@ export default function Checkout({
 const CheckoutFrame = styled.div`
   position: fixed;
   bottom: ${props => (props.isVisible ? '0px' : '-100%')};
+  left: 0px;
   z-index: ${props => (props.isVisible ? '2' : '-1  ')};
   opacity: ${props => (props.isVisible ? '1' : '0')};
 
   transition: bottom 0.3s;
   width: 100%;
-  margin: 0px;
+  margin:0;
+  margin-top: 20px;
   height: 524px;
   height: fit-content;
   border-radius: 8px 8px 0px 0px;
@@ -172,6 +181,7 @@ const CheckoutFrame = styled.div`
   background-color: #fff;
   border-color: ${props => props.theme.black};
   color: ${props => props.theme.primary};
+  box-sizing: border-box;
 
   @media only screen and (min-device-width: 768px) {
     max-width: 375px;
@@ -186,7 +196,7 @@ const CheckoutFrame = styled.div`
 
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 40%;
     -webkit-transform: translateX(-50%) translateY(-50%);
     -ms-transform: translateX(-50%) translateY(-50%);
     transform: translateX(-50%) translateY(-50%);
@@ -194,7 +204,6 @@ const CheckoutFrame = styled.div`
   }
 
   p {
-    margin-top: 0px;
     margin: 0px;
   }
 `
@@ -203,7 +212,7 @@ const CheckoutBackground = styled.div`
   position: fixed;
   top: 0px;
   left: 0px;
-  opacity: ${props => (props.isVisible ? '.2' : '0')};
+  opacity: ${props => (props.isVisible ? '.5' : '0')};
   width: 100vw;
   height: 100vh;
   z-index: ${props => (props.isVisible ? '1' : '-1')};

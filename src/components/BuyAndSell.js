@@ -143,6 +143,8 @@ export default function BuyAndSell({
           </p>
         </>
       )
+    } else {
+      conditionalRender = <p>$0.00</p>
     }
 
     return (
@@ -158,6 +160,8 @@ export default function BuyAndSell({
       return amountFormatter(buyValidationState.inputValue, 18, 4)
     } else if (selling && sellValidationState.outputValue) {
       return amountFormatter(sellValidationState.outputValue, 18, 4)
+    } else {
+      return '0'
     }
   }
 
@@ -204,7 +208,9 @@ export default function BuyAndSell({
         <ButtonFrame
           className="button"
           disabled={validationError !== null}
-          text={account === null ? 'Connect Wallet' : buying ? 'Buy SOCKS' : 'Sell SOCKS'}
+          text={
+            account === null ? 'Connect Wallet' : !buying ? 'Sell SOCKS' : errorMessage ? errorMessage : 'Buy SOCKS'
+          }
           type={'cta'}
           onClick={() => {
             if (account === null) {
@@ -227,7 +233,7 @@ export default function BuyAndSell({
         />
       )}
       {/* I think I fucked this up? */}
-      {account === null ? null : <ErrorFrame>{errorMessage}</ErrorFrame>}
+      {/* {account === null ? null : errorMessage ? <ErrorFrame>{errorMessage}</ErrorFrame> : null} */}
     </>
   )
 }
@@ -245,7 +251,7 @@ const TopFrame = styled.div`
   flex-wrap: wrap;
   justify-content: flex-start;
   align-items: center;
-  padding: 20px;
+  padding: 16px;
   box-sizing: border-box;
 `
 
@@ -267,11 +273,11 @@ const InfoFrame = styled.div`
 `
 
 const ImgStyle = styled.img`
-  width: 275px;
+  width: 225px;
   padding: 2rem 0 2rem 0;
   box-sizing: border-box;
 `
-const SockCount = styled.p`
+const SockCount = styled.span`
   color: #aeaeae;
   font-weight: 400;
   margin: 0px;
@@ -280,46 +286,32 @@ const SockCount = styled.p`
   font-feature-settings: 'tnum' on, 'onum' on;
 `
 
-const USDPrice = styled.p`
-  margin: 0px;
-  p {
-    margin: 0px;
-  }
+const USDPrice = styled.div`
+  /* margin: 0px; */
+  /* margin-bottom: 0.5rem; */
 `
 
-const CurrentPrice = styled.p`
+const CurrentPrice = styled.div`
   font-weight: 600;
   font-size: 18px;
   margin: 0px;
-  /* margin-bottom: 0.5rem; */
   font-feature-settings: 'tnum' on, 'onum' on;
-  /* height: 1.125rem; */
 `
 
 const CheckoutControls = styled.span`
   width: 100%;
-  margin: 16px;
-  margin-bottom: 0px;
+  margin: 16px 16px 0 16px;
   display: flex;
-  /* flex-direction: ${props => (props.buying ? 'column' : 'column-reverse')}; */
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
 `
 
-const CheckoutInfo = styled.div`
-  width: 100%;
-  font-weight: 600;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-top: 0.5rem;
-`
-
 const CheckoutPrompt = styled.p`
-  font-weight: 400;
+  font-weight: 500;
   font-size: 14px;
   margin-bottom: 0;
+  margin-left: 8px;
   text-align: left;
   width: 100%;
 `
@@ -328,28 +320,17 @@ const ErrorFrame = styled.p`
   width: 100%;
   bottom: 0px;
   font-size: 12px;
-  /* height: 1rem; */
-  /* margin-top: 1rem; */
   text-align: center;
   font-weight: 400;
   opacity: 0.5;
-  /* margin: 0px; */
-
-  /* p {
-    font-weight: 400;
-    margin: 0px;
-  } */
-`
-
-const Pink = styled.a`
-  text-decoration: none;
-  color: ${props => props.theme.uniswapPink};
+  /* margin-top: 0px; */
+  margin-bottom: 1rem !important;
 `
 
 const ButtonFrame = styled(Button)`
   margin: 16px;
   height: 48px;
   padding: 16px;
-  background: linear-gradient(97.28deg, #fe6dde 2.08%, #ff9dea 106.51%);
-  box-shadow: 0px 4px 20px rgba(239, 162, 250, 0.7);
+  /* background: linear-gradient(97.28deg, #fe6dde 2.08%, #ff9dea 106.51%); */
+  /* box-shadow: 0px 4px 20px rgba(239, 162, 250, 0.7); */
 `

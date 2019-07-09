@@ -6,7 +6,7 @@ import { useAppContext } from '../context'
 import { TRADE_TYPES } from '../utils'
 
 const BuyButtonFrame = styled.div`
-  margin: 1.5rem 0rem 0.5rem 0rem;
+  margin: 1rem 0rem 0.5rem 0rem;
   display: flex;
   align-items: center;
   flex-direction: center;

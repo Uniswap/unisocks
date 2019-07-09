@@ -144,10 +144,13 @@ const AppWrapper = styled.div`
 const Content = styled.div`
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 40%;
   transform: translateX(-50%) translateY(-50%);
-  width: 100%;
+  width: calc(100vw - 40px);
   max-width: 375px;
+  @media only screen and (max-width: 480px) {
+    top: 52%;
+  }
 `
 
 const Unicorn = styled.p`
