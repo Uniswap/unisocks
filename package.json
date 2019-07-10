@@ -8,11 +8,12 @@
     "qrcode.react": "^0.9.3",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-dom-confetti": "^0.1.1",
     "react-google-recaptcha": "^1.0.5",
     "react-places-autocomplete": "^7.2.1",
     "react-scripts": "3.0.0",
     "react-tilt": "^0.1.4",
-    "styled-components": "^4.2.0",
+    "styled-components": "^5.0.0-beta.0",
     "web3-react": "^5.0.4"
   },
   "scripts": {

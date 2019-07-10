@@ -6,6 +6,7 @@ import ReCAPTCHA from 'react-google-recaptcha'
 
 import Suggest from './Suggest'
 
+// we need to capture the full address into netlify...
 // https://www.netlify.com/blog/2017/07/20/how-to-integrate-netlifys-form-handling-in-a-react-app/
 function encode(data) {
   return Object.keys(data)
@@ -61,7 +62,7 @@ const addressMapping = [
 
 const recaptchaEnabled = false
 
-export default function RedeemForm({ setHasConfirmedAddress }) {
+export default function RedeemForm({ setHasConfirmedAddress, setUserAddress }) {
   const { library, account } = useWeb3Context()
   const [recaptcha, setRecaptcha] = useState()
   const [autoAddress, setAutoAddress] = useState([])
@@ -115,9 +116,10 @@ export default function RedeemForm({ setHasConfirmedAddress }) {
 
   // keep acount in sync
   useEffect(() => {
+    setUserAddress(autoAddress['formatted_address'])
     updateAutoFields(autoAddress['address_components'] ? autoAddress['address_components'] : [])
     handleChange({ target: { name: [address], value: account } })
-  }, [account, autoAddress])
+  }, [account, autoAddress, setUserAddress])
 
   useLayoutEffect(() => {
     if (suggestEl.current) {
@@ -262,6 +264,7 @@ const FormFrame = styled.form`
   color: #fff;
   font-weight: 600;
   margin: 16px;
+  /* margin-bottom: 0px; */
   font-size: 16px;
   display: flex;
   flex-direction: row;
@@ -275,7 +278,7 @@ const FormFrame = styled.form`
     -moz-box-shadow: none;
     box-shadow: none;
     color: #000;
-    background-color: #f2f2f2;
+    background-color: #f1f2f6;
     padding: 8px;
     margin: 4px 0 4px 0;
     font-size: 16px;
@@ -317,14 +320,15 @@ const ButtonFrame = styled.button`
   /* color: ${props => props.theme.white}; */
   background: ${props =>
     props.disabled
-      ? 'linear-gradient(97.28deg, rgba(254, 109, 222, 0.2) 2.08%, rgba(255, 157, 234, 0.2) 106.51%)'
+      ? // ? 'linear-gradient(97.28deg, rgba(254, 109, 222, 0.2) 2.08%, rgba(255, 157, 234, 0.2) 106.51%)'
+        '#f1f2f6'
       : 'linear-gradient(97.28deg, #fe6dde 2.08%, #ff9dea 106.51%)'};
   box-shadow: ${props => (props.disabled ? 'none' : '0px 4px 20px rgba(239, 162, 250, 0.7)')};
   color: ${props => (props.disabled ? props.theme.uniswapPink : props.theme.white)};
   transform: scale(1);
   transition: transform 0.3s ease;
   text-align: center;
-  margin-top: 16px;
+  margin-top: 4px;
 
   :hover {
     transform: scale(0.99);

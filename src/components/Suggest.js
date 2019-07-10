@@ -42,8 +42,8 @@ export default function LocationSearchInput({ myRef, inputY, value, setAutoAddre
               const className = suggestion.active ? 'suggestion-item--active' : 'suggestion-item'
               // inline style for demonstration purpose
               const style = suggestion.active
-                ? { backgroundColor: '#cecece', cursor: 'pointer' }
-                : { backgroundColor: '#f2f2f2', cursor: 'pointer' }
+                ? { backgroundColor: '#dddfe8', cursor: 'pointer', fontWeight: 400, borderRadius: '4px' }
+                : { backgroundColor: '#f1f2f6', cursor: 'pointer', fontWeight: 400, borderRadius: '4px' }
               return (
                 <div
                   {...getSuggestionItemProps(suggestion, {
@@ -76,16 +76,14 @@ const SelectForm = styled.div`
   left: 16px;
   z-index: 10;
   margin-top: 38px;
-  /* padding: 12px; */
-  border-radius: 0 0 12px 12px;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.4);
-
-  /* background-color: ${props => props.theme.grey}; */
+  border-radius: 8px;
+  background-color: #f1f2f6;
   color: #000;
 
-  div{
-    padding: 4px;
-    width: 100%;
+  div {
+    padding: 8px;
+    /* width: 100%; */
     font-weight: 500;
   }
 `

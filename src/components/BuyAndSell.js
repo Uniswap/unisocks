@@ -232,8 +232,6 @@ export default function BuyAndSell({
           }}
         />
       )}
-      {/* I think I fucked this up? */}
-      {/* {account === null ? null : errorMessage ? <ErrorFrame>{errorMessage}</ErrorFrame> : null} */}
     </>
   )
 }

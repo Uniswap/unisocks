@@ -57,7 +57,6 @@ export default function IncrementToken({ initialValue, max }) {
       <IncrementButton justify={'flex-start'} onClick={decrementCount}>
         -
       </IncrementButton>
-      {/* <SelectMenu>{count + ' SOCKS'}</SelectMenu> */}
       <SelectMenu>{count}</SelectMenu>
 
       <IncrementButton justify={'flex-end'} onClick={incrementCount}>
