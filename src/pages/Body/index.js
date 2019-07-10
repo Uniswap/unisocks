@@ -23,7 +23,7 @@ function Header({ ready, dollarPrice, balanceSOCKS }) {
         {balanceSOCKS > 0 ? (
           <SockCount>{balanceSOCKS && `${amountFormatter(balanceSOCKS, 18, 0)}`} SOCKS</SockCount>
         ) : (
-          ''
+          <SockCount>Disconnected</SockCount>
         )}
         <Status ready={ready} account={account} />
       </Account>
@@ -72,6 +72,7 @@ const Status = styled.div`
   float: right;
   background-color: ${props =>
     props.account === null ? props.theme.orange : props.ready ? props.theme.green : props.theme.orange};
+  // props.account === null ? props.theme.orange : props.theme.green};
 `
 
 export default function Body({

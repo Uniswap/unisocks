@@ -6,11 +6,7 @@ import test from './test.png'
 const GalleryFrame = styled.div`
   width: 100%;
   height: 80%;
-  /* height: 90vw; */
-  /* min-height: 200px;
-  min-width: 200px; */
-  /* max-height: 250px;
-  max-width: 250px; */
+  min-height: 258px;
   display: flex;
   align-items: center;
   flex-direction: center;
@@ -20,7 +16,6 @@ const GalleryFrame = styled.div`
 
 const ImgStyle = styled.img`
   width: 100%;
-  // padding: 2rem;
   box-sizing: border-box;
   /* background-color: ${props => props.theme.black}; */
 `

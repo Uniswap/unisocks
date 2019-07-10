@@ -17,14 +17,15 @@ export function useCount(initialValue, max) {
   function increment() {
     setState(state => {
       const newCount = state.count + 1
+      // @Noah please check this
       if (
-        !max ||
+        newCount <= max ||
         ethers.utils
           .bigNumberify(newCount)
           .mul(ethers.utils.bigNumberify(10).pow(18))
           .lte(max)
       ) {
-        return { ...state, count: state.count + 1 }
+        return { ...state, count: newCount }
       } else {
         return state
       }

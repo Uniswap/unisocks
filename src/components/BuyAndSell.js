@@ -209,7 +209,15 @@ export default function BuyAndSell({
           className="button"
           disabled={validationError !== null}
           text={
-            account === null ? 'Connect Wallet' : !buying ? 'Sell SOCKS' : errorMessage ? errorMessage : 'Buy SOCKS'
+            account === null
+              ? 'Connect Wallet'
+              : !buying
+              ? 'Sell SOCKS'
+              : errorMessage
+              ? errorMessage
+              : ready
+              ? 'Buy SOCKS'
+              : 'Connect to Wallet'
           }
           type={'cta'}
           onClick={() => {

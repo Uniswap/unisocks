@@ -18,9 +18,10 @@ export default function Card({ dollarPrice, reserveSOCKSToken }) {
         <Gallery />
         <MarketData>
           <span>
-            <CurrentPrice>{dollarPrice && `$${amountFormatter(dollarPrice, 18, 2)} USD`}</CurrentPrice>
-
-            <SockCount>{reserveSOCKSToken && `${amountFormatter(reserveSOCKSToken, 18, 0)}/500 available`}</SockCount>
+            <CurrentPrice>{dollarPrice ? `$${amountFormatter(dollarPrice, 18, 2)} USD` : '$0.00'}</CurrentPrice>
+            <SockCount>
+              {reserveSOCKSToken ? `${amountFormatter(reserveSOCKSToken, 18, 0)}/500 available` : '500/500 available'}
+            </SockCount>
           </span>
           <Info>
             <InfoButton href="">?</InfoButton>
