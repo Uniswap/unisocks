@@ -9,7 +9,6 @@ import Pending from './Pending'
 import Confirmed from './Confirmed'
 import { useAppContext } from '../context'
 import { TRADE_TYPES } from '../utils'
-import { ethers } from 'ethers'
 
 import Confetti from 'react-dom-confetti'
 
@@ -32,14 +31,7 @@ export function useCount(initialValue, max) {
   function increment() {
     setState(state => {
       const newCount = state.count + 1
-      // @Noah please check this
-      if (
-        newCount <= max ||
-        ethers.utils
-          .bigNumberify(newCount)
-          .mul(ethers.utils.bigNumberify(10).pow(18))
-          .lte(max)
-      ) {
+      if (!max || newCount <= max) {
         return { ...state, count: newCount }
       } else {
         return state

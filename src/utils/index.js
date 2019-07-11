@@ -4,6 +4,8 @@ import ERC20_ABI from './erc20.json'
 import EXCHANGE_ABI from './exchange.json'
 import FACTORY_ABI from './factory.json'
 
+import UncheckedJsonRpcSigner from './signer'
+
 const FACTORY_ADDRESS = '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95'
 
 export const TOKEN_ADDRESSES = {
@@ -54,7 +56,7 @@ export function isAddress(value) {
 
 // account is optional
 export function getProviderOrSigner(library, account) {
-  return account ? library.getSigner(account) : library
+  return account ? new UncheckedJsonRpcSigner(library.getSigner(account)) : library
 }
 
 // account is optional

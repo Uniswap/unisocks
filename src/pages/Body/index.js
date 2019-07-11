@@ -98,7 +98,7 @@ export default function Body({
   const clearCurrentTransaction = useCallback(() => {
     _setCurrentTransaction({})
   }, [])
-  const [state, setState] = useAppContext()
+  const [state] = useAppContext()
 
   return (
     <AppWrapper overlay={state.visible}>
