@@ -10,7 +10,7 @@ import Gallery from './Gallery'
 
 export default function Card({ dollarPrice, reserveSOCKSToken }) {
   const [showPop, setShowPop] = useState(false)
-  const [state, setState] = useAppContext()
+  const [, setState] = useAppContext()
 
   function handleToggleCheckout(tradeType) {
     setState(state => ({ ...state, visible: !state.visible, tradeType }))

@@ -323,17 +323,6 @@ const CheckoutPrompt = styled.p`
   width: 100%;
 `
 
-const ErrorFrame = styled.p`
-  width: 100%;
-  bottom: 0px;
-  font-size: 12px;
-  text-align: center;
-  font-weight: 400;
-  opacity: 0.5;
-  /* margin-top: 0px; */
-  margin-bottom: 1rem !important;
-`
-
 const ButtonFrame = styled(Button)`
   margin: 16px;
   height: 48px;

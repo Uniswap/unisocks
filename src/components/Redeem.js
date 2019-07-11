@@ -29,26 +29,6 @@ const config = {
   colors: ['#a864fd', '#29cdff', '#78ff44', '#ff718d', '#fdff6a']
 }
 
-export function useCount() {
-  const [state, setState] = useAppContext()
-
-  function increment() {
-    setState(state => ({ ...state, count: state.count + 1 }))
-  }
-
-  function decrement() {
-    if (state.count >= 1) {
-      setState(state => ({ ...state, count: state.count - 1 }))
-    }
-  }
-
-  function setCount(val) {
-    let int = val.toInt()
-    setState(state => ({ ...state, count: int }))
-  }
-  return [state.count, increment, decrement, setCount]
-}
-
 function Controls({ closeCheckout }) {
   return (
     <FrameControls>
@@ -74,14 +54,27 @@ export default function Redeem({
   setShowConnect,
   closeCheckout
 }) {
-  const { account, setConnector } = useWeb3Context()
+  const { library, account, setConnector } = useWeb3Context()
   const [state] = useAppContext()
 
   const [numberBurned, setNumberBurned] = useState()
   const [hasPickedAmount, setHasPickedAmount] = useState(false)
   const [hasConfirmedAddress, setHasConfirmedAddress] = useState(false)
+  const [transactionHash, setTransactionHash] = useState('')
   const [hasBurnt, setHasBurnt] = useState(false)
   const [userAddress, setUserAddress] = useState('')
+
+  const pending = !!transactionHash
+
+  useEffect(() => {
+    if (transactionHash) {
+      library.waitForTransaction(transactionHash).then(() => {
+        console.log('confirmed')
+        setTransactionHash('')
+        setHasBurnt(true)
+      })
+    }
+  })
 
   function renderContent() {
     if (account === null) {
@@ -110,8 +103,8 @@ export default function Redeem({
                 <p>Redeem SOCKS</p>
               </Owned>
               <IncrementToken
-                initialValue={amountFormatter(balanceSOCKS, 18, 0)}
-                max={amountFormatter(balanceSOCKS, 18, 0)}
+                initialValue={Number(amountFormatter(balanceSOCKS, 18, 0))}
+                max={Number(amountFormatter(balanceSOCKS, 18, 0))}
               />
             </InfoFrame>
           </TopFrame>
@@ -204,19 +197,20 @@ export default function Redeem({
           <ButtonFrame
             className="button"
             disabled={false}
-            text={`Redeem ${numberBurned} SOCKS`}
+            text={pending ? `Waiting...` : `Redeem ${numberBurned} SOCKS`}
             type={'cta'}
             onClick={() => {
               burn(numberBurned.toString())
                 .then(response => {
-                  console.log(response.hash)
+                  setTransactionHash(response.hash)
                 })
                 .catch(() => {
-                  setHasBurnt(true)
+                  setTransactionHash('0x1f76d7130ac846e03a543e792dcfc2c6765bc78c1a7359cb749c625466591e52')
                 })
             }}
           />
           <Back
+            disabled={!!pending}
             onClick={() => {
               setHasConfirmedAddress(false)
             }}
@@ -240,9 +234,7 @@ export default function Redeem({
           <CheckoutPrompt>
             Estimated shipping time 2-3 weeks. <br /> Shipping time will vary by region
           </CheckoutPrompt>
-          <CheckoutPrompt>
-            You shipping details will be available soon. Use your account to check them <a href="">here</a>.
-          </CheckoutPrompt>
+          <CheckoutPrompt>You shipping details will be available soon.</CheckoutPrompt>
           <Shim />
         </>
       )

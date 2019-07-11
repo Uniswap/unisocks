@@ -14,6 +14,7 @@ function encode(data) {
     .join('&')
 }
 
+// variables for the official form name of each field
 const bot = 'beep-boop'
 const name = 'Name'
 const line1 = 'Street Address'
@@ -26,6 +27,7 @@ const email = 'Email'
 const address = 'Address'
 const signature = 'signature'
 
+// map from variables to display text for each field
 const nameMap = {
   [name]: 'Name',
   [line1]: 'Line1',
@@ -38,8 +40,10 @@ const nameMap = {
   [address]: 'Ethereum Address'
 }
 
+// the order for fields that will be submitted
 const nameOrder = [name, line1, line2, city, state, zip, country, email, address]
 
+// default for each form field
 const defaultState = {
   [bot]: '',
   [name]: '',
@@ -52,6 +56,7 @@ const defaultState = {
   [email]: ''
 }
 
+// mapping from field to google maps return value
 const addressMapping = [
   { [line1]: 'street_address' },
   { [city]: 'sublocality' },
@@ -79,7 +84,7 @@ export default function RedeemForm({ setHasConfirmedAddress, setUserAddress }) {
   function updateAutoFields(address) {
     let constructedStreetAddress = ''
     function getTypes(addressItem, addressVal, item) {
-      addressItem.map(type => {
+      addressItem.forEach(type => {
         if (Object.keys(item)[0] === line1) {
           if (type === 'street_number') {
             constructedStreetAddress += addressVal
@@ -107,8 +112,8 @@ export default function RedeemForm({ setHasConfirmedAddress, setUserAddress }) {
       })
     }
 
-    addressMapping.map(item => {
-      address.map(addressItem => {
+    addressMapping.forEach(item => {
+      address.forEach(addressItem => {
         getTypes(addressItem.types, addressItem.long_name, item)
       })
     })
@@ -137,7 +142,7 @@ export default function RedeemForm({ setHasConfirmedAddress, setUserAddress }) {
   }
 
   return (
-    <FormFrame>
+    <FormFrame autocomplete="off">
       <input hidden type="text" name="beep-boop" value={formState[bot]} onChange={handleChange} />
       <input
         required
