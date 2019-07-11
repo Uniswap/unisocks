@@ -39,7 +39,7 @@ export default function Card({ dollarPrice, reserveSOCKSToken }) {
           </span>
           <Info>
             <Popover show={showPop} onMouseLeave={e => handleClickPopover(e)}>
-              The price of SOCKS will change when tokens are bought and sold.{' '}
+              <p>The price of SOCKS will change when tokens are bought and sold.</p>
               <a href="https://medium.com/frst/money-laundry-the-rise-of-the-crypto-sock-market-f979aafc3796">
                 Read more.
               </a>
