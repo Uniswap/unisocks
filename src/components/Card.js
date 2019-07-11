@@ -1,18 +1,32 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import Tilt from 'react-tilt'
 
 import { amountFormatter } from '../utils'
+import { useAppContext } from '../context'
+import { TRADE_TYPES } from '../utils'
 
 import Gallery from './Gallery'
 
 export default function Card({ dollarPrice, reserveSOCKSToken }) {
+  const [showPop, setShowPop] = useState(false)
+  const [state, setState] = useAppContext()
+
+  function handleToggleCheckout(tradeType) {
+    setState(state => ({ ...state, visible: !state.visible, tradeType }))
+  }
+
+  function handleClickPopover(e) {
+    e.preventDefault()
+    setShowPop(!showPop)
+  }
+
   return (
     <Tilt
       style={{ background: '#000', borderRadius: '8px' }}
       options={{ scale: 1.01, max: 10, glare: true, 'max-glare': 1, speed: 1000 }}
     >
-      <CardWrapper>
+      <CardWrapper onClick={e => (showPop ? handleClickPopover(e) : handleToggleCheckout(TRADE_TYPES.BUY))}>
         <Title>Unisocks Edition 0</Title>
         <SubTitle>$SOCKS</SubTitle>
         <Gallery />
@@ -24,7 +38,15 @@ export default function Card({ dollarPrice, reserveSOCKSToken }) {
             </SockCount>
           </span>
           <Info>
-            <InfoButton href="">?</InfoButton>
+            <Popover show={showPop}>
+              The price of SOCKS will change when tokens are bought and sold.{' '}
+              <a href="https://medium.com/frst/money-laundry-the-rise-of-the-crypto-sock-market-f979aafc3796">
+                Read more.
+              </a>
+            </Popover>
+            <InfoButton onMouseEnter={e => handleClickPopover(e)} onMouseLeave={e => handleClickPopover(e)} href="">
+              ?
+            </InfoButton>
             <Dynamic>Dynamic Pricing</Dynamic>
           </Info>
         </MarketData>
@@ -45,6 +67,7 @@ const CardWrapper = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
   padding: 24px;
 `
 
@@ -87,6 +110,25 @@ const CurrentPrice = styled.p`
 
 const Info = styled.div`
   margin-bottom: -2px;
+`
+
+const Popover = styled.div`
+  position: fixed;
+  font-size: 12px;
+  background-color: #404040;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.4);
+  padding: 0.5rem;
+  border-radius: 6px;
+  top: 260px;
+  display: block;
+  right: 35px;
+  width: 150px;
+  display: ${props => (props.show ? 'block' : 'none')};
+
+  a {
+    color: ${props => props.theme.uniswapPink};
+    text-decoration: none;
+  }
 `
 
 const Dynamic = styled.p`

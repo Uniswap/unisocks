@@ -230,6 +230,7 @@ export default function BuyAndSell({
                 ? buy(buyValidationState.maximumInputValue, buyValidationState.outputValue)
                 : sell(sellValidationState.inputValue, sellValidationState.minimumOutputValue)
               ).then(response => {
+                console.log(response)
                 setCurrentTransaction(
                   response.hash,
                   buying ? TRADE_TYPES.BUY : TRADE_TYPES.SELL,

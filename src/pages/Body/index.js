@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { useWeb3Context } from 'web3-react'
+import { useAppContext } from '../../context'
 
 import Card from '../../components/Card'
 import BuyButtons from '../../components/Buttons'
@@ -97,9 +98,10 @@ export default function Body({
   const clearCurrentTransaction = useCallback(() => {
     _setCurrentTransaction({})
   }, [])
+  const [state, setState] = useAppContext()
 
   return (
-    <AppWrapper>
+    <AppWrapper overlay={state.visible}>
       <Header ready={ready} dollarPrice={dollarPrice} balanceSOCKS={balanceSOCKS} />
       <Content>
         <Card dollarPrice={dollarPrice} reserveSOCKSToken={reserveSOCKSToken} />
@@ -132,14 +134,18 @@ export default function Body({
 
 const AppWrapper = styled.div`
   width: 100vw;
+  height: 100%;
   margin: 0px auto;
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  overflow: scroll;
+  /* justify-content: center; */
+  /* align-items: center; */
+  /* height: ${props => (props.overlay ? '100vh' : 'auto')}; */
+  overflow: ${props => (props.overlay ? 'hidden' : 'scroll')};
+  scroll-behavior: smooth;
+  position:  ${props => (props.overlay ? 'fixed' : 'initial')};;
 `
 
 const Content = styled.div`
@@ -147,10 +153,10 @@ const Content = styled.div`
   left: 50%;
   top: 40%;
   transform: translateX(-50%) translateY(-50%);
-  width: calc(100vw - 40px);
+  width: calc(100vw - 32px);
   max-width: 375px;
   @media only screen and (max-width: 480px) {
-    top: 52%;
+    top: 340px;
   }
 `
 
