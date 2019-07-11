@@ -147,12 +147,7 @@ export default function BuyAndSell({
       conditionalRender = <p>$0.00</p>
     }
 
-    return (
-      <>
-        {/* <p>{state.count} SOCKS</p> */}
-        {conditionalRender}
-      </>
-    )
+    return <>{conditionalRender}</>
   }
 
   function TokenVal() {
@@ -293,10 +288,7 @@ const SockCount = styled.span`
   font-feature-settings: 'tnum' on, 'onum' on;
 `
 
-const USDPrice = styled.div`
-  /* margin: 0px; */
-  /* margin-bottom: 0.5rem; */
-`
+const USDPrice = styled.div``
 
 const CurrentPrice = styled.div`
   font-weight: 600;
@@ -327,6 +319,4 @@ const ButtonFrame = styled(Button)`
   margin: 16px;
   height: 48px;
   padding: 16px;
-  /* background: linear-gradient(97.28deg, #fe6dde 2.08%, #ff9dea 106.51%); */
-  /* box-shadow: 0px 4px 20px rgba(239, 162, 250, 0.7); */
 `

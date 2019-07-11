@@ -320,11 +320,11 @@ const InfoFrame = styled.div`
 `
 
 const Owned = styled.div`
-  font-weight: 500;
+  font-weight: 700;
+  color: #efe7e4;
   font-size: 24px;
+  margin-bottom: 12px;
   margin: 0px;
-  margin-right: 8px;
-  font-feature-settings: 'tnum' on, 'onum' on;
   white-space: pre-wrap;
 `
 

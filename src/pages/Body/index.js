@@ -140,12 +140,9 @@ const AppWrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  /* justify-content: center; */
-  /* align-items: center; */
-  /* height: ${props => (props.overlay ? '100vh' : 'auto')}; */
   overflow: ${props => (props.overlay ? 'hidden' : 'scroll')};
   scroll-behavior: smooth;
-  position:  ${props => (props.overlay ? 'fixed' : 'initial')};;
+  position: ${props => (props.overlay ? 'fixed' : 'initial')};
 `
 
 const Content = styled.div`

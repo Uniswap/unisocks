@@ -38,13 +38,13 @@ export default function Card({ dollarPrice, reserveSOCKSToken }) {
             </SockCount>
           </span>
           <Info>
-            <Popover show={showPop}>
+            <Popover show={showPop} onMouseLeave={e => handleClickPopover(e)}>
               The price of SOCKS will change when tokens are bought and sold.{' '}
               <a href="https://medium.com/frst/money-laundry-the-rise-of-the-crypto-sock-market-f979aafc3796">
                 Read more.
               </a>
             </Popover>
-            <InfoButton onMouseEnter={e => handleClickPopover(e)} onMouseLeave={e => handleClickPopover(e)} href="">
+            <InfoButton onMouseEnter={e => handleClickPopover(e)} href="">
               ?
             </InfoButton>
             <Dynamic>Dynamic Pricing</Dynamic>
@@ -105,7 +105,6 @@ const CurrentPrice = styled.p`
   margin: 0px;
   margin-bottom: 0.5rem;
   font-feature-settings: 'tnum' on, 'onum' on;
-  /* height: 1.125rem; */
 `
 
 const Info = styled.div`
@@ -119,9 +118,9 @@ const Popover = styled.div`
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.4);
   padding: 0.5rem;
   border-radius: 6px;
-  top: 260px;
+  right: 16px;
+  bottom: 16px;
   display: block;
-  right: 35px;
   width: 150px;
   display: ${props => (props.show ? 'block' : 'none')};
 

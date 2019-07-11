@@ -37,34 +37,64 @@ export default function Connect({ setShowConnect }) {
   })
 
   return (
-    <>
+    <WalletFrame>
       <Back
         onClick={() => {
           setShowConnect(false)
         }}
       >
-        ← Back
+        Back
       </Back>
+      <Shim />
       <Button
         text="Browser Wallet"
         onClick={() => {
           activateInjected()
         }}
       />
+      <Shim />
       <Button
         text="WalletConnect"
         onClick={() => {
           activateWalletConnect()
         }}
       />
-      <QRCodeWrapper>{walletconnectUri && account === null ? <QRCode value={walletconnectUri} /> : null}</QRCodeWrapper>
+      <QRCodeWrapper>
+        {walletconnectUri && account === null ? (
+          <>
+            <QRCode value={walletconnectUri} />
+            <p>Scan to connect</p>
+          </>
+        ) : null}
+      </QRCodeWrapper>
       <p>{connectorError && 'Connection Error (Try a web3-enabled browser).'}</p>
-    </>
+    </WalletFrame>
   )
 }
 
-const Back = styled.p`
+const WalletFrame = styled.div`
+  padding: 16px;
+  width: 100%;
+`
+
+const Shim = styled.div`
+  width: 100%;
+  height: 1rem;
+`
+
+const Back = styled.span`
+  color: ${props => props.theme.uniswapPink};
+  font-weight: 400;
+  margin: 0px;
+  margin: -4px 0 16px 0px !important;
+  font-size: 14px;
+  width: 100%;
+  /* color: ${props => props.theme.uniswapPink}; */
   cursor: pointer;
+  text-align: center;
+  :hover {
+    text-decoration: underline;
+  }
 `
 
 const QRCodeWrapper = styled.div`
