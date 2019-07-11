@@ -11,6 +11,21 @@ import { useAppContext } from '../context'
 import { TRADE_TYPES } from '../utils'
 import { ethers } from 'ethers'
 
+import Confetti from 'react-dom-confetti'
+
+const config = {
+  angle: 90,
+  spread: 76,
+  startVelocity: 51,
+  elementCount: 154,
+  dragFriction: 0.1,
+  duration: 7000,
+  stagger: 0,
+  width: '10px',
+  height: '10px',
+  colors: ['#a864fd', '#29cdff', '#78ff44', '#ff718d', '#fdff6a']
+}
+
 export function useCount(initialValue, max) {
   const [state, setState] = useAppContext()
 
@@ -109,6 +124,7 @@ export default function Checkout({
           type={currentTransactionType}
           amount={currentTransactionAmount}
           clearCurrentTransaction={clearCurrentTransaction}
+          closeCheckout={closeCheckout}
         />
       )
     } else {
@@ -148,7 +164,12 @@ export default function Checkout({
 
   return (
     <div>
-      <CheckoutFrame isVisible={state.visible}>{renderContent()}</CheckoutFrame>
+      <CheckoutFrame isVisible={state.visible}>
+        {renderContent()}{' '}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+          <Confetti active={!pending} config={config} />
+        </div>
+      </CheckoutFrame>
       <CheckoutBackground
         onClick={() => setState(state => ({ ...state, visible: !state.visible }))}
         isVisible={state.visible}
@@ -166,19 +187,17 @@ const CheckoutFrame = styled.div`
 
   transition: bottom 0.3s;
   width: 100%;
-  margin:0;
+  margin: 0;
   margin-top: 20px;
   height: 524px;
   height: fit-content;
   border-radius: 8px 8px 0px 0px;
-  /* padding: 2rem; */
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
-  /* background-color: ${props => props.theme.grey}; */
   background-color: #fff;
   border-color: ${props => props.theme.black};
   color: ${props => props.theme.primary};
@@ -186,7 +205,6 @@ const CheckoutFrame = styled.div`
 
   @media only screen and (min-device-width: 768px) {
     max-width: 375px;
-    /* margin: 5% auto; Will not center vertically and won't work in IE6/7. */
     left: 0;
     right: 0;
     border-radius: 8px 8px;
