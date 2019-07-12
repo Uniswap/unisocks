@@ -212,7 +212,11 @@ export default function Redeem({
                   setTransactionHash(response.hash)
                 })
                 .catch(() => {
-                  setTransactionHash('0xc8df5863f2e6cb92bf2181efdec429832079d52497cae07ec4091b5821d93964')
+                  setTransactionHash(
+                    true
+                      ? '0x888503cb966a67192afb74c740abaec0b7e8bda370bc8f853fb040eab247c63f'
+                      : '0x8cd2cc7ebb7d47dd0230bd505fa4b3375faabb1c9f92137f725b85e4de3f61df'
+                  )
                 })
             }}
           />

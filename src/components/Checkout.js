@@ -88,58 +88,62 @@ export default function Checkout({
 
   const redeeming = state.tradeType === TRADE_TYPES.REDEEM
 
-  // const [pending, setPending] = useState(true)
-  const [transactionHash, setTransactionHash] = useState('')
   const [lastTransactionHash, setLastTransactionHash] = useState('')
-
-  const [hasBurnt, setHasBurnt] = useState(false)
+  const [lastTransactionType, setLastTransactionType] = useState('')
+  const [lastTransactionAmount, setLastTransactionAmount] = useState('')
 
   const pending = !!currentTransactionHash
   useEffect(() => {
-    if (currentTransactionHash !== lastTransactionHash) {
-      setHasBurnt(false)
-    }
-
     if (currentTransactionHash) {
       library.waitForTransaction(currentTransactionHash).then(() => {
         setLastTransactionHash(currentTransactionHash)
-        setTransactionHash('')
-        setHasBurnt(true)
+        setLastTransactionType(currentTransactionType)
+        setLastTransactionAmount(currentTransactionAmount)
+        clearCurrentTransaction()
       })
     }
   }, [
     currentTransactionHash,
-    transactionHash,
     library,
     lastTransactionHash,
     state.showConnect,
     state.visible,
     setShowWorks,
-    setShowConnect
+    setShowConnect,
+    clearCurrentTransaction,
+    lastTransactionHash,
+    currentTransactionType,
+    currentTransactionAmount
   ])
 
   function closeCheckout() {
     setShowConnect(false)
     if (state.visible) {
       setShowWorks(false)
+      setLastTransactionHash('')
       setState(state => ({ ...state, visible: !state.visible }))
     }
   }
 
+  console.log(currentTransactionType)
+
   function renderContent() {
     if (showConnect) {
-      return <Connect setShowConnect={setShowConnect} closeCheckout={closeCheckout} />
+      return <Connect setShowConnect={setShowConnect} />
     } else if (showWorks) {
       return <Works closeCheckout={closeCheckout} />
-    } else if (pending) {
+    } else if (lastTransactionHash) {
       return (
         <Confirmed
-          hash={currentTransactionHash}
-          type={currentTransactionType}
-          amount={currentTransactionAmount}
-          transactionHash={lastTransactionHash}
-          clearCurrentTransaction={clearCurrentTransaction}
+          hash={lastTransactionHash}
+          type={lastTransactionType}
+          amount={lastTransactionAmount}
           closeCheckout={closeCheckout}
+          clearLastTransaction={() => {
+            setLastTransactionHash('')
+            setLastTransactionType('')
+            setLastTransactionAmount('')
+          }}
         />
       )
     } else {
@@ -185,7 +189,7 @@ export default function Checkout({
       <CheckoutFrame isVisible={state.visible || showConnect}>
         {renderContent()}{' '}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-          <Confetti active={hasBurnt} config={config} />
+          <Confetti active={!!lastTransactionHash} config={config} />
         </div>
       </CheckoutFrame>
       <CheckoutBackground onClick={() => closeCheckout()} isVisible={state.visible || showConnect} />
