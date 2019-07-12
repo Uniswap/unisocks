@@ -210,7 +210,7 @@ export default function BuyAndSell({
           Pay
         </Unicorn>
         <ImgStyle src={test} alt="Logo" />
-        <InfoFrame>
+        <InfoFrame pending={pending}>
           <CurrentPrice>
             {/* {dollarPrice && `$${amountFormatter(dollarPrice, 18, 2)} USD`} */}
             <USDPrice>{renderFormData()}</USDPrice>
@@ -246,6 +246,7 @@ export default function BuyAndSell({
         <ButtonFrame
           text={`Unlock ${buying ? selectedTokenSymbol : 'SOCKS'}`}
           type={'cta'}
+          pending={pending}
           onClick={() => {
             unlock(buying).then(({ hash }) => {
               setCurrentTransaction(hash, TRADE_TYPES.UNLOCK, undefined)
@@ -255,6 +256,7 @@ export default function BuyAndSell({
       ) : (
         <ButtonFrame
           className="button"
+          pending={pending}
           disabled={validationError !== null || (pending && currentTransactionHash)}
           text={getText(account, buying, errorMessage, ready, pending, currentTransactionHash)}
           type={'cta'}
@@ -308,6 +310,7 @@ const Unicorn = styled.p`
 `
 
 const InfoFrame = styled.div`
+  opacity: ${props => (props.pending ? 0.6 : 1)};
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -369,4 +372,5 @@ const EtherscanLink = styled.a`
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
+  margin-top: 8px;
 `

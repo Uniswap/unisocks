@@ -118,10 +118,22 @@ export default function Body({
       <Header ready={ready} dollarPrice={dollarPrice} balanceSOCKS={balanceSOCKS} setShowConnect={setShowConnect} />
       <Content>
         <Card dollarPrice={dollarPrice} reserveSOCKSToken={reserveSOCKSToken} />{' '}
-        <BuyButtons balanceSOCKS={balanceSOCKS} />
         <Info>
-          Buy <i>real</i> socks with cryptocurrency.
-          <SubInfo>
+          <div style={{ marginBottom: '4px' }}>Buy and sell real socks with digital currency.</div>
+          <div style={{ marginBottom: '4px' }}>
+            Delivered on demand.{' '}
+            <a
+              href="/"
+              onClick={e => {
+                e.preventDefault()
+                setState(state => ({ ...state, visible: !state.visible }))
+                setShowWorks(true)
+              }}
+            >
+              Learn more
+            </a>
+          </div>
+          {/* <SubInfo>
             An experiment in pricing and user experience by the team at Uniswap.{' '}
             <a
               href="/"
@@ -133,8 +145,9 @@ export default function Body({
             >
               How it works.
             </a>
-          </SubInfo>
+          </SubInfo> */}
         </Info>
+        <BuyButtons balanceSOCKS={balanceSOCKS} />
         <RedeemButton balanceSOCKS={balanceSOCKS} />
       </Content>
       <Checkout
@@ -186,39 +199,28 @@ const Content = styled.div`
   width: calc(100vw - 32px);
   max-width: 375px;
   @media only screen and (max-width: 480px) {
-    top: 340px;
+    top: 420px;
   }
 `
 
 const Info = styled.div`
   color: ${props => props.theme.text};
-  font-weight: 600;
+  font-weight: 500;
   margin: 0px;
-  font-size: 18px;
-  padding: 24px;
-  /* padding-top: 28px; */
+  font-size: 14px;
+  padding: 20px;
+  padding-top: 32px;
   border-radius: 0 0 8px 8px;
   /* border-radius: 8px; */
   margin-bottom: 12px;
   margin-top: -12px;
   /* margin-top: 16px; */
   background-color: ${props => '#f1f2f6'};
-`
-
-const SubInfo = styled.div`
-  font-weight: 500;
-  margin: 0px;
-  margin-top: 12px;
-  line-height: 160%;
-  font-size: 12px;
-
-  p {
-    margin-bottom: 0px;
-  }
-
   a {
     color: ${props => props.theme.uniswapPink};
     text-decoration: none;
+    /* padding-top: 8px; */
+    /* font-size: 14px; */
   }
   a:hover {
     cursor: pointer;

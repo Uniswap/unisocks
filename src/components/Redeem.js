@@ -104,7 +104,7 @@ export default function Redeem({
           <TopFrame hasPickedAmount={hasPickedAmount}>
             <Controls closeCheckout={closeCheckout} />
             <ImgStyle src={test} alt="Logo" hasPickedAmount={hasPickedAmount} />
-            <InfoFrame>
+            <InfoFrame pending={pending}>
               <Owned>
                 <SockCount>You own {balanceSOCKS && `${amountFormatter(balanceSOCKS, 18, 0)}`}</SockCount>
                 <p>Redeem SOCKS</p>
@@ -146,13 +146,15 @@ export default function Redeem({
           {/* <Count>2/3</Count> */}
           <CheckoutPrompt>Where should we send them?</CheckoutPrompt>
           <RedeemFrame burn={burn} setHasConfirmedAddress={setHasConfirmedAddress} setUserAddress={setUserAddress} />
-          <Back
-            onClick={() => {
-              setNumberBurned()
-              setHasPickedAmount(false)
-            }}
-          >
-            back
+          <Back>
+            <span
+              onClick={() => {
+                setNumberBurned()
+                setHasPickedAmount(false)
+              }}
+            >
+              back
+            </span>
           </Back>
         </>
       )
@@ -204,6 +206,7 @@ export default function Redeem({
           <ButtonFrame
             className="button"
             disabled={pending}
+            pending={pending}
             text={pending ? `Waiting for confirmation...` : `Redeem ${numberBurned} SOCKS`}
             type={'cta'}
             onClick={() => {
@@ -220,18 +223,19 @@ export default function Redeem({
                 })
             }}
           />
-          <Back
-            disabled={!!pending}
-            onClick={() => {
-              setHasConfirmedAddress(false)
-            }}
-          >
+          <Back disabled={!!pending}>
             {pending ? (
               <EtherscanLink href={link(transactionHash)} target="_blank" rel="noopener noreferrer">
                 View on Etherscan.
               </EtherscanLink>
             ) : (
-              'back'
+              <span
+                onClick={() => {
+                  setHasConfirmedAddress(false)
+                }}
+              >
+                back
+              </span>
             )}
           </Back>
         </>
@@ -319,6 +323,7 @@ const Close = styled.img`
 `
 
 const InfoFrame = styled.div`
+  opacity: ${props => (props.pending ? 0.6 : 1)};
   width: 100%;
   font-size: 20px;
   font-weight: 500;
@@ -376,17 +381,22 @@ const SockCount = styled.span`
   }
 `
 
-const Back = styled.span`
+const Back = styled.div`
   color: #aeaeae;
   font-weight: 400;
   margin: 0px;
   margin: -4px 0 16px 0px !important;
   font-size: 14px;
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   /* color: ${props => props.theme.uniswapPink}; */
-  cursor: pointer;
   text-align: center;
-  :hover {
+  span {
+    cursor: pointer;
+  }
+  span:hover {
     text-decoration: underline;
   }
 `

@@ -121,6 +121,11 @@ const Popover = styled.div`
   bottom: 16px;
   display: block;
   width: 150px;
+  style= {
+     {
+      margintop: '0px';
+    }
+  }
   display: ${props => (props.show ? 'block' : 'none')};
 
   a {

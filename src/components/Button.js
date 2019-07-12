@@ -1,6 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import { Spinner } from '../theme'
+import Circle from './Gallery/circle.svg'
+
 const ButtonFrame = styled.button`
   padding: 0;
   text-align: center;
@@ -53,11 +56,22 @@ const ButtonFrame = styled.button`
   }
 `
 
-const CtaText = styled.span`
+const CtaText = styled.div`
   width: 100%;
 `
 
-export default function Button({ text, onClick = () => {}, preventDefault = true, ...rest }) {
+const CtaTextFlex = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
+
+const SpinnerWrapper = styled(Spinner)`
+  margin: 0 0.25rem 0 0.3rem;
+`
+
+export default function Button({ text, onClick = () => {}, preventDefault = true, pending, ...rest }) {
   return (
     <ButtonFrame
       onClick={e => {
@@ -68,7 +82,14 @@ export default function Button({ text, onClick = () => {}, preventDefault = true
       }}
       {...rest}
     >
-      <CtaText>{text}</CtaText>
+      {pending ? (
+        <CtaTextFlex>
+          {text}
+          <SpinnerWrapper src={Circle} alt="loader" />{' '}
+        </CtaTextFlex>
+      ) : (
+        <CtaText>{text}</CtaText>
+      )}
     </ButtonFrame>
   )
 }

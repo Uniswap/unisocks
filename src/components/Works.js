@@ -48,9 +48,8 @@ export default function Works({ closeCheckout }) {
       <Desc>
         $SOCKS is a token that entitles you to 1 real pair of limited edition socks, shipped anywhere in the world.
       </Desc>
-      <Desc>You can sell the token back at any time.</Desc>
       <Desc>
-        To get a <i>real</i> pair, redeem a $SOCKS token and your socks will ship right to you.
+        You can sell the token back at any time. To get a <i>real</i> pair, redeem a $SOCKS token
       </Desc>
       <Title>How it's priced:</Title>
       <Desc>
@@ -62,13 +61,13 @@ export default function Works({ closeCheckout }) {
           rel="noopener noreferrer"
         >
           bonding curve
-        </a>{' '}
-        coded into the smart contract. $SOCKS will eventually find an equillibrium based on the market demand.
+        </a>
+        . $SOCKS will eventually find an equillibrium based on market demand.
       </Desc>
       <Title>Unipay:</Title>
       <Desc>
-        Buying or selling socks uses the uniswap protocol and allows us to accept any token input as a payment method.
-        The pool of SOCKS is a uniswap pool where 500 SOCKS tokens were deposited along with the starting value of ETH.{' '}
+        Buying or selling socks uses the uniswap protocol and accepts any token input as a payment method. The pool of
+        SOCKS is a uniswap pool where 500 SOCKS tokens were deposited along with the starting value of ETH.{' '}
       </Desc>
       <Desc>
         <a href="https://docs.uniswap.io/" target="_blank" rel="noopener noreferrer">

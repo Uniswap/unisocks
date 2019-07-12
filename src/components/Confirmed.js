@@ -107,7 +107,7 @@ export default function Confirmed({ hash, type, amount, clearLastTransaction, cl
             // Trigger buy frame here!
           }}
         />
-        <Shim />
+        {/* <Shim /> */}
       </ConfirmedFrame>
     )
   } else {
@@ -127,7 +127,7 @@ export default function Confirmed({ hash, type, amount, clearLastTransaction, cl
             Transaction Details ↗
           </EtherscanLink>
         </CheckoutPrompt>
-        <Shim />
+        {/* <Shim /> */}
       </ConfirmedFrame>
     )
   }
