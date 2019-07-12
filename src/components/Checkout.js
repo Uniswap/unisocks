@@ -5,7 +5,6 @@ import { useWeb3Context } from 'web3-react'
 import Connect from './Connect'
 import BuyAndSell from './BuyAndSell'
 import Redeem from './Redeem'
-import Pending from './Pending'
 import Confirmed from './Confirmed'
 import { useAppContext } from '../context'
 import { TRADE_TYPES } from '../utils'
@@ -77,10 +76,13 @@ export default function Checkout({
   currentTransactionType,
   currentTransactionAmount,
   setCurrentTransaction,
-  clearCurrentTransaction
+  clearCurrentTransaction,
+  setShowConnect,
+  showConnect
 }) {
   const { library } = useWeb3Context()
   const [state, setState] = useAppContext()
+  console.log(state.showConnect)
 
   const redeeming = state.tradeType === TRADE_TYPES.REDEEM
 
@@ -105,7 +107,7 @@ export default function Checkout({
         setHasBurnt(true)
       })
     }
-  }, [currentTransactionHash, transactionHash, library, lastTransactionHash])
+  }, [currentTransactionHash, transactionHash, library, lastTransactionHash, state.showConnect])
 
   function closeCheckout() {
     if (state.visible) {
@@ -113,7 +115,6 @@ export default function Checkout({
     }
   }
 
-  const [showConnect, setShowConnect] = useState(false)
   function renderContent() {
     if (showConnect) {
       return <Connect setShowConnect={setShowConnect} />
@@ -168,7 +169,7 @@ export default function Checkout({
 
   return (
     <div>
-      <CheckoutFrame isVisible={state.visible}>
+      <CheckoutFrame isVisible={state.visible || showConnect}>
         {renderContent()}{' '}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
           <Confetti active={hasBurnt} config={config} />
@@ -176,7 +177,7 @@ export default function Checkout({
       </CheckoutFrame>
       <CheckoutBackground
         onClick={() => setState(state => ({ ...state, visible: !state.visible }))}
-        isVisible={state.visible}
+        isVisible={state.visible || showConnect}
       />
     </div>
   )

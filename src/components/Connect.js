@@ -47,6 +47,7 @@ export default function Connect({ setShowConnect }) {
       </Back>
       <Shim />
       <Button
+        type={'cta'}
         text="Browser Wallet"
         onClick={() => {
           activateInjected()
@@ -54,13 +55,14 @@ export default function Connect({ setShowConnect }) {
       />
       <Shim />
       <Button
+        type={'cta'}
         text="WalletConnect"
         onClick={() => {
           activateWalletConnect()
         }}
       />
       <QRCodeWrapper>
-        {walletconnectUri && account === null ? (
+        {walletconnectUri && account === null && !connectorError ? (
           <>
             <QRCode value={walletconnectUri} />
             <p>Scan to connect</p>

@@ -9,24 +9,30 @@ import RedeemButton from '../../components/RedeemButton'
 import Checkout from '../../components/Checkout'
 import { amountFormatter } from '../../utils'
 
-function Header({ ready, dollarPrice, balanceSOCKS }) {
-  const { account } = useWeb3Context()
+function Header({ ready, dollarPrice, balanceSOCKS, setShowConnect }) {
+  const { account, setConnector } = useWeb3Context()
+
+  function handleAccount() {
+    setConnector('Injected', { suppressAndThrowErrors: true }).catch(error => {
+      setShowConnect(true)
+    })
+  }
 
   return (
-    <HeaderFrame>
+    <HeaderFrame balanceSOCKS={balanceSOCKS}>
       <Unicorn>
         <span role="img" aria-label="unicorn">
           🦄
         </span>{' '}
         Pay
       </Unicorn>
-      <Account>
+      <Account onClick={() => handleAccount()} balanceSOCKS={balanceSOCKS}>
         {balanceSOCKS > 0 ? (
           <SockCount>{balanceSOCKS && `${amountFormatter(balanceSOCKS, 18, 0)}`} SOCKS</SockCount>
         ) : (
-          <SockCount>Disconnected</SockCount>
+          <SockCount>Connect Wallet</SockCount>
         )}
-        <Status ready={ready} account={account} />
+        <Status balanceSOCKS={balanceSOCKS} ready={ready} account={account} />
       </Account>
     </HeaderFrame>
   )
@@ -37,27 +43,30 @@ const HeaderFrame = styled.div`
   box-sizing: border-box;
   margin: 0px;
   font-size: 1.25rem;
-  color: ${props => props.theme.primary};
+  color: ${props => (props.balanceSOCKS ? props.theme.primary : 'white')};
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   padding: 1rem;
-  /* margin: 1rem; */
-  @media only screen and (max-width: 480px) {
-    /* For mobile phones: */
-    /* padding: 10vw;
-    padding-top: 10vh; */
-  }
 `
 
 const Account = styled.div`
-  background-color: #f1f2f6;
+  background-color: ${props => (props.balanceSOCKS ? '#f1f2f6' : props.theme.blue)};
   padding: 0.75rem;
   border-radius: 6px;
+  cursor: ${props => (props.balanceSOCKS ? 'auto' : 'pointer')};
+
+  transform: scale(1);
+  transition: transform 0.3s ease;
+
+  :hover {
+    transform: ${props => (props.balanceSOCKS ? 'scale(1)' : 'scale(1.02)')};
+    text-decoration: underline;
+  }
 `
 
 const SockCount = styled.p`
-  color: #6c7284;
+  /* color: #6c7284; */
   font-weight: 500;
   margin: 0px;
   font-size: 14px;
@@ -65,6 +74,7 @@ const SockCount = styled.p`
 `
 
 const Status = styled.div`
+  display: ${props => (props.balanceSOCKS ? 'initial' : 'none')};
   width: 12px;
   height: 12px;
   border-radius: 100%;
@@ -99,10 +109,11 @@ export default function Body({
     _setCurrentTransaction({})
   }, [])
   const [state] = useAppContext()
+  const [showConnect, setShowConnect] = useState(false)
 
   return (
     <AppWrapper overlay={state.visible}>
-      <Header ready={ready} dollarPrice={dollarPrice} balanceSOCKS={balanceSOCKS} />
+      <Header ready={ready} dollarPrice={dollarPrice} balanceSOCKS={balanceSOCKS} setShowConnect={setShowConnect} />
       <Content>
         <Card dollarPrice={dollarPrice} reserveSOCKSToken={reserveSOCKSToken} />
         <BuyButtons balanceSOCKS={balanceSOCKS} />
@@ -122,6 +133,8 @@ export default function Body({
         dollarPrice={dollarPrice}
         reserveSOCKSToken={reserveSOCKSToken}
         dollarize={dollarize}
+        showConnect={showConnect}
+        setShowConnect={setShowConnect}
         currentTransactionHash={currentTransaction.hash}
         currentTransactionType={currentTransaction.type}
         currentTransactionAmount={currentTransaction.amount}

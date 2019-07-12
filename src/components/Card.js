@@ -26,7 +26,7 @@ export default function Card({ dollarPrice, reserveSOCKSToken }) {
       style={{ background: '#000', borderRadius: '8px' }}
       options={{ scale: 1.01, max: 10, glare: true, 'max-glare': 1, speed: 1000 }}
     >
-      <CardWrapper onClick={e => (showPop ? handleClickPopover(e) : handleToggleCheckout(TRADE_TYPES.BUY))}>
+      <CardWrapper>
         <Title>Unisocks Edition 0</Title>
         <SubTitle>$SOCKS</SubTitle>
         <Gallery />
@@ -39,7 +39,7 @@ export default function Card({ dollarPrice, reserveSOCKSToken }) {
           </span>
           <Info>
             <Popover show={showPop} onMouseLeave={e => handleClickPopover(e)}>
-              <p>The price of SOCKS will change when tokens are bought and sold.</p>
+              <p style={{ marginTop: '0px' }}>The price of SOCKS will change when tokens are bought and sold.</p>
               <a href="https://medium.com/frst/money-laundry-the-rise-of-the-crypto-sock-market-f979aafc3796">
                 Read more.
               </a>
@@ -127,6 +127,10 @@ const Popover = styled.div`
   a {
     color: ${props => props.theme.uniswapPink};
     text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+    cursor: pointer;
   }
 `
 
