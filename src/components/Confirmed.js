@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
 
-import { useAppContext } from '../context'
 import { amountFormatter, TRADE_TYPES } from '../utils'
 import { link, EtherscanLink } from './Pending'
 import Button from './Button'
 
 import close from './Gallery/close.svg'
 import sent from './Gallery/sent.png'
+import { useAppContext } from '../context'
 
 const ConfirmedFrame = styled.div`
   width: 100%;
@@ -49,14 +49,14 @@ const Unicorn = styled.p`
   font-size: 16px;
 `
 
-export default function Confirmed({ hash, type, amount, clearCurrentTransaction, closeCheckout }) {
+export default function Confirmed({ hash, type, amount, clearLastTransaction, closeCheckout }) {
   const [state, setState] = useAppContext()
 
   useEffect(() => {
     if (!state.visible) {
-      clearCurrentTransaction()
+      clearLastTransaction()
     }
-  }, [state.visible, clearCurrentTransaction])
+  }, [state.visible, clearLastTransaction])
 
   if (type === TRADE_TYPES.UNLOCK) {
     return (
@@ -99,6 +99,8 @@ export default function Confirmed({ hash, type, amount, clearCurrentTransaction,
           text={`Redeem your SOCKS now`}
           type={'cta'}
           onClick={() => {
+            clearLastTransaction()
+            setState(state => ({ ...state, tradeType: TRADE_TYPES.REDEEM }))
             // Trigger buy frame here!
           }}
         />
@@ -161,6 +163,7 @@ const Close = styled.img`
   cursor: pointer;
 `
 const ButtonFrame = styled(Button)`
+  width: calc(100% - 2rem);
   margin: 16px;
   height: 48px;
   padding: 16px;

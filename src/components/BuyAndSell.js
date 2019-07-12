@@ -8,6 +8,7 @@ import IncrementToken from './IncrementToken'
 import { useAppContext } from '../context'
 import { ERROR_CODES, amountFormatter, TRADE_TYPES } from '../utils'
 import test from './Gallery/test.png'
+// import { ethers } from 'ethers'
 
 export function useCount() {
   const [state, setState] = useAppContext()
@@ -75,6 +76,16 @@ export default function BuyAndSell({
 }) {
   const [state] = useAppContext()
   const { account, setConnector } = useWeb3Context()
+
+  // function fake() {
+  //   setCurrentTransaction(
+  //     true
+  //       ? '0x888503cb966a67192afb74c740abaec0b7e8bda370bc8f853fb040eab247c63f'
+  //       : '0x8cd2cc7ebb7d47dd0230bd505fa4b3375faabb1c9f92137f725b85e4de3f61df',
+  //     TRADE_TYPES.SELL,
+  //     ethers.utils.bigNumberify('1000000000000000000')
+  //   )
+  // }
 
   const buying = state.tradeType === TRADE_TYPES.BUY
   const selling = !buying
@@ -191,6 +202,7 @@ export default function BuyAndSell({
   return (
     <>
       <TopFrame>
+        {/* <button onClick={() => fake()}>test</button> */}
         <Unicorn>
           <span role="img" aria-label="unicorn">
             🦄

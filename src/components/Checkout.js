@@ -5,7 +5,6 @@ import { useWeb3Context } from 'web3-react'
 import Connect from './Connect'
 import BuyAndSell from './BuyAndSell'
 import Redeem from './Redeem'
-import Pending from './Pending'
 import Confirmed from './Confirmed'
 import { useAppContext } from '../context'
 import { TRADE_TYPES } from '../utils'
@@ -84,48 +83,55 @@ export default function Checkout({
 
   const redeeming = state.tradeType === TRADE_TYPES.REDEEM
 
-  // const [pending, setPending] = useState(true)
-  const [transactionHash, setTransactionHash] = useState('')
   const [lastTransactionHash, setLastTransactionHash] = useState('')
-
-  const [hasBurnt, setHasBurnt] = useState(false)
+  const [lastTransactionType, setLastTransactionType] = useState('')
+  const [lastTransactionAmount, setLastTransactionAmount] = useState('')
 
   const pending = !!currentTransactionHash
 
   useEffect(() => {
-    // NEED to fix this for the next transactions...
-    if (currentTransactionHash !== lastTransactionHash) {
-      setHasBurnt(false)
-    }
-
     if (currentTransactionHash) {
       library.waitForTransaction(currentTransactionHash).then(() => {
         setLastTransactionHash(currentTransactionHash)
-        setTransactionHash('')
-        setHasBurnt(true)
+        setLastTransactionType(currentTransactionType)
+        setLastTransactionAmount(currentTransactionAmount)
+        clearCurrentTransaction()
       })
     }
-  }, [currentTransactionHash, transactionHash, library, lastTransactionHash])
+  }, [
+    currentTransactionHash,
+    clearCurrentTransaction,
+    library,
+    lastTransactionHash,
+    currentTransactionType,
+    currentTransactionAmount
+  ])
 
   function closeCheckout() {
     if (state.visible) {
+      setLastTransactionHash('')
       setState(state => ({ ...state, visible: !state.visible }))
     }
   }
+
+  console.log(currentTransactionType)
 
   const [showConnect, setShowConnect] = useState(false)
   function renderContent() {
     if (showConnect) {
       return <Connect setShowConnect={setShowConnect} />
-    } else if (pending) {
+    } else if (lastTransactionHash) {
       return (
         <Confirmed
-          hash={currentTransactionHash}
-          type={currentTransactionType}
-          amount={currentTransactionAmount}
-          transactionHash={lastTransactionHash}
-          clearCurrentTransaction={clearCurrentTransaction}
+          hash={lastTransactionHash}
+          type={lastTransactionType}
+          amount={lastTransactionAmount}
           closeCheckout={closeCheckout}
+          clearLastTransaction={() => {
+            setLastTransactionHash('')
+            setLastTransactionType('')
+            setLastTransactionAmount('')
+          }}
         />
       )
     } else {
@@ -171,7 +177,7 @@ export default function Checkout({
       <CheckoutFrame isVisible={state.visible}>
         {renderContent()}{' '}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-          <Confetti active={hasBurnt} config={config} />
+          <Confetti active={!!lastTransactionHash} config={config} />
         </div>
       </CheckoutFrame>
       <CheckoutBackground
