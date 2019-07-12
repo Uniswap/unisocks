@@ -24,7 +24,7 @@ function Header({ ready, dollarPrice, balanceSOCKS, setShowConnect }) {
         <span role="img" aria-label="unicorn">
           🦄
         </span>{' '}
-        Pay
+        Unisocks
       </Unicorn>
       <Account onClick={() => handleAccount()} balanceSOCKS={balanceSOCKS}>
         {balanceSOCKS > 0 ? (
@@ -108,15 +108,33 @@ export default function Body({
   const clearCurrentTransaction = useCallback(() => {
     _setCurrentTransaction({})
   }, [])
-  const [state] = useAppContext()
+  const [state, setState] = useAppContext()
   const [showConnect, setShowConnect] = useState(false)
+  const [showWorks, setShowWorks] = useState(false)
+  console.log(showWorks)
 
   return (
     <AppWrapper overlay={state.visible}>
       <Header ready={ready} dollarPrice={dollarPrice} balanceSOCKS={balanceSOCKS} setShowConnect={setShowConnect} />
       <Content>
-        <Card dollarPrice={dollarPrice} reserveSOCKSToken={reserveSOCKSToken} />
+        <Card dollarPrice={dollarPrice} reserveSOCKSToken={reserveSOCKSToken} />{' '}
         <BuyButtons balanceSOCKS={balanceSOCKS} />
+        <Info>
+          Buy <i>real</i> socks with cryptocurrency.
+          <SubInfo>
+            An experiment in pricing and user experience by the team at Uniswap.{' '}
+            <a
+              href="/"
+              onClick={e => {
+                e.preventDefault()
+                setState(state => ({ ...state, visible: !state.visible }))
+                setShowWorks(true)
+              }}
+            >
+              How it works.
+            </a>
+          </SubInfo>
+        </Info>
         <RedeemButton balanceSOCKS={balanceSOCKS} />
       </Content>
       <Checkout
@@ -140,6 +158,8 @@ export default function Body({
         currentTransactionAmount={currentTransaction.amount}
         setCurrentTransaction={setCurrentTransaction}
         clearCurrentTransaction={clearCurrentTransaction}
+        showWorks={showWorks}
+        setShowWorks={setShowWorks}
       />
     </AppWrapper>
   )
@@ -167,6 +187,42 @@ const Content = styled.div`
   max-width: 375px;
   @media only screen and (max-width: 480px) {
     top: 340px;
+  }
+`
+
+const Info = styled.div`
+  color: ${props => props.theme.text};
+  font-weight: 600;
+  margin: 0px;
+  font-size: 18px;
+  padding: 24px;
+  /* padding-top: 28px; */
+  border-radius: 0 0 8px 8px;
+  /* border-radius: 8px; */
+  margin-bottom: 12px;
+  margin-top: -12px;
+  /* margin-top: 16px; */
+  background-color: ${props => '#f1f2f6'};
+`
+
+const SubInfo = styled.div`
+  font-weight: 500;
+  margin: 0px;
+  margin-top: 12px;
+  line-height: 160%;
+  font-size: 12px;
+
+  p {
+    margin-bottom: 0px;
+  }
+
+  a {
+    color: ${props => props.theme.uniswapPink};
+    text-decoration: none;
+  }
+  a:hover {
+    cursor: pointer;
+    text-decoration: underline;
   }
 `
 

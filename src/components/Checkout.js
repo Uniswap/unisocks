@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { useWeb3Context } from 'web3-react'
 
 import Connect from './Connect'
+import Works from './Works'
 import BuyAndSell from './BuyAndSell'
 import Redeem from './Redeem'
 import Confirmed from './Confirmed'
@@ -78,11 +79,12 @@ export default function Checkout({
   setCurrentTransaction,
   clearCurrentTransaction,
   setShowConnect,
-  showConnect
+  showConnect,
+  showWorks,
+  setShowWorks
 }) {
   const { library } = useWeb3Context()
   const [state, setState] = useAppContext()
-  console.log(state.showConnect)
 
   const redeeming = state.tradeType === TRADE_TYPES.REDEEM
 
@@ -93,9 +95,7 @@ export default function Checkout({
   const [hasBurnt, setHasBurnt] = useState(false)
 
   const pending = !!currentTransactionHash
-
   useEffect(() => {
-    // NEED to fix this for the next transactions...
     if (currentTransactionHash !== lastTransactionHash) {
       setHasBurnt(false)
     }
@@ -107,17 +107,30 @@ export default function Checkout({
         setHasBurnt(true)
       })
     }
-  }, [currentTransactionHash, transactionHash, library, lastTransactionHash, state.showConnect])
+  }, [
+    currentTransactionHash,
+    transactionHash,
+    library,
+    lastTransactionHash,
+    state.showConnect,
+    state.visible,
+    setShowWorks,
+    setShowConnect
+  ])
 
   function closeCheckout() {
+    setShowConnect(false)
     if (state.visible) {
+      setShowWorks(false)
       setState(state => ({ ...state, visible: !state.visible }))
     }
   }
 
   function renderContent() {
     if (showConnect) {
-      return <Connect setShowConnect={setShowConnect} />
+      return <Connect setShowConnect={setShowConnect} closeCheckout={closeCheckout} />
+    } else if (showWorks) {
+      return <Works closeCheckout={closeCheckout} />
     } else if (pending) {
       return (
         <Confirmed
@@ -175,10 +188,7 @@ export default function Checkout({
           <Confetti active={hasBurnt} config={config} />
         </div>
       </CheckoutFrame>
-      <CheckoutBackground
-        onClick={() => setState(state => ({ ...state, visible: !state.visible }))}
-        isVisible={state.visible || showConnect}
-      />
+      <CheckoutBackground onClick={() => closeCheckout()} isVisible={state.visible || showConnect} />
     </div>
   )
 }

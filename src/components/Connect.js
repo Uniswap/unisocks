@@ -4,8 +4,9 @@ import styled from 'styled-components'
 import QRCode from 'qrcode.react'
 
 import Button from './Button'
+import { Controls } from './Redeem'
 
-export default function Connect({ setShowConnect }) {
+export default function Connect({ setShowConnect, closeCheckout }) {
   const { account, connector, setConnector } = useWeb3Context()
 
   // connector error
@@ -38,13 +39,7 @@ export default function Connect({ setShowConnect }) {
 
   return (
     <WalletFrame>
-      <Back
-        onClick={() => {
-          setShowConnect(false)
-        }}
-      >
-        Back
-      </Back>
+      <Controls closeCheckout={closeCheckout} theme={'dark'} />
       <Shim />
       <Button
         type={'cta'}
@@ -61,7 +56,7 @@ export default function Connect({ setShowConnect }) {
           activateWalletConnect()
         }}
       />
-      <QRCodeWrapper>
+      <QRCodeWrapper showQR={walletconnectUri && account === null && !connectorError}>
         {walletconnectUri && account === null && !connectorError ? (
           <>
             <QRCode value={walletconnectUri} />
@@ -102,5 +97,5 @@ const Back = styled.span`
 const QRCodeWrapper = styled.div`
   width: 100%;
   text-align: center;
-  margin-top: 2rem;
+  margin-top: ${props => (props.showQR ? '1rem' : 0)};
 `

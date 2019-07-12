@@ -13,6 +13,8 @@ import nfc from './Gallery/nfc.png'
 import sent from './Gallery/sent.png'
 
 import close from './Gallery/close.svg'
+import closeDark from './Gallery/close_dark.svg'
+
 import Confetti from 'react-dom-confetti'
 
 const config = {
@@ -28,16 +30,16 @@ const config = {
   colors: ['#a864fd', '#29cdff', '#78ff44', '#ff718d', '#fdff6a']
 }
 
-function Controls({ closeCheckout }) {
+export function Controls({ closeCheckout, theme }) {
   return (
     <FrameControls>
-      <Unicorn>
+      <Unicorn theme={theme}>
         <span role="img" aria-label="unicorn">
           🦄
         </span>{' '}
         Pay
       </Unicorn>
-      <Close src={close} onClick={() => closeCheckout()} alt="close" />
+      <Close src={theme === 'dark' ? closeDark : close} onClick={() => closeCheckout()} alt="close" />
     </FrameControls>
   )
 }
@@ -293,14 +295,10 @@ const FrameControls = styled.div`
 `
 
 const Unicorn = styled.p`
-  color: #fff;
+  color: ${props => (props.theme === 'dark' ? '#000' : '#fff')};
   font-weight: 600;
   margin: 0px;
   font-size: 16px;
-`
-const Shim = styled.div`
-  height: 24px;
-  width: 100%;
 `
 
 const Close = styled.img`

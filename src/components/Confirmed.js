@@ -3,7 +3,6 @@ import styled from 'styled-components'
 
 import { useAppContext } from '../context'
 import { amountFormatter, TRADE_TYPES } from '../utils'
-import { link, EtherscanLink } from './Pending'
 import Button from './Button'
 
 import close from './Gallery/close.svg'
@@ -51,6 +50,10 @@ const Unicorn = styled.p`
 
 export default function Confirmed({ hash, type, amount, clearCurrentTransaction, closeCheckout }) {
   const [state, setState] = useAppContext()
+
+  function link(hash) {
+    return `https://etherscan.io/tx/${hash}`
+  }
 
   useEffect(() => {
     if (!state.visible) {
@@ -208,4 +211,11 @@ const CheckoutPrompt = styled.p`
   color: '#000';
   font-style: italic;
   width: 100%;
+`
+const EtherscanLink = styled.a`
+  text-decoration: none;
+  color: ${props => props.theme.uniswapPink};
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
 `
