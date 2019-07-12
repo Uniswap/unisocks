@@ -84,18 +84,28 @@ export default function Checkout({
 
   const redeeming = state.tradeType === TRADE_TYPES.REDEEM
 
-  const [pending, setPending] = useState(true)
+  // const [pending, setPending] = useState(true)
+  const [transactionHash, setTransactionHash] = useState('')
+  const [lastTransactionHash, setLastTransactionHash] = useState('')
+
+  const [hasBurnt, setHasBurnt] = useState(false)
+
+  const pending = !!currentTransactionHash
+
   useEffect(() => {
+    // NEED to fix this for the next transactions...
+    if (currentTransactionHash !== lastTransactionHash) {
+      setHasBurnt(false)
+    }
+
     if (currentTransactionHash) {
       library.waitForTransaction(currentTransactionHash).then(() => {
-        setPending(false)
+        setLastTransactionHash(currentTransactionHash)
+        setTransactionHash('')
+        setHasBurnt(true)
       })
-
-      return () => {
-        setPending(true)
-      }
     }
-  }, [currentTransactionHash, library])
+  }, [currentTransactionHash, transactionHash, library, lastTransactionHash])
 
   function closeCheckout() {
     if (state.visible) {
@@ -107,14 +117,13 @@ export default function Checkout({
   function renderContent() {
     if (showConnect) {
       return <Connect setShowConnect={setShowConnect} />
-    } else if (currentTransactionHash) {
-      return pending ? (
-        <Pending hash={currentTransactionHash} type={currentTransactionType} amount={currentTransactionAmount} />
-      ) : (
+    } else if (pending) {
+      return (
         <Confirmed
           hash={currentTransactionHash}
           type={currentTransactionType}
           amount={currentTransactionAmount}
+          transactionHash={lastTransactionHash}
           clearCurrentTransaction={clearCurrentTransaction}
           closeCheckout={closeCheckout}
         />
@@ -133,9 +142,11 @@ export default function Checkout({
             sell={sell}
             dollarize={dollarize}
             setCurrentTransaction={setCurrentTransaction}
+            currentTransactionHash={currentTransactionHash}
             setShowConnect={setShowConnect}
             dollarPrice={dollarPrice}
             reserveSOCKSToken={reserveSOCKSToken}
+            pending={pending}
           />
         )
       } else {
@@ -148,6 +159,7 @@ export default function Checkout({
             setCurrentTransaction={setCurrentTransaction}
             setShowConnect={setShowConnect}
             closeCheckout={closeCheckout}
+            pending={pending}
           />
         )
       }
@@ -159,7 +171,7 @@ export default function Checkout({
       <CheckoutFrame isVisible={state.visible}>
         {renderContent()}{' '}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-          <Confetti active={!pending} config={config} />
+          <Confetti active={hasBurnt} config={config} />
         </div>
       </CheckoutFrame>
       <CheckoutBackground

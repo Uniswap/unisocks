@@ -65,10 +65,12 @@ export default function BuyAndSell({
   buy,
   validateSell,
   dollarPrice,
+  pending,
   reserveSOCKSToken,
   sell,
   dollarize,
   setCurrentTransaction,
+  currentTransactionHash,
   setShowConnect
 }) {
   const [state] = useAppContext()
@@ -80,6 +82,32 @@ export default function BuyAndSell({
   const [buyValidationState, setBuyValidationState] = useState({}) // { maximumInputValue, inputValue, outputValue }
   const [sellValidationState, setSellValidationState] = useState({}) // { inputValue, outputValue, minimumOutputValue }
   const [validationError, setValidationError] = useState()
+
+  function link(hash) {
+    return `https://etherscan.io/tx/${hash}`
+  }
+
+  function getText(account, buying, errorMessage, ready, pending, hash) {
+    if (account === null) {
+      return 'Connect Wallet'
+    } else if (ready && !errorMessage) {
+      if (!buying) {
+        if (pending && hash) {
+          return 'Waiting for confirmation'
+        } else {
+          return 'Sell Socks'
+        }
+      } else {
+        if (pending && hash) {
+          return 'Waiting for confirmation'
+        } else {
+          return 'Buy Socks'
+        }
+      }
+    } else {
+      return errorMessage ? errorMessage : 'Loading...'
+    }
+  }
 
   // buy state validation
   useEffect(() => {
@@ -179,16 +207,29 @@ export default function BuyAndSell({
           <IncrementToken />
         </InfoFrame>
       </TopFrame>
-      <CheckoutControls buying={buying}>
-        <CheckoutPrompt>
-          <i>{buying ? 'How do you want to pay?' : 'What token do you want to receive?'}</i>
-        </CheckoutPrompt>
-        <SelectToken
-          selectedTokenSymbol={selectedTokenSymbol}
-          setSelectedTokenSymbol={setSelectedTokenSymbol}
-          prefix={TokenVal()}
-        />
-      </CheckoutControls>
+      {pending && currentTransactionHash ? (
+        <CheckoutControls buying={buying}>
+          <CheckoutPrompt>
+            <i>Your transaction is pending.</i>
+          </CheckoutPrompt>
+          <CheckoutPrompt>
+            <EtherscanLink href={link(currentTransactionHash)} target="_blank" rel="noopener noreferrer">
+              View on Etherscan.
+            </EtherscanLink>
+          </CheckoutPrompt>
+        </CheckoutControls>
+      ) : (
+        <CheckoutControls buying={buying}>
+          <CheckoutPrompt>
+            <i>{buying ? 'How do you want to pay?' : 'What token do you want to receive?'}</i>
+          </CheckoutPrompt>
+          <SelectToken
+            selectedTokenSymbol={selectedTokenSymbol}
+            setSelectedTokenSymbol={setSelectedTokenSymbol}
+            prefix={TokenVal()}
+          />
+        </CheckoutControls>
+      )}
       {shouldRenderUnlock ? (
         <ButtonFrame
           text={`Unlock ${buying ? selectedTokenSymbol : 'SOCKS'}`}
@@ -202,18 +243,8 @@ export default function BuyAndSell({
       ) : (
         <ButtonFrame
           className="button"
-          disabled={validationError !== null}
-          text={
-            account === null
-              ? 'Connect Wallet'
-              : !buying
-              ? 'Sell SOCKS'
-              : errorMessage
-              ? errorMessage
-              : ready
-              ? 'Buy SOCKS'
-              : 'Connect to Wallet'
-          }
+          disabled={validationError !== null || (pending && currentTransactionHash)}
+          text={getText(account, buying, errorMessage, ready, pending, currentTransactionHash)}
           type={'cta'}
           onClick={() => {
             if (account === null) {
@@ -225,7 +256,6 @@ export default function BuyAndSell({
                 ? buy(buyValidationState.maximumInputValue, buyValidationState.outputValue)
                 : sell(sellValidationState.inputValue, sellValidationState.minimumOutputValue)
               ).then(response => {
-                console.log(response)
                 setCurrentTransaction(
                   response.hash,
                   buying ? TRADE_TYPES.BUY : TRADE_TYPES.SELL,
@@ -319,4 +349,12 @@ const ButtonFrame = styled(Button)`
   margin: 16px;
   height: 48px;
   padding: 16px;
+`
+
+const EtherscanLink = styled.a`
+  text-decoration: none;
+  color: ${props => props.theme.uniswapPink};
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
 `

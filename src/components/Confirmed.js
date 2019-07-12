@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { useAppContext } from '../context'
 import { amountFormatter, TRADE_TYPES } from '../utils'
 import { link, EtherscanLink } from './Pending'
+import Button from './Button'
 
 import close from './Gallery/close.svg'
 import sent from './Gallery/sent.png'
@@ -76,7 +77,6 @@ export default function Confirmed({ hash, type, amount, clearCurrentTransaction,
         </CheckoutPrompt>
         <Shim />
       </ConfirmedFrame>
-
     )
   } else if (type === TRADE_TYPES.BUY) {
     return (
@@ -95,6 +95,13 @@ export default function Confirmed({ hash, type, amount, clearCurrentTransaction,
             Transaction Details ↗
           </EtherscanLink>
         </CheckoutPrompt>
+        <ButtonFrame
+          text={`Redeem your SOCKS now`}
+          type={'cta'}
+          onClick={() => {
+            // Trigger buy frame here!
+          }}
+        />
         <Shim />
       </ConfirmedFrame>
     )
@@ -152,6 +159,11 @@ const Close = styled.img`
   font-size: 16px;
   padding: 4px;
   cursor: pointer;
+`
+const ButtonFrame = styled(Button)`
+  margin: 16px;
+  height: 48px;
+  padding: 16px;
 `
 
 const InfoFrame = styled.div`

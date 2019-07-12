@@ -13,7 +13,6 @@ import nfc from './Gallery/nfc.png'
 import sent from './Gallery/sent.png'
 
 import close from './Gallery/close.svg'
-
 import Confetti from 'react-dom-confetti'
 
 const config = {
@@ -61,6 +60,8 @@ export default function Redeem({
   const [hasPickedAmount, setHasPickedAmount] = useState(false)
   const [hasConfirmedAddress, setHasConfirmedAddress] = useState(false)
   const [transactionHash, setTransactionHash] = useState('')
+  const [lastTransactionHash, setLastTransactionHash] = useState('')
+
   const [hasBurnt, setHasBurnt] = useState(false)
   const [userAddress, setUserAddress] = useState('')
 
@@ -69,12 +70,16 @@ export default function Redeem({
   useEffect(() => {
     if (transactionHash) {
       library.waitForTransaction(transactionHash).then(() => {
-        console.log('confirmed')
+        setLastTransactionHash(transactionHash)
         setTransactionHash('')
         setHasBurnt(true)
       })
     }
   })
+
+  function link(hash) {
+    return `https://etherscan.io/tx/${hash}`
+  }
 
   function renderContent() {
     if (account === null) {
@@ -196,8 +201,8 @@ export default function Redeem({
           <CheckoutPrompt>BURN THE SOCKS?</CheckoutPrompt> */}
           <ButtonFrame
             className="button"
-            disabled={false}
-            text={pending ? `Waiting...` : `Redeem ${numberBurned} SOCKS`}
+            disabled={pending}
+            text={pending ? `Waiting for confirmation...` : `Redeem ${numberBurned} SOCKS`}
             type={'cta'}
             onClick={() => {
               burn(numberBurned.toString())
@@ -205,7 +210,7 @@ export default function Redeem({
                   setTransactionHash(response.hash)
                 })
                 .catch(() => {
-                  setTransactionHash('0x1f76d7130ac846e03a543e792dcfc2c6765bc78c1a7359cb749c625466591e52')
+                  setTransactionHash('0xc8df5863f2e6cb92bf2181efdec429832079d52497cae07ec4091b5821d93964')
                 })
             }}
           />
@@ -215,7 +220,13 @@ export default function Redeem({
               setHasConfirmedAddress(false)
             }}
           >
-            back
+            {pending ? (
+              <EtherscanLink href={link(transactionHash)} target="_blank" rel="noopener noreferrer">
+                View on Etherscan.
+              </EtherscanLink>
+            ) : (
+              'back'
+            )}
           </Back>
         </>
       )
@@ -235,7 +246,11 @@ export default function Redeem({
             Estimated shipping time 2-3 weeks. <br /> Shipping time will vary by region
           </CheckoutPrompt>
           <CheckoutPrompt>You shipping details will be available soon.</CheckoutPrompt>
-          <Shim />
+          <div style={{ margin: '16px 0 16px 16px' }}>
+            <EtherscanLink href={link(lastTransactionHash)} target="_blank" rel="noopener noreferrer">
+              View on Etherscan.
+            </EtherscanLink>
+          </div>
         </>
       )
     }
@@ -285,6 +300,7 @@ const Unicorn = styled.p`
 `
 const Shim = styled.div`
   height: 24px;
+  width: 100%;
 `
 
 const Close = styled.img`
@@ -391,4 +407,12 @@ const ButtonFrame = styled(Button)`
 
 const RedeemFrame = styled(RedeemForm)`
   width: 100%;
+`
+
+const EtherscanLink = styled.a`
+  text-decoration: none;
+  color: ${props => props.theme.uniswapPink};
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
 `

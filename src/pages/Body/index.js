@@ -148,7 +148,7 @@ const AppWrapper = styled.div`
 const Content = styled.div`
   position: absolute;
   left: 50%;
-  top: 40%;
+  top: 45%;
   transform: translateX(-50%) translateY(-50%);
   width: calc(100vw - 32px);
   max-width: 375px;
