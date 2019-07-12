@@ -64,7 +64,17 @@ export default function Connect({ setShowConnect, closeCheckout }) {
           </>
         ) : null}
       </QRCodeWrapper>
-      <p>{connectorError && 'Connection Error (Try a web3-enabled browser).'}</p>
+      {connectorError ? (
+        <p style={{ width: '100%', textAlign: 'center', marginTop: '12px' }}>
+          {'Connection Error (Try a web3-enabled browser). '}
+          <a href="https://ethereum.org/use/#_3-what-is-a-wallet-and-which-one-should-i-use">Learn more</a>
+        </p>
+      ) : (
+        <p style={{ width: '100%', textAlign: 'center', marginTop: '12px' }}>
+          Don't have one?{' '}
+          <a href="https://ethereum.org/use/#_3-what-is-a-wallet-and-which-one-should-i-use">Learn more</a>
+        </p>
+      )}
     </WalletFrame>
   )
 }

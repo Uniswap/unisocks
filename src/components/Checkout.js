@@ -129,7 +129,7 @@ export default function Checkout({
 
   function renderContent() {
     if (showConnect) {
-      return <Connect setShowConnect={setShowConnect} />
+      return <Connect setShowConnect={setShowConnect} closeCheckout={closeCheckout} />
     } else if (showWorks) {
       return <Works closeCheckout={closeCheckout} />
     } else if (lastTransactionHash) {

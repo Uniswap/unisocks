@@ -3,18 +3,11 @@ import styled from 'styled-components'
 import Tilt from 'react-tilt'
 
 import { amountFormatter } from '../utils'
-import { useAppContext } from '../context'
-import { TRADE_TYPES } from '../utils'
 
 import Gallery from './Gallery'
 
 export default function Card({ dollarPrice, reserveSOCKSToken }) {
   const [showPop, setShowPop] = useState(false)
-  const [, setState] = useAppContext()
-
-  function handleToggleCheckout(tradeType) {
-    setState(state => ({ ...state, visible: !state.visible, tradeType }))
-  }
 
   function handleClickPopover(e) {
     e.preventDefault()
@@ -40,7 +33,11 @@ export default function Card({ dollarPrice, reserveSOCKSToken }) {
           <Info>
             <Popover show={showPop} onMouseLeave={e => handleClickPopover(e)}>
               <p style={{ marginTop: '0px' }}>The price of SOCKS will change when tokens are bought and sold.</p>
-              <a href="https://medium.com/frst/money-laundry-the-rise-of-the-crypto-sock-market-f979aafc3796">
+              <a
+                href="https://medium.com/frst/money-laundry-the-rise-of-the-crypto-sock-market-f979aafc3796"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Read more.
               </a>
             </Popover>
@@ -118,7 +115,7 @@ const Popover = styled.div`
   font-size: 12px;
   background-color: #404040;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.4);
-  padding: 0.5rem;
+  padding: 1rem;
   border-radius: 6px;
   right: 16px;
   bottom: 16px;
@@ -129,6 +126,7 @@ const Popover = styled.div`
   a {
     color: ${props => props.theme.uniswapPink};
     text-decoration: none;
+    cursor: pointer;
   }
   a:hover {
     text-decoration: underline;

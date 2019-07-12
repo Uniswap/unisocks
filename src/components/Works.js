@@ -55,8 +55,15 @@ export default function Works({ closeCheckout }) {
       <Title>How it's priced:</Title>
       <Desc>
         $SOCKS tokens are listed starting at $12 USD. Each buy/sell will move the price. The increase or decrease
-        follows a <a href="/">bonding curve</a> coded into the smart contract. $SOCKS will eventually find an
-        equillibrium based on the market demand.
+        follows a{' '}
+        <a
+          href="https://blog.relevant.community/bonding-curves-in-depth-intuition-parametrization-d3905a681e0a"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          bonding curve
+        </a>{' '}
+        coded into the smart contract. $SOCKS will eventually find an equillibrium based on the market demand.
       </Desc>
       <Title>Unipay:</Title>
       <Desc>
@@ -64,10 +71,14 @@ export default function Works({ closeCheckout }) {
         The pool of SOCKS is a uniswap pool where 500 SOCKS tokens were deposited along with the starting value of ETH.{' '}
       </Desc>
       <Desc>
-        <a href="/">Learn more about how uniswap works.</a>
+        <a href="https://docs.uniswap.io/" target="_blank" rel="noopener noreferrer">
+          Learn more about how uniswap works.
+        </a>
       </Desc>
       <Desc>
-        <a href="/">Get in touch.</a>
+        <a href="mailto:contact@uniswap.io" target="_blank" rel="noopener noreferrer">
+          Get in touch.
+        </a>
       </Desc>
     </WorksFrame>
   )
