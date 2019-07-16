@@ -30,15 +30,20 @@ const config = {
   colors: ['#a864fd', '#29cdff', '#78ff44', '#ff718d', '#fdff6a']
 }
 
-export function Controls({ closeCheckout, theme }) {
+export function Controls({ closeCheckout, theme, type }) {
   return (
     <FrameControls>
       <Unicorn theme={theme}>
         <span role="img" aria-label="unicorn">
           🦄
         </span>{' '}
-        Pay
+        Pay{' '}
+        <span style={{ color: '#737373' }}>
+          {' '}
+          {type === 'confirm' ? ' / Order Details' : type === 'shipping' ? ' / Shipping Details' : ''}
+        </span>
       </Unicorn>
+
       <Close src={theme === 'dark' ? closeDark : close} onClick={() => closeCheckout()} alt="close" />
     </FrameControls>
   )
@@ -131,7 +136,7 @@ export default function Redeem({
       return (
         <>
           <TopFrame hasPickedAmount={hasPickedAmount}>
-            <Controls closeCheckout={closeCheckout} />
+            <Controls closeCheckout={closeCheckout} type="shipping" />
 
             <InfoFrame hasPickedAmount={hasPickedAmount}>
               <ImgStyle src={test} alt="Logo" hasPickedAmount={hasPickedAmount} />
@@ -162,14 +167,21 @@ export default function Redeem({
       return (
         <>
           <TopFrame hasPickedAmount={hasPickedAmount}>
-            <Controls closeCheckout={closeCheckout} />
-
+            <Controls closeCheckout={closeCheckout} type="confirm" />
             <InfoFrame hasPickedAmount={hasPickedAmount}>
               <ImgStyle src={test} alt="Logo" hasPickedAmount={hasPickedAmount} />
               <Owned>
                 <p style={{ fontSize: '18px' }}>{state.count} Unisocks</p>
                 <p style={{ fontSize: '14px', fontWeight: '500' }}>One size fits most</p>
-                <p style={{ fontSize: '12px', fontWeight: '500', color: '#AEAEAE', marginTop: '16px' }}>
+                <p
+                  style={{
+                    fontSize: '12px',
+                    fontWeight: '500',
+                    color: '#AEAEAE',
+                    marginTop: '16px',
+                    marginRight: '16px'
+                  }}
+                >
                   {userAddress}
                 </p>
               </Owned>
@@ -186,6 +198,7 @@ export default function Redeem({
                     fontWeight: '500',
                     color: '#AEAEAE',
                     marginTop: '16px',
+                    marginRight: '16px',
                     wordBreak: 'break-all'
                   }}
                 >
@@ -207,7 +220,8 @@ export default function Redeem({
             className="button"
             disabled={pending}
             pending={pending}
-            text={pending ? `Waiting for confirmation...` : `Redeem ${numberBurned} SOCKS`}
+            // text={pending ? `Waiting for confirmation...` : `Redeem ${numberBurned} SOCKS`}
+            text={pending ? `Waiting for confirmation...` : `Place order (Redeem ${numberBurned} SOCKS) `}
             type={'cta'}
             onClick={() => {
               burn(numberBurned.toString())
@@ -333,13 +347,16 @@ const InfoFrame = styled.div`
   margin-top: ${props => (props.hasPickedAmount ? '8px' : '0')};
   justify-content: ${props => (props.hasPickedAmount ? 'flex-start' : 'space-between')};
   align-items: flex-end;
-  padding: ${props => (props.hasPickedAmount ? '1rem 0 1rem 0' : '0')};
+  padding: ${props => (props.hasPickedAmount ? '1rem 0 1rem 0' : ' 0')};
   /* padding: 1rem 0 1rem 0; */
   margin-top: 12px;
   /* margin-bottom: 8px; */
+  /* margin-right: ${props => (props.hasPickedAmount ? '8px' : '0px')}; */
+
   border-radius: 6px;
+
   /* background-color: ${props => (props.hasPickedAmount ? '#000' : 'none')}; */
-  /* border: ${props => (props.hasPickedAmount ? '1px solid #3d3d3d' : 'none')}; */
+  border: ${props => (props.hasPickedAmount ? '1px solid #3d3d3d' : 'none')};
 `
 
 const Owned = styled.div`
@@ -359,7 +376,7 @@ const Bonus = styled.div`
   border-radius: 4px;
   position: absolute;
   top: 200px;
-  left: 22px;
+  left: 32px;
 `
 
 const ImgStyle = styled.img`

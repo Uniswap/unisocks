@@ -50,9 +50,6 @@ const ButtonFrame = styled.button`
 
   :hover {
     transform: scale(1.02);
-    /* text-decoration: underline; */
-    /* background-color: #ea61cc; */
-    /* color: white; */
   }
 `
 

@@ -39,6 +39,7 @@ function Header({ ready, dollarPrice, balanceSOCKS, setShowConnect }) {
 }
 
 const HeaderFrame = styled.div`
+  position: fixed;
   width: 100%;
   box-sizing: border-box;
   margin: 0px;
@@ -186,21 +187,16 @@ const AppWrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
+  align-items: center;
   overflow: ${props => (props.overlay ? 'hidden' : 'scroll')};
   scroll-behavior: smooth;
   position: ${props => (props.overlay ? 'fixed' : 'initial')};
 `
 
 const Content = styled.div`
-  position: absolute;
-  left: 50%;
-  top: 45%;
-  transform: translateX(-50%) translateY(-50%);
   width: calc(100vw - 32px);
   max-width: 375px;
-  @media only screen and (max-width: 480px) {
-    top: 420px;
-  }
+  margin-top: 72px;
 `
 
 const Info = styled.div`
