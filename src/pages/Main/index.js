@@ -12,6 +12,7 @@ import {
   useExchangeAllowance
 } from '../../hooks'
 import Body from '../Body'
+import Status from '../Status'
 
 // denominated in bips
 const GAS_MARGIN = ethers.utils.bigNumberify(1000)
@@ -143,7 +144,7 @@ function calculateAmount(
   }
 }
 
-export default function Main() {
+export default function Main({ status }) {
   const { library, account } = useWeb3Context()
 
   // selected token
@@ -516,7 +517,9 @@ export default function Main() {
     })
   }
 
-  return (
+  return status ? (
+    <Status ready={ready} balanceSOCKS={balanceSOCKS} />
+  ) : (
     <Body
       selectedTokenSymbol={selectedTokenSymbol}
       setSelectedTokenSymbol={setSelectedTokenSymbol}

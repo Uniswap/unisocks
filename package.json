@@ -5,20 +5,26 @@
   "dependencies": {
     "@walletconnect/web3-subprovider": "^1.0.0-beta.25",
     "ethers": "^4.0.27",
+    "http-proxy-middleware": "^0.19.1",
     "qrcode.react": "^0.9.3",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-dom-confetti": "^0.1.1",
     "react-google-recaptcha": "^1.0.5",
     "react-places-autocomplete": "^7.2.1",
+    "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.0",
     "react-tilt": "^0.1.4",
     "styled-components": "^5.0.0-beta.0",
     "web3-react": "^5.0.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "run-p start:**",
+    "start:app": "react-scripts start",
+    "start:functions": "netlify-lambda serve functions -c ./webpack.config.js",
+    "build": "run-p build:**",
+    "build:app": "react-scripts build",
+    "build:functions": "netlify-lambda build functions -c ./webpack.config.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "now-build": "react-scripts build"
@@ -39,6 +45,9 @@
     ]
   },
   "devDependencies": {
-    "prettier": "^1.17.0"
+    "dotenv-webpack": "^1.7.0",
+    "netlify-lambda": "^1.5.1",
+    "prettier": "^1.17.0",
+    "yarn-run-all": "^3.1.1"
   }
 }

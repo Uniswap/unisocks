@@ -89,21 +89,6 @@ const Shim = styled.div`
   height: 1rem;
 `
 
-const Back = styled.span`
-  color: ${props => props.theme.uniswapPink};
-  font-weight: 400;
-  margin: 0px;
-  margin: -4px 0 16px 0px !important;
-  font-size: 14px;
-  width: 100%;
-  /* color: ${props => props.theme.uniswapPink}; */
-  cursor: pointer;
-  text-align: center;
-  :hover {
-    text-decoration: underline;
-  }
-`
-
 const QRCodeWrapper = styled.div`
   width: 100%;
   text-align: center;

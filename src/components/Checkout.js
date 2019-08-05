@@ -125,8 +125,6 @@ export default function Checkout({
     }
   }
 
-  console.log(currentTransactionType)
-
   function renderContent() {
     if (showConnect) {
       return <Connect setShowConnect={setShowConnect} closeCheckout={closeCheckout} />

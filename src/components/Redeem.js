@@ -150,7 +150,12 @@ export default function Redeem({
 
           {/* <Count>2/3</Count> */}
           <CheckoutPrompt>Where should we send them?</CheckoutPrompt>
-          <RedeemFrame burn={burn} setHasConfirmedAddress={setHasConfirmedAddress} setUserAddress={setUserAddress} />
+          <RedeemFrame
+            burn={burn}
+            setHasConfirmedAddress={setHasConfirmedAddress}
+            setUserAddress={setUserAddress}
+            numberBurned={numberBurned}
+          />
           <Back>
             <span
               onClick={() => {

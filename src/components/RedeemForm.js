@@ -14,34 +14,38 @@ function encode(data) {
     .join('&')
 }
 
-// variables for the official form name of each field
+// variables for the netlify names of each form field
 const bot = 'beep-boop'
-const name = 'Name'
-const line1 = 'Street Address'
-const line2 = 'Unit'
-const city = 'City'
-const state = 'State'
-const zip = 'ZIP'
-const country = 'Country'
-const email = 'Email'
-const address = 'Address'
+const name = 'name'
+const line1 = 'line1'
+const line2 = 'line2'
+const city = 'city'
+const state = 'state'
+const zip = 'zip'
+const country = 'country'
+const email = 'email'
+const address = 'address'
+const timestamp = 'timestamp'
+const numberBurned = 'number-burned'
 const signature = 'signature'
 
 // map from variables to display text for each field
 const nameMap = {
   [name]: 'Name',
-  [line1]: 'Line1',
-  [line2]: 'Line2',
+  [line1]: 'Street Address',
+  [line2]: 'Unit',
   [city]: 'City',
   [state]: 'State',
-  [zip]: 'Postal Code',
+  [zip]: 'ZIP',
   [country]: 'Country',
   [email]: 'Email',
-  [address]: 'Ethereum Address'
+  [address]: 'Ethereum Address',
+  [timestamp]: 'Time',
+  [numberBurned]: 'SOCKS Redeemed'
 }
 
 // the order for fields that will be submitted
-const nameOrder = [name, line1, line2, city, state, zip, country, email, address]
+const nameOrder = [name, line1, line2, city, state, zip, country, email]
 
 // default for each form field
 const defaultState = {
@@ -61,20 +65,20 @@ const addressMapping = [
   { [line1]: 'street_address' },
   { [city]: 'sublocality' },
   { [state]: 'administrative_area_level_1' },
-  { [country]: 'country' },
-  { [zip]: 'postal_code' }
+  { [zip]: 'postal_code' },
+  { [country]: 'country' }
 ]
 
 const recaptchaEnabled = false
 
-export default function RedeemForm({ setHasConfirmedAddress, setUserAddress }) {
+export default function RedeemForm({ setHasConfirmedAddress, setUserAddress, numberBurned: actualNumberBurned }) {
   const { library, account } = useWeb3Context()
   const [recaptcha, setRecaptcha] = useState()
   const [autoAddress, setAutoAddress] = useState([])
   const [inputY, setInputY] = useState(0)
   const suggestEl = useRef()
 
-  const [formState, setFormState] = useState({ ...defaultState, [address]: account })
+  const [formState, setFormState] = useState(defaultState)
 
   function handleChange(event) {
     const { name, value } = event.target
@@ -150,21 +154,21 @@ export default function RedeemForm({ setHasConfirmedAddress, setUserAddress }) {
         name={name}
         value={formState[name]}
         onChange={handleChange}
-        placeholder={name}
+        placeholder={nameMap[name]}
         autoComplete="name"
       />
-
       <Compressed>
         <Suggest
+          required
           myRef={suggestEl}
           inputY={inputY}
           setAutoAddress={setAutoAddress}
-          required
           type="text"
           name={line1}
           value={formState[line1]}
           onChange={handleChange}
-          placeholder={line1}
+          placeholder={nameMap[line1]}
+          autoComplete="off"
         />
 
         <input
@@ -172,7 +176,7 @@ export default function RedeemForm({ setHasConfirmedAddress, setUserAddress }) {
           name={line2}
           value={formState[line2]}
           onChange={handleChange}
-          placeholder={line2}
+          placeholder={nameMap[line2]}
           autoComplete="off"
         />
       </Compressed>
@@ -182,7 +186,7 @@ export default function RedeemForm({ setHasConfirmedAddress, setUserAddress }) {
         name={city}
         value={formState[city]}
         onChange={handleChange}
-        placeholder={city}
+        placeholder={nameMap[city]}
         autoComplete="address-level2"
       />
 
@@ -194,7 +198,7 @@ export default function RedeemForm({ setHasConfirmedAddress, setUserAddress }) {
           name={state}
           value={formState[state]}
           onChange={handleChange}
-          placeholder={state}
+          placeholder={nameMap[state]}
           autoComplete="address-level1"
         />
         <input
@@ -203,7 +207,7 @@ export default function RedeemForm({ setHasConfirmedAddress, setUserAddress }) {
           name={zip}
           value={formState[zip]}
           onChange={handleChange}
-          placeholder={zip}
+          placeholder={nameMap[zip]}
           autoComplete="postal-code"
         />
       </Compressed>
@@ -214,7 +218,7 @@ export default function RedeemForm({ setHasConfirmedAddress, setUserAddress }) {
         name={country}
         value={formState[country]}
         onChange={handleChange}
-        placeholder={country}
+        placeholder={nameMap[country]}
         autoComplete="country-name"
       />
 
@@ -223,7 +227,7 @@ export default function RedeemForm({ setHasConfirmedAddress, setUserAddress }) {
         name={email}
         value={formState[email]}
         onChange={handleChange}
-        placeholder={email}
+        placeholder={nameMap[email]}
         autoComplete="email"
       />
 
@@ -233,9 +237,13 @@ export default function RedeemForm({ setHasConfirmedAddress, setUserAddress }) {
         disabled={!canSign || (recaptchaEnabled && !!!recaptcha)}
         onClick={event => {
           const signer = library.getSigner()
-          const header = `PLEASE VERIFY YOUR ADDRESS. \n Your data will never be shared publicly.`
-          const message = nameOrder.map(o => `${nameMap[o]}: ${formState[o]}`).join('\n')
-          signer.signMessage(`${header}\n\n${message}`).then(returnedSignature => {
+          const timestampToSign = Math.round(Date.now() / 1000)
+          const header = `PLEASE VERIFY YOUR ADDRESS.\nYour data will never be shared publicly.`
+
+          const formDataMessage = nameOrder.map(o => `${nameMap[o]}: ${formState[o]}`).join('\n')
+          const autoMessage = `${nameMap[address]}: ${account}\n${nameMap[timestamp]}: ${timestampToSign}\n${nameMap[numberBurned]}: ${actualNumberBurned}`
+
+          signer.signMessage(`${header}\n\n${formDataMessage}\n${autoMessage}`).then(returnedSignature => {
             fetch('/', {
               method: 'POST',
               headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -243,6 +251,9 @@ export default function RedeemForm({ setHasConfirmedAddress, setUserAddress }) {
                 'form-name': 'redeem',
                 ...{
                   ...formState,
+                  [address]: account,
+                  [timestamp]: timestampToSign,
+                  [numberBurned]: actualNumberBurned,
                   [signature]: returnedSignature,
                   ...(recaptchaEnabled ? { 'g-recaptcha-response': recaptcha } : {})
                 }

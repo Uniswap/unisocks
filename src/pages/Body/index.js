@@ -9,7 +9,7 @@ import RedeemButton from '../../components/RedeemButton'
 import Checkout from '../../components/Checkout'
 import { amountFormatter } from '../../utils'
 
-function Header({ ready, dollarPrice, balanceSOCKS, setShowConnect }) {
+export function Header({ ready, balanceSOCKS, setShowConnect }) {
   const { account, setConnector } = useWeb3Context()
 
   function handleAccount() {
@@ -27,11 +27,16 @@ function Header({ ready, dollarPrice, balanceSOCKS, setShowConnect }) {
         Unisocks
       </Unicorn>
       <Account onClick={() => handleAccount()} balanceSOCKS={balanceSOCKS}>
-        {balanceSOCKS > 0 ? (
-          <SockCount>{balanceSOCKS && `${amountFormatter(balanceSOCKS, 18, 0)}`} SOCKS</SockCount>
+        {account ? (
+          balanceSOCKS > 0 ? (
+            <SockCount>{balanceSOCKS && `${amountFormatter(balanceSOCKS, 18, 0)}`} SOCKS</SockCount>
+          ) : (
+            <SockCount>{account.slice(0, 6)}...</SockCount>
+          )
         ) : (
           <SockCount>Connect Wallet</SockCount>
         )}
+
         <Status balanceSOCKS={balanceSOCKS} ready={ready} account={account} />
       </Account>
     </HeaderFrame>
@@ -112,7 +117,6 @@ export default function Body({
   const [state, setState] = useAppContext()
   const [showConnect, setShowConnect] = useState(false)
   const [showWorks, setShowWorks] = useState(false)
-  console.log(showWorks)
 
   return (
     <AppWrapper overlay={state.visible}>
