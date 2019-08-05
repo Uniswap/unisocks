@@ -238,8 +238,8 @@ export default function RedeemForm({ setHasConfirmedAddress, setUserAddress, num
         onClick={event => {
           const signer = library.getSigner()
           const timestampToSign = Math.round(Date.now() / 1000)
-          const header = `PLEASE VERIFY YOUR ADDRESS.\nYour data will never be shared publicly.`
 
+          const header = `PLEASE VERIFY YOUR ADDRESS.\nYour data will never be shared publicly.`
           const formDataMessage = nameOrder.map(o => `${nameMap[o]}: ${formState[o]}`).join('\n')
           const autoMessage = `${nameMap[address]}: ${account}\n${nameMap[timestamp]}: ${timestampToSign}\n${nameMap[numberBurned]}: ${actualNumberBurned}`
 

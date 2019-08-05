@@ -1,4 +1,4 @@
-import { ethers, utils } from 'ethers'
+import { ethers } from 'ethers'
 const faunadb = require('faunadb')
 
 const q = faunadb.query
@@ -36,7 +36,7 @@ export async function handler(event) {
     return returnError('Invalid Arguments')
   }
 
-  const addressOfSigner = utils.verifyMessage(
+  const addressOfSigner = ethers.utils.verifyMessage(
     `This signature is proof that I control the private key of ${address} as of the timestamp ${timestamp}.\n\n It will be used to access my Unisocks order history.`,
     signature
   )
