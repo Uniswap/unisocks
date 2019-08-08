@@ -68,8 +68,8 @@ export async function handler(event) {
     await client.query(
       q.Create(q.Collection('addresses'), {
         data: {
-          numberOfSocks: numberBurned,
-          timestamp,
+          numberOfSocks: Number(numberBurned),
+          timestamp: Number(timestamp),
           addressPhysical: {
             name,
             line1,
@@ -82,14 +82,14 @@ export async function handler(event) {
           },
           addressEthereum: address,
           signature,
-          invalid: false
+          invalid: false,
+          matched: false
         }
       })
     )
-    console.log('success!')
     return returnSuccess({ message: 'Success' })
-  } catch {
-    console.log('failure!')
-    return returnError('Bad')
+  } catch (error) {
+    console.error(error)
+    return returnError('Unknown Error')
   }
 }

@@ -44,12 +44,17 @@ export async function handler(event) {
     return returnError('Unauthorized', 401)
   }
 
-  const allRefs = await client.query(q.Paginate(q.Match(q.Index('get_by_address'), address)))
+  try {
+    const allRefs = await client.query(q.Paginate(q.Match(q.Index('get_by_address'), address)))
 
-  if (allRefs.data.length === 0) {
-    return returnError('No Results')
+    if (allRefs.data.length === 0) {
+      return returnError('No Results')
+    }
+
+    const query = await client.query(allRefs.data.map(ref => q.Get(ref)))
+    return returnSuccess(query.map(res => res.data))
+  } catch (error) {
+    console.error(error)
+    return returnError('Unknown Error')
   }
-
-  const query = await client.query(allRefs.data.map(ref => q.Get(ref)))
-  return returnSuccess(query.map(res => res.data))
 }
