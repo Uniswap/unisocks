@@ -5,6 +5,7 @@ import { useAppContext } from '../../context'
 import { Redirect } from 'react-router-dom'
 import { Header } from '../Body'
 import Button from '../../components/Button'
+import { EtherscanLink } from '../../components/Works'
 
 const OrderDiv = styled.div`
   display: flex;
@@ -100,6 +101,17 @@ export default function Body({ ready, balanceSOCKS }) {
                           : 'Order Received'}
                       </li>
                       {d.shippingId && <li>Shipping Id: {d.shippingId}</li>}
+                      {d.NFTTransactionHash && (
+                        <li>
+                          <EtherscanLink
+                            href={`https://etherscan.io/tx/${d.NFTTransactionHash}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            ERC-721
+                          </EtherscanLink>
+                        </li>
+                      )}
                     </ul>
                   </OrderDiv>
                 )
