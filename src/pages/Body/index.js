@@ -158,7 +158,7 @@ export default function Body({
         <RedeemButton balanceSOCKS={balanceSOCKS} />
         {!!account && (
           <Link style={{ textDecoration: 'none' }} to="/status">
-            <OrderStatusLink>'Check order status?'</OrderStatusLink>
+            <OrderStatusLink>Check order status?</OrderStatusLink>
           </Link>
         )}
       </Content>

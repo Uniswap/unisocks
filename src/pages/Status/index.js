@@ -99,7 +99,7 @@ export default function Body({ ready, balanceSOCKS }) {
                           : d.matched
                           ? d.shippingId
                             ? 'Shipped!'
-                            : 'Processing...'
+                            : 'Processing Order'
                           : 'Order Received'}
                       </li>
                       {d.shippingId && (
