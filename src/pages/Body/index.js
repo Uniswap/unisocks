@@ -156,9 +156,11 @@ export default function Body({
         </Info>
         <BuyButtons balanceSOCKS={balanceSOCKS} />
         <RedeemButton balanceSOCKS={balanceSOCKS} />
-        <Link disabled={!!account} style={{ textDecoration: 'none' }} to="/status">
-          <OrderStatusLink>{!!account ? 'Check order status?' : 'Connect wallet'}</OrderStatusLink>
-        </Link>
+        {!!account && (
+          <Link style={{ textDecoration: 'none' }} to="/status">
+            <OrderStatusLink>'Check order status?'</OrderStatusLink>
+          </Link>
+        )}
       </Content>
       <Checkout
         selectedTokenSymbol={selectedTokenSymbol}
