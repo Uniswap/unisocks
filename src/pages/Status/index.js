@@ -9,9 +9,11 @@ import { EtherscanLink } from '../../components/Works'
 
 const OrderDiv = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
   border-radius: 2rem;
   border: 1px solid black;
+  margin-bottom: 1rem;
 `
 
 export default function Body({ ready, balanceSOCKS }) {
@@ -107,6 +109,7 @@ export default function Body({ ready, balanceSOCKS }) {
                             href={`https://www.google.com/search?q=${d.shippingId}`}
                             target="_blank"
                             rel="noopener noreferrer"
+                            style={{ textDecoration: 'none' }}
                           >
                             {d.shippingId}
                           </a>
@@ -115,6 +118,7 @@ export default function Body({ ready, balanceSOCKS }) {
                     </ul>
                     {d.NFTTransactionHash && (
                       <EtherscanLink
+                        style={{ marginBottom: '.5rem' }}
                         href={`https://etherscan.io/tx/${d.NFTTransactionHash}`}
                         target="_blank"
                         rel="noopener noreferrer"
