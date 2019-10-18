@@ -4,6 +4,14 @@ import { useWeb3Context } from 'web3-react'
 import { useAppContext } from '../../context'
 import { Redirect } from 'react-router-dom'
 import { Header } from '../Body'
+import Button from '../../components/Button'
+
+const OrderDiv = styled.div`
+  display: flex;
+  align-items: center;
+  border-radius: 2rem;
+  border: 1px solid black;
+`
 
 export default function Body({ ready, balanceSOCKS }) {
   const [state] = useAppContext()
@@ -33,6 +41,7 @@ export default function Body({ ready, balanceSOCKS }) {
       }).then(async response => {
         if (response.status !== 200) {
           const parsed = await response.json().catch(() => ({ error: 'Unknown Error' }))
+          console.error(parsed.error)
           setError(parsed.error)
         } else {
           const parsed = await response.json()
@@ -49,9 +58,6 @@ export default function Body({ ready, balanceSOCKS }) {
     }
   }, [account, signature, timestamp])
 
-  data && console.log(data)
-  error && console.log(error)
-
   if (!account) {
     return <Redirect to={'/'} />
   } else {
@@ -62,27 +68,54 @@ export default function Body({ ready, balanceSOCKS }) {
           <p>
             You can use this page to check the status of your Unisocks order, please bookmark it for future reference.
           </p>
-          <button disabled={!!data} onClick={sign}>
-            Access my order history
-          </button>
+
+          {error && <p>Error</p>}
+
+          <Button text={'Access my order history'} disabled={!!data} onClick={sign} />
+          <br />
           {data &&
             (data.length === 0 ? (
               <p>No orders found.</p>
             ) : (
               data.map((d, i) => {
                 return (
-                  <p key={i}>
-                    <br />
-                    <span>Redemption Number: {i}</span>
-                    <br />
-                    <span>Socks Redeemed: {d.numberOfSocks}</span>
-                    <br />
-                    <span>Status: {d.invalid ? 'Invalid' : d.matched ? 'Order Processing' : 'Order Received'}</span>
-                    <br />
-                  </p>
+                  <OrderDiv key={i}>
+                    <ul>
+                      <li>
+                        Order Date:{' '}
+                        {new Date(Number(d.timestamp) * 1000).toLocaleDateString(undefined, {
+                          dateStyle: 'long',
+                          timeStyle: 'short'
+                        })}
+                      </li>
+                      <li>Socks Redeemed: {d.numberOfSocks}</li>
+                      <li>
+                        Status:{' '}
+                        {d.invalid
+                          ? 'Invalid Order'
+                          : d.matched
+                          ? d.shippingId
+                            ? 'Shipped!'
+                            : 'Processing...'
+                          : 'Order Received'}
+                      </li>
+                      {d.shippingId && <li>Shipping Id: {d.shippingId}</li>}
+                    </ul>
+                  </OrderDiv>
                 )
               })
             ))}
+          <p style={{ fontSize: '.75rem', textAlign: 'center' }}>
+            Problem with an order?{' '}
+            <a
+              href={`mailto:contact@uniswap.io?Subject=Unipig%20Order%20for%20${account}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Email us
+            </a>
+            .{' '}
+          </p>
         </Content>
       </AppWrapper>
     )
