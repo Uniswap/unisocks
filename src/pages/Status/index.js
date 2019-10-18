@@ -89,7 +89,7 @@ export default function Body({ ready, balanceSOCKS }) {
                           timeStyle: 'short'
                         })}
                       </li>
-                      <li>Socks Redeemed: {d.numberOfSocks}</li>
+                      <li>SOCKS Redeemed: {d.numberOfSocks}</li>
                       <li>
                         Status:{' '}
                         {d.invalid
@@ -100,19 +100,28 @@ export default function Body({ ready, balanceSOCKS }) {
                             : 'Processing...'
                           : 'Order Received'}
                       </li>
-                      {d.shippingId && <li>Shipping Id: {d.shippingId}</li>}
-                      {d.NFTTransactionHash && (
+                      {d.shippingId && (
                         <li>
-                          <EtherscanLink
-                            href={`https://etherscan.io/tx/${d.NFTTransactionHash}`}
+                          Shipping Id:{' '}
+                          <a
+                            href={`https://www.google.com/search?q=${d.shippingId}`}
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            ERC-721
-                          </EtherscanLink>
+                            {d.shippingId}
+                          </a>
                         </li>
                       )}
                     </ul>
+                    {d.NFTTransactionHash && (
+                      <EtherscanLink
+                        href={`https://etherscan.io/tx/${d.NFTTransactionHash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View ERC-721 Transaction
+                      </EtherscanLink>
+                    )}
                   </OrderDiv>
                 )
               })
