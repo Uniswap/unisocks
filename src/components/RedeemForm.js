@@ -137,7 +137,13 @@ export default function RedeemForm({ setHasConfirmedAddress, setUserAddress, num
   }, [suggestEl])
 
   const canSign =
-    formState[name] && formState[line1] && formState[city] && formState[state] && formState[zip] && formState[country]
+    formState[name] &&
+    formState[line1] &&
+    formState[city] &&
+    formState[state] &&
+    formState[zip] &&
+    formState[country] &&
+    formState[email]
 
   function onRecaptcha(value) {
     if (value) {
@@ -223,6 +229,7 @@ export default function RedeemForm({ setHasConfirmedAddress, setUserAddress, num
       />
 
       <input
+        required
         type="email"
         name={email}
         value={formState[email]}

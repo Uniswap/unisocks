@@ -60,7 +60,7 @@ export async function handler(event) {
 
   const addressOfSigner = ethers.utils.verifyMessage(`${m1}\n\n${m2}\n${m3}`, signature)
   if (addressOfSigner !== address) {
-    console.log('unauthorized!', `${m1}\n\n${m2}\n${m3}`)
+    console.log('Unauthorized!', `${m1}\n\n${m2}\n${m3}`)
     return returnError('Unauthorized', 401)
   }
 

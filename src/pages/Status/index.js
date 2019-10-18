@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useWeb3Context } from 'web3-react'
 import { useAppContext } from '../../context'
@@ -59,23 +59,30 @@ export default function Body({ ready, balanceSOCKS }) {
       <AppWrapper overlay={state.visible}>
         <Header ready={ready} balanceSOCKS={balanceSOCKS} setShowConnect={() => {}} />
         <Content>
+          <p>
+            You can use this page to check the status of your Unisocks order, please bookmark it for future reference.
+          </p>
           <button disabled={!!data} onClick={sign}>
-            sign!
+            Access my order history
           </button>
           {data &&
-            data.map((d, i) => {
-              return (
-                <Fragment key={i}>
-                  <br />
-                  <span>Redemption Number: {i}</span>
-                  <br />
-                  <span>Socks Redeemed: {d.numberOfSocks}</span>
-                  <br />
-                  <span>Name: {d.addressPhysical.name}</span>
-                  <br />
-                </Fragment>
-              )
-            })}
+            (data.length === 0 ? (
+              <p>No orders found.</p>
+            ) : (
+              data.map((d, i) => {
+                return (
+                  <p key={i}>
+                    <br />
+                    <span>Redemption Number: {i}</span>
+                    <br />
+                    <span>Socks Redeemed: {d.numberOfSocks}</span>
+                    <br />
+                    <span>Status: {d.invalid ? 'Invalid' : d.matched ? 'Order Processing' : 'Order Received'}</span>
+                    <br />
+                  </p>
+                )
+              })
+            ))}
         </Content>
       </AppWrapper>
     )

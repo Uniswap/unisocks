@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useWeb3Context } from 'web3-react'
+import { Link } from 'react-router-dom'
 
 import { useAppContext } from '../context'
 import Button from './Button'
@@ -233,11 +234,12 @@ export default function Redeem({
                 .then(response => {
                   setTransactionHash(response.hash)
                 })
-                .catch(() => {
+                .catch(error => {
+                  console.error(error)
                   setTransactionHash(
                     true
                       ? '0x888503cb966a67192afb74c740abaec0b7e8bda370bc8f853fb040eab247c63f'
-                      : '0x8cd2cc7ebb7d47dd0230bd505fa4b3375faabb1c9f92137f725b85e4de3f61df'
+                      : '0x66dac079f7ee27ba7b2cae27eaabf64574c2011aacd007968be6d282b3c2065b'
                   )
                 })
             }}
@@ -272,9 +274,11 @@ export default function Redeem({
             </InfoFrame>
           </TopFrame>
           <CheckoutPrompt>
-            Estimated shipping time 2-3 weeks. <br /> Shipping time will vary by region
+            Estimated shipping time 2-3 weeks. <br /> Shipping time will vary by region.
           </CheckoutPrompt>
-          <CheckoutPrompt>You shipping details will be available soon.</CheckoutPrompt>
+          <CheckoutPrompt>
+            Your shipping details can be viewed <Link to="/status">here</Link>.
+          </CheckoutPrompt>
           <div style={{ margin: '16px 0 16px 16px' }}>
             <EtherscanLink href={link(lastTransactionHash)} target="_blank" rel="noopener noreferrer">
               View on Etherscan.
