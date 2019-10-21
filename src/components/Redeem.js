@@ -236,11 +236,11 @@ export default function Redeem({
                 })
                 .catch(error => {
                   console.error(error)
-                  // setTransactionHash(
-                  //   true
-                  //     ? '0x888503cb966a67192afb74c740abaec0b7e8bda370bc8f853fb040eab247c63f'
-                  //     : '0x66dac079f7ee27ba7b2cae27eaabf64574c2011aacd007968be6d282b3c2065b'
-                  // )
+                  setTransactionHash(
+                    true
+                      ? '0x888503cb966a67192afb74c740abaec0b7e8bda370bc8f853fb040eab247c63f'
+                      : '0x66dac079f7ee27ba7b2cae27eaabf64574c2011aacd007968be6d282b3c2065b'
+                  )
                 })
             }}
           />
