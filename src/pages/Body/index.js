@@ -10,7 +10,7 @@ import RedeemButton from '../../components/RedeemButton'
 import Checkout from '../../components/Checkout'
 import { amountFormatter } from '../../utils'
 
-export function Header({ ready, balanceSOCKS, setShowConnect }) {
+export function Header({ totalSupply, ready, balanceSOCKS, setShowConnect }) {
   const { account, setConnector } = useWeb3Context()
 
   function handleAccount() {
@@ -21,25 +21,39 @@ export function Header({ ready, balanceSOCKS, setShowConnect }) {
 
   return (
     <HeaderFrame balanceSOCKS={balanceSOCKS}>
-      <Unicorn>
-        <span role="img" aria-label="unicorn">
-          🦄
-        </span>{' '}
-        Unisocks
-      </Unicorn>
-      <Account onClick={() => handleAccount()} balanceSOCKS={balanceSOCKS}>
-        {account ? (
-          balanceSOCKS > 0 ? (
-            <SockCount>{balanceSOCKS && `${amountFormatter(balanceSOCKS, 18, 0)}`} SOCKS</SockCount>
-          ) : (
-            <SockCount>{account.slice(0, 6)}...</SockCount>
-          )
-        ) : (
-          <SockCount>Connect Wallet</SockCount>
+      <Link to="/" style={{ textDecoration: 'none' }}>
+        <Unicorn>
+          <span role="img" aria-label="unicorn">
+            🦄
+          </span>{' '}
+          Unisocks
+        </Unicorn>
+      </Link>
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+        {totalSupply && (
+          <Link to="/stats" style={{ textDecoration: 'none' }}>
+            <Burned>
+              <span role="img" aria-label="fire">
+                🔥
+              </span>{' '}
+              {500 - totalSupply} redeemed
+            </Burned>
+          </Link>
         )}
+        <Account onClick={() => handleAccount()} balanceSOCKS={balanceSOCKS}>
+          {account ? (
+            balanceSOCKS > 0 ? (
+              <SockCount>{balanceSOCKS && `${amountFormatter(balanceSOCKS, 18, 0)}`} SOCKS</SockCount>
+            ) : (
+              <SockCount>{account.slice(0, 6)}...</SockCount>
+            )
+          ) : (
+            <SockCount>Connect Wallet</SockCount>
+          )}
 
-        <Status balanceSOCKS={balanceSOCKS} ready={ready} account={account} />
-      </Account>
+          <Status balanceSOCKS={balanceSOCKS} ready={ready} account={account} />
+        </Account>
+      </div>
     </HeaderFrame>
   )
 }
@@ -70,6 +84,26 @@ const Account = styled.div`
     transform: ${props => (props.balanceSOCKS ? 'scale(1)' : 'scale(1.02)')};
     text-decoration: underline;
   }
+`
+
+const Burned = styled.div`
+  background-color: none;
+  border: 1px solid red;
+  margin-right: 1rem;
+  padding: 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transform: scale(1);
+  transition: transform 0.3s ease;
+  line-height: 1;
+
+  :hover {
+    transform: scale(1.02);
+  }
+
+  font-weight: 500;
+  font-size: 14px;
+  color: red;
 `
 
 const SockCount = styled.p`
@@ -106,7 +140,8 @@ export default function Body({
   dollarize,
   dollarPrice,
   balanceSOCKS,
-  reserveSOCKSToken
+  reserveSOCKSToken,
+  totalSupply
 }) {
   const { account } = useWeb3Context()
   const [currentTransaction, _setCurrentTransaction] = useState({})
@@ -122,9 +157,15 @@ export default function Body({
 
   return (
     <AppWrapper overlay={state.visible}>
-      <Header ready={ready} dollarPrice={dollarPrice} balanceSOCKS={balanceSOCKS} setShowConnect={setShowConnect} />
+      <Header
+        totalSupply={totalSupply}
+        ready={ready}
+        dollarPrice={dollarPrice}
+        balanceSOCKS={balanceSOCKS}
+        setShowConnect={setShowConnect}
+      />
       <Content>
-        <Card dollarPrice={dollarPrice} reserveSOCKSToken={reserveSOCKSToken} />{' '}
+        <Card totalSupply={totalSupply} dollarPrice={dollarPrice} reserveSOCKSToken={reserveSOCKSToken} />{' '}
         <Info>
           <div style={{ marginBottom: '4px' }}>Buy and sell real socks with digital currency.</div>
           <div style={{ marginBottom: '4px' }}>

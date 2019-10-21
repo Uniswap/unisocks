@@ -37,6 +37,7 @@ export default function App() {
                 <Switch>
                   <Route exact strict path="/" render={() => <Main />} />
                   <Route exact strict path="/status" render={() => <Main status />} />
+                  <Route exact strict path="/stats" render={() => <Main stats />} />
                   <Redirect to="/" />
                 </Switch>
               </BrowserRouter>

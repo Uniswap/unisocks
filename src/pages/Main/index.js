@@ -9,9 +9,11 @@ import {
   useAddressBalance,
   useAddressAllowance,
   useExchangeReserves,
-  useExchangeAllowance
+  useExchangeAllowance,
+  useTotalSupply
 } from '../../hooks'
 import Body from '../Body'
+import Stats from '../Stats'
 import Status from '../Status'
 
 // denominated in bips
@@ -144,7 +146,7 @@ function calculateAmount(
   }
 }
 
-export default function Main({ status }) {
+export default function Main({ stats, status }) {
   const { library, account } = useWeb3Context()
 
   // selected token
@@ -163,6 +165,9 @@ export default function Main({ status }) {
   const balanceETH = useAddressBalance(account, TOKEN_ADDRESSES.ETH)
   const balanceSOCKS = useAddressBalance(account, TOKEN_ADDRESSES.SOCKS)
   const balanceSelectedToken = useAddressBalance(account, TOKEN_ADDRESSES[selectedTokenSymbol])
+
+  // totalsupply
+  const totalSupply = useTotalSupply(tokenContractSOCKS)
 
   // get allowances
   const allowanceSOCKS = useAddressAllowance(
@@ -517,8 +522,10 @@ export default function Main({ status }) {
     })
   }
 
-  return status ? (
-    <Status ready={ready} balanceSOCKS={balanceSOCKS} />
+  return stats ? (
+    <Stats reserveSOCKSToken={reserveSOCKSToken} totalSupply={totalSupply} ready={ready} balanceSOCKS={balanceSOCKS} />
+  ) : status ? (
+    <Status totalSupply={totalSupply} ready={ready} balanceSOCKS={balanceSOCKS} />
   ) : (
     <Body
       selectedTokenSymbol={selectedTokenSymbol}
@@ -534,6 +541,7 @@ export default function Main({ status }) {
       dollarPrice={dollarPrice}
       balanceSOCKS={balanceSOCKS}
       reserveSOCKSToken={reserveSOCKSToken}
+      totalSupply={totalSupply}
     />
   )
 }

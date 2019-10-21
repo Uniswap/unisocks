@@ -1,19 +1,13 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 import Tilt from 'react-tilt'
 
 import { amountFormatter } from '../utils'
 
 import Gallery from './Gallery'
 
-export default function Card({ dollarPrice, reserveSOCKSToken }) {
-  const [showPop, setShowPop] = useState(false)
-
-  function handleClickPopover(e) {
-    e.preventDefault()
-    setShowPop(!showPop)
-  }
-
+export default function Card({ totalSupply, dollarPrice, reserveSOCKSToken }) {
   return (
     <Tilt
       style={{ background: '#000', borderRadius: '8px' }}
@@ -27,25 +21,17 @@ export default function Card({ dollarPrice, reserveSOCKSToken }) {
           <span>
             <CurrentPrice>{dollarPrice ? `$${amountFormatter(dollarPrice, 18, 2)} USD` : '$0.00'}</CurrentPrice>
             <SockCount>
-              {reserveSOCKSToken ? `${amountFormatter(reserveSOCKSToken, 18, 0)}/500 available` : '500/500 available'}
+              {reserveSOCKSToken && totalSupply
+                ? `${amountFormatter(reserveSOCKSToken, 18, 0)}/${totalSupply} available`
+                : ''}
             </SockCount>
           </span>
-          <Info>
-            <Popover show={showPop} onMouseLeave={e => handleClickPopover(e)}>
-              <p style={{ marginTop: '0px' }}>The price of SOCKS will change when tokens are bought and sold.</p>
-              <a
-                href="https://medium.com/frst/money-laundry-the-rise-of-the-crypto-sock-market-f979aafc3796"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Read more.
-              </a>
-            </Popover>
-            <InfoButton onMouseEnter={e => handleClickPopover(e)} href="">
-              ?
-            </InfoButton>
-            <Dynamic>Dynamic Pricing</Dynamic>
-          </Info>
+          <Link to="/stats">
+            <Info>
+              <InfoButton>?</InfoButton>
+              <Dynamic>Dynamic Pricing</Dynamic>
+            </Info>
+          </Link>
         </MarketData>
       </CardWrapper>
     </Tilt>
@@ -64,7 +50,7 @@ const CardWrapper = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
+  cursor: default;
   padding: 24px;
   z-index: 1;
   transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1);
@@ -110,35 +96,6 @@ const Info = styled.div`
   margin-bottom: -2px;
 `
 
-const Popover = styled.div`
-  position: fixed;
-  font-size: 12px;
-  background-color: #404040;
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.4);
-  padding: 1rem;
-  border-radius: 6px;
-  right: 16px;
-  bottom: 16px;
-  display: block;
-  width: 150px;
-  style= {
-     {
-      margintop: '0px';
-    }
-  }
-  display: ${props => (props.show ? 'block' : 'none')};
-
-  a {
-    color: ${props => props.theme.uniswapPink};
-    text-decoration: none;
-    cursor: pointer;
-  }
-  a:hover {
-    text-decoration: underline;
-    cursor: pointer;
-  }
-`
-
 const Dynamic = styled.p`
   color: #aeaeae;
   font-style: italic;
@@ -148,7 +105,7 @@ const Dynamic = styled.p`
   float: left;
 `
 
-const InfoButton = styled.a`
+const InfoButton = styled.span`
   width: 16px;
   height: 16px;
   font-size: 12px;

@@ -11,6 +11,7 @@ import {
   getTokenAllowance,
   TOKEN_ADDRESSES
 } from '../utils'
+import { utils } from 'ethers'
 
 export function useBlockEffect(functionToRun) {
   const { library } = useWeb3Context()
@@ -102,6 +103,41 @@ export function useAddressBalance(address, tokenAddress) {
   useBlockEffect(updateBalance)
 
   return balance
+}
+
+export function useTotalSupply(contract) {
+  const [totalSupply, setTotalSupply] = useState()
+
+  const updateTotalSupply = useCallback(() => {
+    if (!!contract) {
+      let stale = false
+
+      contract
+        .totalSupply()
+        .then(value => {
+          if (!stale) {
+            setTotalSupply(value)
+          }
+        })
+        .catch(() => {
+          if (!stale) {
+            setTotalSupply(null)
+          }
+        })
+      return () => {
+        stale = true
+        setTotalSupply()
+      }
+    }
+  }, [contract])
+
+  useEffect(() => {
+    return updateTotalSupply()
+  }, [updateTotalSupply])
+
+  useBlockEffect(updateTotalSupply)
+
+  return totalSupply && Math.round(Number(utils.formatEther(totalSupply)))
 }
 
 export function useExchangeReserves(tokenAddress) {

@@ -16,7 +16,7 @@ const OrderDiv = styled.div`
   margin-bottom: 1rem;
 `
 
-export default function Body({ ready, balanceSOCKS }) {
+export default function Body({ totalSupply, ready, balanceSOCKS }) {
   const [state] = useAppContext()
   const { library, account } = useWeb3Context()
 
@@ -66,7 +66,7 @@ export default function Body({ ready, balanceSOCKS }) {
   } else {
     return (
       <AppWrapper overlay={state.visible}>
-        <Header ready={ready} balanceSOCKS={balanceSOCKS} setShowConnect={() => {}} />
+        <Header totalSupply={totalSupply} ready={ready} balanceSOCKS={balanceSOCKS} setShowConnect={() => {}} />
         <Content>
           <p>
             You can use this page to check the status of your Unisocks order, please bookmark it for future reference.
