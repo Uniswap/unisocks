@@ -1,4 +1,4 @@
-<!DOCTYPE html />
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -10,6 +10,8 @@
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <script src="https://maps.googleapis.com/maps/api/js?key=%REACT_APP_GOOGLE_MAPS_API%&libraries=places"></script>
+
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -23,7 +25,22 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root" />
+    <form name="redeem" netlify netlify-honeypot="beep-boop" hidden>
+      <input type="text" name="beep-boop" />
+      <input type="text" name="name" />
+      <input type="text" name="line1" />
+      <input type="text" name="line2" />
+      <input type="text" name="city" />
+      <input type="text" name="state" />
+      <input type="text" name="zip" />
+      <input type="text" name="country" />
+      <input type="email" name="email" />
+      <input type="text" name="address" />
+      <input type="number" name="timestamp" />
+      <input type="number" name="number-burned" />
+      <input type="text" name="signature" />
+    </form>
+    <div id="root"></div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

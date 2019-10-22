@@ -1,5 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
+import { ethers } from 'ethers'
+import { useWeb3Context } from 'web3-react'
 
 import Button from './Button'
 import { useAppContext } from '../context'
@@ -26,13 +28,14 @@ const ButtonFrame = styled(Button)`
   width: 100%;
 `
 
-// const Shim = styled.div`
-//   width: 2rem !important;
-//   height: 2rem;
-// `
+const Shim = styled.div`
+  width: 1rem !important;
+  height: 1rem;
+`
 
-export default function BuyButtons(props) {
+export default function RedeemButton({ balanceSOCKS }) {
   const [, setState] = useAppContext()
+  const { account } = useWeb3Context()
 
   function handleToggleCheckout(tradeType) {
     setState(state => ({ ...state, visible: !state.visible, tradeType }))
@@ -41,11 +44,24 @@ export default function BuyButtons(props) {
   return (
     <BuyButtonFrame>
       <ButtonFrame
-        disabled={false}
-        text={'Buy'}
-        type={'cta'}
+        disabled={balanceSOCKS > 0 ? false : true}
+        text={'Sell'}
+        type={'secondary'}
         onClick={() => {
-          handleToggleCheckout(TRADE_TYPES.BUY)
+          handleToggleCheckout(TRADE_TYPES.SELL)
+        }}
+      />
+      <Shim />
+      <ButtonFrame
+        disabled={
+          account === null ||
+          !balanceSOCKS ||
+          balanceSOCKS.lt(ethers.utils.bigNumberify(10).pow(ethers.utils.bigNumberify(18)))
+        }
+        text={'Redeem'}
+        type={'secondary'}
+        onClick={() => {
+          handleToggleCheckout(TRADE_TYPES.REDEEM)
         }}
       />
     </BuyButtonFrame>

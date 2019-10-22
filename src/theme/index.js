@@ -1,5 +1,5 @@
 import React from 'react'
-import { createGlobalStyle, ThemeProvider as StyledComponentsThemeProvider } from 'styled-components'
+import styled, { createGlobalStyle, ThemeProvider as StyledComponentsThemeProvider, keyframes } from 'styled-components'
 
 export default createGlobalStyle`
   @import url('https://rsms.me/inter/inter.css');
@@ -11,12 +11,12 @@ export default createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-family: Inter, sans-serif;
-    background-color: #F1F2F6;
+    /* background-color: #F1F2F6; */
   }
 `
 
 const theme = {
-  uniswapPink: '#DC6BE5',
+  uniswapPink: '#FE6DDE',
   primary: '#2B2B2B',
   secondary: '#F1F2F6',
   text: '#000',
@@ -28,6 +28,21 @@ const theme = {
   white: '#FFF',
   black: '#000'
 }
+
+const rotate = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`
+
+export const Spinner = styled.img`
+  animation: 2s ${rotate} linear infinite;
+  width: 16px;
+  height: 16px;
+`
 
 export function ThemeProvider({ children }) {
   return <StyledComponentsThemeProvider theme={theme}>{children}</StyledComponentsThemeProvider>

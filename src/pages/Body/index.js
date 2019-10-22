@@ -1,24 +1,131 @@
 import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { useWeb3Context } from 'web3-react'
+import { Link } from 'react-router-dom'
 
-import Gallery from '../../components/Gallery'
+import { useAppContext } from '../../context'
+import Card from '../../components/Card'
 import BuyButtons from '../../components/Buttons'
+import RedeemButton from '../../components/RedeemButton'
 import Checkout from '../../components/Checkout'
 import { amountFormatter } from '../../utils'
 
-function Header({ ready, dollarPrice }) {
-  const { account } = useWeb3Context()
+export function Header({ totalSupply, ready, balanceSOCKS, setShowConnect }) {
+  const { account, setConnector } = useWeb3Context()
+
+  function handleAccount() {
+    setConnector('Injected', { suppressAndThrowErrors: true }).catch(error => {
+      setShowConnect(true)
+    })
+  }
 
   return (
-    <HeaderFrame>
-      <Status ready={ready} account={account} />
-      <Title>unisocks token (SOCKS)</Title>
-      <CurrentPrice>{dollarPrice && `$${amountFormatter(dollarPrice, 18, 2)} USD`}</CurrentPrice>
-      <Tagline>dynamically priced socks</Tagline>
+    <HeaderFrame balanceSOCKS={balanceSOCKS}>
+      <Link to="/" style={{ textDecoration: 'none' }}>
+        <Unicorn>
+          <span role="img" aria-label="unicorn">
+            🦄
+          </span>{' '}
+          Unisocks
+        </Unicorn>
+      </Link>
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+        {totalSupply && (
+          <Link to="/stats" style={{ textDecoration: 'none' }}>
+            <Burned>
+              <span role="img" aria-label="fire">
+                🔥
+              </span>{' '}
+              {500 - totalSupply} redeemed
+            </Burned>
+          </Link>
+        )}
+        <Account onClick={() => handleAccount()} balanceSOCKS={balanceSOCKS}>
+          {account ? (
+            balanceSOCKS > 0 ? (
+              <SockCount>{balanceSOCKS && `${amountFormatter(balanceSOCKS, 18, 0)}`} SOCKS</SockCount>
+            ) : (
+              <SockCount>{account.slice(0, 6)}...</SockCount>
+            )
+          ) : (
+            <SockCount>Connect Wallet</SockCount>
+          )}
+
+          <Status balanceSOCKS={balanceSOCKS} ready={ready} account={account} />
+        </Account>
+      </div>
     </HeaderFrame>
   )
 }
+
+const HeaderFrame = styled.div`
+  position: fixed;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0px;
+  font-size: 1.25rem;
+  color: ${props => (props.balanceSOCKS ? props.theme.primary : 'white')};
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 1rem;
+`
+
+const Account = styled.div`
+  background-color: ${props => (props.balanceSOCKS ? '#f1f2f6' : props.theme.blue)};
+  padding: 0.75rem;
+  border-radius: 6px;
+  cursor: ${props => (props.balanceSOCKS ? 'auto' : 'pointer')};
+
+  transform: scale(1);
+  transition: transform 0.3s ease;
+
+  :hover {
+    transform: ${props => (props.balanceSOCKS ? 'scale(1)' : 'scale(1.02)')};
+    text-decoration: underline;
+  }
+`
+
+const Burned = styled.div`
+  background-color: none;
+  border: 1px solid red;
+  margin-right: 1rem;
+  padding: 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transform: scale(1);
+  transition: transform 0.3s ease;
+  line-height: 1;
+
+  :hover {
+    transform: scale(1.02);
+  }
+
+  font-weight: 500;
+  font-size: 14px;
+  color: red;
+`
+
+const SockCount = styled.p`
+  /* color: #6c7284; */
+  font-weight: 500;
+  margin: 0px;
+  font-size: 14px;
+  float: left;
+`
+
+const Status = styled.div`
+  display: ${props => (props.balanceSOCKS ? 'initial' : 'none')};
+  width: 12px;
+  height: 12px;
+  border-radius: 100%;
+  margin-left: 12px;
+  margin-top: 2px;
+  float: right;
+  background-color: ${props =>
+    props.account === null ? props.theme.orange : props.ready ? props.theme.green : props.theme.orange};
+  // props.account === null ? props.theme.orange : props.theme.green};
+`
 
 export default function Body({
   selectedTokenSymbol,
@@ -29,11 +136,14 @@ export default function Body({
   buy,
   validateSell,
   sell,
+  burn,
   dollarize,
   dollarPrice,
   balanceSOCKS,
-  reserveSOCKSToken
+  reserveSOCKSToken,
+  totalSupply
 }) {
+  const { account } = useWeb3Context()
   const [currentTransaction, _setCurrentTransaction] = useState({})
   const setCurrentTransaction = useCallback((hash, type, amount) => {
     _setCurrentTransaction({ hash, type, amount })
@@ -41,38 +151,58 @@ export default function Body({
   const clearCurrentTransaction = useCallback(() => {
     _setCurrentTransaction({})
   }, [])
+  const [state, setState] = useAppContext()
+  const [showConnect, setShowConnect] = useState(false)
+  const [showWorks, setShowWorks] = useState(false)
 
   return (
-    <AppWrapper>
-      <Header ready={ready} dollarPrice={dollarPrice} />
-      <Gallery />
-      <div>
-        <Intro>
-          purchasing a <b>SOCKS</b> entitles you to 1{' '}
-          <i>
-            <b>real</b>
-          </i>{' '}
-          pair of limited edition socks, shipped anywhere in the world.
-        </Intro>
-        <BuyButtons balance={balanceSOCKS} />
-        <MarketData>
-          {balanceSOCKS > 0 ? (
-            <SockCount>
-              You own {balanceSOCKS && `${amountFormatter(balanceSOCKS, 18, 0)}`} SOCKS&nbsp; • &nbsp;
-            </SockCount>
-          ) : (
-            ''
-          )}
-          <SockCount>{reserveSOCKSToken && `${amountFormatter(reserveSOCKSToken, 18, 0)}/500 available`}</SockCount>
-        </MarketData>
-        <Redeem>
-          {/* {balanceSOCKS > 0 ? `You have ${amountFormatter(balanceSOCKS, 18, 0)} SOCKS !! ` : 'Try clicking buyyyyy '} */}
-          <RedeemLink>
-            <s>Redeem</s>
-          </RedeemLink>
-          &nbsp;Coming Soon!™
-        </Redeem>
-      </div>
+    <AppWrapper overlay={state.visible}>
+      <Header
+        totalSupply={totalSupply}
+        ready={ready}
+        dollarPrice={dollarPrice}
+        balanceSOCKS={balanceSOCKS}
+        setShowConnect={setShowConnect}
+      />
+      <Content>
+        <Card totalSupply={totalSupply} dollarPrice={dollarPrice} reserveSOCKSToken={reserveSOCKSToken} />{' '}
+        <Info>
+          <div style={{ marginBottom: '4px' }}>Buy and sell real socks with digital currency.</div>
+          <div style={{ marginBottom: '4px' }}>
+            Delivered on demand.{' '}
+            <a
+              href="/"
+              onClick={e => {
+                e.preventDefault()
+                setState(state => ({ ...state, visible: !state.visible }))
+                setShowWorks(true)
+              }}
+            >
+              Learn more
+            </a>
+          </div>
+          {/* <SubInfo>
+            An experiment in pricing and user experience by the team at Uniswap.{' '}
+            <a
+              href="/"
+              onClick={e => {
+                e.preventDefault()
+                setState(state => ({ ...state, visible: !state.visible }))
+                setShowWorks(true)
+              }}
+            >
+              How it works.
+            </a>
+          </SubInfo> */}
+        </Info>
+        <BuyButtons balanceSOCKS={balanceSOCKS} />
+        <RedeemButton balanceSOCKS={balanceSOCKS} />
+        {!!account && (
+          <Link style={{ textDecoration: 'none' }} to="/status">
+            <OrderStatusLink>Check order status?</OrderStatusLink>
+          </Link>
+        )}
+      </Content>
       <Checkout
         selectedTokenSymbol={selectedTokenSymbol}
         setSelectedTokenSymbol={setSelectedTokenSymbol}
@@ -82,12 +212,20 @@ export default function Body({
         buy={buy}
         validateSell={validateSell}
         sell={sell}
+        burn={burn}
+        balanceSOCKS={balanceSOCKS}
+        dollarPrice={dollarPrice}
+        reserveSOCKSToken={reserveSOCKSToken}
         dollarize={dollarize}
+        showConnect={showConnect}
+        setShowConnect={setShowConnect}
         currentTransactionHash={currentTransaction.hash}
         currentTransactionType={currentTransaction.type}
         currentTransactionAmount={currentTransaction.amount}
         setCurrentTransaction={setCurrentTransaction}
         clearCurrentTransaction={clearCurrentTransaction}
+        showWorks={showWorks}
+        setShowWorks={setShowWorks}
       />
     </AppWrapper>
   )
@@ -95,128 +233,58 @@ export default function Body({
 
 const AppWrapper = styled.div`
   width: 100vw;
-  max-width: 640px;
+  height: 100%;
   margin: 0px auto;
   margin-bottom: 1rem;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
-  justify-content: space-between;
-  padding-top: 20vh;
-  overflow: scroll;
-  @media only screen and (min-device-width: 768px) {
-    max-height: 480px;
-    overflow: hidden;
-    height: 100%;
-  }
-  @media only screen and (max-width: 640px) {
-    /* padding-top: 0px; */
-    overflow: hidden;
-    padding-left: 2rem;
-    max-height: 640px;
-  }
-  @media only screen and (max-width: 480px) {
-    padding-top: 0px;
-    padding-left: 0px;
-    overflow: hidden;
-    max-height: 800px;
-  }
+  align-items: center;
+  overflow: ${props => (props.overlay ? 'hidden' : 'scroll')};
+  scroll-behavior: smooth;
+  position: ${props => (props.overlay ? 'fixed' : 'initial')};
 `
 
-const Status = styled.div`
-  width: 12px;
-  height: 12px;
-  position: fixed;
-  top: 16px;
-  right: 24px;
-  border-radius: 100%;
-  background-color: ${props =>
-    props.account === null ? props.theme.orange : props.ready ? props.theme.green : props.theme.orange};
+const Content = styled.div`
+  width: calc(100vw - 32px);
+  max-width: 375px;
+  margin-top: 72px;
 `
 
-const HeaderFrame = styled.div`
-  text-align: left;
-  margin: 0px;
-  font-size: 1.25rem;
-  width: 100%;
-  color: ${props => props.theme.primary};
-  @media only screen and (max-width: 480px) {
-    /* For mobile phones: */
-    padding: 10vw;
-    padding-top: 10vh;
-  }
-`
-
-const Title = styled.p`
+const Info = styled.div`
+  color: ${props => props.theme.text};
   font-weight: 500;
   margin: 0px;
-  margin-bottom: 10px;
-`
-
-const Tagline = styled.p`
-  font-weight: 500;
-  font-size: 1rem;
-  margin-bottom: 0px;
-  margin-top: 2rem;
-`
-
-const CurrentPrice = styled.p`
-  font-weight: 700;
-  margin: 0px;
-  height: 1.125rem;
-`
-
-const Intro = styled.p`
-  /* padding-left: 5vw; */
-  margin: 0px;
-  max-width: 300px;
-  line-height: 180%;
-  font-weight: 500;
-  color: ${props => props.theme.primary};
-  @media only screen and (max-width: 480px) {
-    /* For mobile phones: */
-    margin-top: 2rem;
-    padding-left: 10vw;
+  font-size: 14px;
+  padding: 20px;
+  padding-top: 32px;
+  border-radius: 0 0 8px 8px;
+  /* border-radius: 8px; */
+  margin-bottom: 12px;
+  margin-top: -12px;
+  /* margin-top: 16px; */
+  background-color: ${props => '#f1f2f6'};
+  a {
+    color: ${props => props.theme.uniswapPink};
+    text-decoration: none;
+    /* padding-top: 8px; */
+    /* font-size: 14px; */
+  }
+  a:hover {
+    cursor: pointer;
+    text-decoration: underline;
   }
 `
 
-const SockCount = styled.p`
-  font-weight: 500;
-  font-size: 0.75rem;
+const OrderStatusLink = styled.p`
   color: ${props => props.theme.uniswapPink};
-  height: 0.5rem;
+  text-align: center;
+  font-size: 0.6rem;
 `
 
-const Redeem = styled.p`
-  font-weight: 500;
-  /* padding-left: 10vw; */
-  font-size: 1rem;
-  margin-top: 0.5rem;
-  margin-bottom: 2rem;
-  color: ${props => props.theme.primary};
-  @media only screen and (max-width: 480px) {
-    /* For mobile phones: */
-    /* margin-top: 2rem; */
-    padding-left: 10vw;
-  }
-`
-
-const RedeemLink = styled.span`
-  /* font-size: 1rem; */
-  text-decoration: italic;
-  opacity: 1;
-  /* color: ${props => props.theme.blue}; */
-`
-
-const MarketData = styled.div`
-  display: flex;
-  flex-direction: row;
-  /* padding-left: 5vw; */
-  margin-bottom: 0.5rem;
-  margin-top: 0.5rem;
-  /* padding-bottom: 0.5rem; */
-  @media only screen and (max-width: 480px) {
-    /* For mobile phones: */
-    padding-left: 10vw;
-  }
+const Unicorn = styled.p`
+  color: ${props => props.theme.uniswapPink};
+  font-weight: 600;
+  margin: 0px;
+  font-size: 16px;
 `

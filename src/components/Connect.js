@@ -4,8 +4,9 @@ import styled from 'styled-components'
 import QRCode from 'qrcode.react'
 
 import Button from './Button'
+import { Controls } from './Redeem'
 
-export default function Connect({ setShowConnect }) {
+export default function Connect({ setShowConnect, closeCheckout }) {
   const { account, connector, setConnector } = useWeb3Context()
 
   // connector error
@@ -37,38 +38,59 @@ export default function Connect({ setShowConnect }) {
   })
 
   return (
-    <>
-      <Back
-        onClick={() => {
-          setShowConnect(false)
-        }}
-      >
-        ← Back
-      </Back>
+    <WalletFrame>
+      <Controls closeCheckout={closeCheckout} theme={'dark'} />
+      <Shim />
       <Button
+        type={'cta'}
         text="Browser Wallet"
         onClick={() => {
           activateInjected()
         }}
       />
+      <Shim />
       <Button
+        type={'cta'}
         text="WalletConnect"
         onClick={() => {
           activateWalletConnect()
         }}
       />
-      <QRCodeWrapper>{walletconnectUri && account === null ? <QRCode value={walletconnectUri} /> : null}</QRCodeWrapper>
-      <p>{connectorError && 'Connection Error (Try a web3-enabled browser).'}</p>
-    </>
+      <QRCodeWrapper showQR={walletconnectUri && account === null && !connectorError}>
+        {walletconnectUri && account === null && !connectorError ? (
+          <>
+            <QRCode value={walletconnectUri} />
+            <p>Scan to connect</p>
+          </>
+        ) : null}
+      </QRCodeWrapper>
+      {connectorError ? (
+        <p style={{ width: '100%', textAlign: 'center', marginTop: '12px' }}>
+          {'Connection Error (Try a web3-enabled browser). '}
+          <a href="https://ethereum.org/use/#_3-what-is-a-wallet-and-which-one-should-i-use">Learn more</a>
+        </p>
+      ) : (
+        <p style={{ width: '100%', textAlign: 'center', marginTop: '12px' }}>
+          Don't have one?{' '}
+          <a href="https://ethereum.org/use/#_3-what-is-a-wallet-and-which-one-should-i-use">Learn more</a>
+        </p>
+      )}
+    </WalletFrame>
   )
 }
 
-const Back = styled.p`
-  cursor: pointer;
+const WalletFrame = styled.div`
+  padding: 16px;
+  width: 100%;
+`
+
+const Shim = styled.div`
+  width: 100%;
+  height: 1rem;
 `
 
 const QRCodeWrapper = styled.div`
   width: 100%;
   text-align: center;
-  margin-top: 2rem;
+  margin-top: ${props => (props.showQR ? '1rem' : 0)};
 `

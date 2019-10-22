@@ -9,9 +9,12 @@ import {
   useAddressBalance,
   useAddressAllowance,
   useExchangeReserves,
-  useExchangeAllowance
+  useExchangeAllowance,
+  useTotalSupply
 } from '../../hooks'
 import Body from '../Body'
+import Stats from '../Stats'
+import Status from '../Status'
 
 // denominated in bips
 const GAS_MARGIN = ethers.utils.bigNumberify(1000)
@@ -143,7 +146,7 @@ function calculateAmount(
   }
 }
 
-export default function Main() {
+export default function Main({ stats, status }) {
   const { library, account } = useWeb3Context()
 
   // selected token
@@ -162,6 +165,9 @@ export default function Main() {
   const balanceETH = useAddressBalance(account, TOKEN_ADDRESSES.ETH)
   const balanceSOCKS = useAddressBalance(account, TOKEN_ADDRESSES.SOCKS)
   const balanceSelectedToken = useAddressBalance(account, TOKEN_ADDRESSES[selectedTokenSymbol])
+
+  // totalsupply
+  const totalSupply = useTotalSupply(tokenContractSOCKS)
 
   // get allowances
   const allowanceSOCKS = useAddressAllowance(
@@ -501,7 +507,26 @@ export default function Main() {
     }
   }
 
-  return (
+  async function burn(amount) {
+    const parsedAmount = ethers.utils.parseUnits(amount, 18)
+
+    const estimatedGasPrice = await library
+      .getGasPrice()
+      .then(gasPrice => gasPrice.mul(ethers.utils.bigNumberify(150)).div(ethers.utils.bigNumberify(100)))
+
+    const estimatedGasLimit = await tokenContractSOCKS.estimate.burn(parsedAmount)
+
+    return tokenContractSOCKS.burn(parsedAmount, {
+      gasLimit: calculateGasMargin(estimatedGasLimit, GAS_MARGIN),
+      gasPrice: estimatedGasPrice
+    })
+  }
+
+  return stats ? (
+    <Stats reserveSOCKSToken={reserveSOCKSToken} totalSupply={totalSupply} ready={ready} balanceSOCKS={balanceSOCKS} />
+  ) : status ? (
+    <Status totalSupply={totalSupply} ready={ready} balanceSOCKS={balanceSOCKS} />
+  ) : (
     <Body
       selectedTokenSymbol={selectedTokenSymbol}
       setSelectedTokenSymbol={setSelectedTokenSymbol}
@@ -511,10 +536,12 @@ export default function Main() {
       buy={buy}
       validateSell={validateSell}
       sell={sell}
+      burn={burn}
       dollarize={dollarize}
       dollarPrice={dollarPrice}
       balanceSOCKS={balanceSOCKS}
       reserveSOCKSToken={reserveSOCKSToken}
+      totalSupply={totalSupply}
     />
   )
 }
