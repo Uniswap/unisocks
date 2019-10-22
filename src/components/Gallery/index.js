@@ -11,12 +11,13 @@ const GalleryFrame = styled.div`
   align-items: center;
   flex-direction: center;
   /* background-color: ${props => props.theme.black}; */
-  // box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.05);
+  box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.05);
 `
 
 const ImgStyle = styled.img`
   width: 100%;
   box-sizing: border-box;
+  border-radius: 4px;
   /* background-color: ${props => props.theme.black}; */
 `
 
