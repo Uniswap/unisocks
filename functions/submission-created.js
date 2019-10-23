@@ -59,9 +59,10 @@ export async function handler(event) {
   const m3 = `Ethereum Address: ${address}\nTime: ${timestamp}\nSOCKS Redeemed: ${numberBurned}`
 
   const addressOfSigner = ethers.utils.verifyMessage(`${m1}\n\n${m2}\n${m3}`, signature)
-  if (addressOfSigner !== address) {
-    console.log('Unauthorized!', `${m1}\n\n${m2}\n${m3}`)
-    return returnError('Unauthorized', 401)
+  const isInvalid = addressOfSigner !== address
+
+  if (isInvalid) {
+    console.log('Unauthorized!', `${m1}\n\n${m2}\n${m3}`, signature, address)
   }
 
   try {
@@ -82,7 +83,7 @@ export async function handler(event) {
           },
           addressEthereum: address,
           signature,
-          invalid: false,
+          invalid: isInvalid,
           matched: false
         }
       })
