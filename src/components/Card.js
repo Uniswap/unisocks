@@ -29,7 +29,7 @@ export default function Card({ totalSupply, dollarPrice, reserveSOCKSToken }) {
           <Link to="/stats">
             <Info>
               <InfoButton>?</InfoButton>
-              <Dynamic>Dynamic Pricing</Dynamic>
+              <Dynamic>Dynamic Pricing Stats</Dynamic>
             </Info>
           </Link>
         </MarketData>
@@ -93,7 +93,7 @@ const CurrentPrice = styled.p`
 `
 
 const Info = styled.div`
-  margin-bottom: -2px;
+  /* margin-bottom: -2px; */
 `
 
 const Dynamic = styled.p`
@@ -101,6 +101,7 @@ const Dynamic = styled.p`
   font-style: italic;
   font-weight: 400;
   margin: 0px;
+  margin-top: 1px;
   font-size: 12px;
   float: left;
 `

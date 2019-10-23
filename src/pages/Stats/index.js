@@ -58,9 +58,9 @@ export default function Body({ totalSupply, reserveSOCKSToken, ready, balanceSOC
 }
 
 const Footer = styled.p`
-  margin-right: 2.5rem;
-  margin-left: 2.5rem;
-  margin-bottom: 1rem;
+  margin-right: 2rem;
+  margin-left: 2rem;
+  margin-bottom: 2rem;
   color: white;
 
   a {
@@ -104,8 +104,9 @@ const Content = styled.div`
 const Title = styled.h2`
   color: white;
   font-weight: 500;
-  margin-left: 2.5rem;
+  margin-left: 2rem;
   margin-bottom: 2rem;
+  margin-top: 2rem;
 `
 
 const Description = styled.div`
@@ -113,8 +114,8 @@ const Description = styled.div`
   justify-content: space-between;
   color: white;
   font-weight: 400;
-  margin-left: 2.5rem;
-  margin-right: 2.5rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
   margin-bottom: 1rem;
 
   p {

@@ -21,7 +21,7 @@ export function Header({ totalSupply, ready, balanceSOCKS, setShowConnect }) {
 
   return (
     <HeaderFrame balanceSOCKS={balanceSOCKS}>
-      <Link to="/" style={{ textDecoration: 'none' }}>
+      <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
         <Unicorn>
           <span role="img" aria-label="unicorn">
             🦄
@@ -36,7 +36,7 @@ export function Header({ totalSupply, ready, balanceSOCKS, setShowConnect }) {
               <span role="img" aria-label="fire">
                 🔥
               </span>{' '}
-              {500 - totalSupply} redeemed
+              {500 - totalSupply} <HideMobile>redeemed</HideMobile>
             </Burned>
           </Link>
         )}
@@ -104,6 +104,12 @@ const Burned = styled.div`
   font-weight: 500;
   font-size: 14px;
   color: red;
+`
+
+const HideMobile = styled.span`
+  @media only screen and (max-width: 480px) {
+    display: none;
+  }
 `
 
 const SockCount = styled.p`
@@ -285,6 +291,6 @@ const OrderStatusLink = styled.p`
 const Unicorn = styled.p`
   color: ${props => props.theme.uniswapPink};
   font-weight: 600;
-  margin: 0px;
+  margin: auto 0px;
   font-size: 16px;
 `
