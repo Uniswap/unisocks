@@ -46,14 +46,14 @@ export default function Works({ closeCheckout }) {
 
       <Title>How it works:</Title>
       <Desc>
-        $SOCKS is a token that entitles you to 1 real pair of limited edition socks, shipped anywhere in the world.
+        $SPCMKR is a token that entitles you to 1ML of limited edition space.
       </Desc>
       <Desc>
-        You can sell the token back at any time. To get a <i>real</i> pair, redeem a $SOCKS token
+        You can sell the token back at any time. To get <i>real</i> space, redeem a $SPCMKR token
       </Desc>
       <Title>How it's priced:</Title>
       <Desc>
-        $SOCKS tokens are listed starting at $12 USD. Each buy/sell will move the price. The increase or decrease
+        $SPCMKR tokens are listed starting at $12 USD. Each buy/sell will move the price. The increase or decrease
         follows a{' '}
         <a
           href="https://blog.relevant.community/bonding-curves-in-depth-intuition-parametrization-d3905a681e0a"
@@ -62,7 +62,7 @@ export default function Works({ closeCheckout }) {
         >
           bonding curve
         </a>
-        . $SOCKS will eventually find an equillibrium based on market demand.
+        . $SPCMKR will eventually find an equillibrium based on market demand.
       </Desc>
       <Title>Unipay:</Title>
       <Desc>

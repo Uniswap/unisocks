@@ -24,9 +24,9 @@ export function Header({ totalSupply, ready, balanceSOCKS, setShowConnect }) {
       <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
         <Unicorn>
           <span role="img" aria-label="unicorn">
-            🦄
+            🔳
           </span>{' '}
-          Unisocks
+          Spacemaker
         </Unicorn>
       </Link>
       <div style={{ display: 'flex', flexDirection: 'row' }}>
