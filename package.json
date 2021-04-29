@@ -22,7 +22,7 @@
     "start": "run-p start:**",
     "start:app": "react-scripts start",
     "start:functions": "netlify-lambda serve functions -c ./webpack.config.js",
-    "prebuild": "cd functions/ && yarn",
+    "prebuild": "cd functions/ && npm install",
     "build": "run-p build:**",
     "build:app": "react-scripts build",
     "build:functions": "netlify-lambda build functions -c ./webpack.config.js",
