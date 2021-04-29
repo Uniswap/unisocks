@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@walletconnect/web3-subprovider": "^1.0.0-beta.25",
+    "@walletconnect/web3-subprovider": "^1.4.1",
     "ethers": "^4.0.27",
     "http-proxy-middleware": "^0.19.1",
     "qrcode.react": "^0.9.3",
