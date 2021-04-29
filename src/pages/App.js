@@ -21,6 +21,7 @@ const WalletConnect = new WalletConnectConnector({
   supportedNetworkURLs: {
     1: PROVIDER_URL
   },
+  infuraId: process.env.REACT_APP_INFURA_PROJECT_ID || '',
   defaultNetwork: 1
 })
 const connectors = { Network, Injected, WalletConnect }
