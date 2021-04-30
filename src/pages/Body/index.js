@@ -26,7 +26,7 @@ export function Header({ totalSupply, ready, balanceSOCKS, setShowConnect }) {
           <span role="img" aria-label="unicorn">
             🦄
           </span>{' '}
-          Unisocks
+          ETHpins
         </Unicorn>
       </Link>
       <div style={{ display: 'flex', flexDirection: 'row' }}>
