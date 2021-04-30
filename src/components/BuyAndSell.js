@@ -7,7 +7,7 @@ import SelectToken from './SelectToken'
 import IncrementToken from './IncrementToken'
 import { useAppContext } from '../context'
 import { ERROR_CODES, amountFormatter, TRADE_TYPES } from '../utils'
-import test from './Gallery/test.png'
+import pac from './Gallery/pac.png'
 // import { ethers } from 'ethers'
 
 export function useCount() {
@@ -202,14 +202,14 @@ export default function BuyAndSell({
   return (
     <>
       <TopFrame>
-        {/* <button onClick={() => fake()}>test</button> */}
+        {/* <button onClick={() => fake()}>pac</button> */}
         <Unicorn>
           <span role="img" aria-label="unicorn">
             🦄
           </span>{' '}
           Pay
         </Unicorn>
-        <ImgStyle src={test} alt="Logo" />
+        <ImgStyle src={pac} alt="Logo" />
         <InfoFrame pending={pending}>
           <CurrentPrice>
             {/* {dollarPrice && `$${amountFormatter(dollarPrice, 18, 2)} USD`} */}

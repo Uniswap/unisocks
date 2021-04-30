@@ -1,7 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 
-import test from './test.png'
+import pac from './pac.png'
 
 const GalleryFrame = styled.div`
   width: 100%;
@@ -24,7 +24,7 @@ const ImgStyle = styled.img`
 export default function Gallery() {
   return (
     <GalleryFrame>
-      <ImgStyle src={test} alt="Logo" />
+      <ImgStyle src={pac} alt="Logo" />
     </GalleryFrame>
   )
 }

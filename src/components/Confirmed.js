@@ -5,7 +5,7 @@ import { amountFormatter, TRADE_TYPES } from '../utils'
 import Button from './Button'
 
 import close from './Gallery/close.svg'
-import sent from './Gallery/sent.png'
+import pac from './Gallery/pac.png'
 import { useAppContext } from '../context'
 
 const ConfirmedFrame = styled.div`
@@ -66,7 +66,7 @@ export default function Confirmed({ hash, type, amount, clearLastTransaction, cl
       <ConfirmedFrame>
         <TopFrame>
           <Controls closeCheckout={closeCheckout} />
-          <ImgStyle src={sent} alt="Logo" />
+          <ImgStyle src={pac} alt="Logo" />
           <InfoFrame>
             <Owned>
               <p> Unlocked Token!</p>
@@ -86,7 +86,7 @@ export default function Confirmed({ hash, type, amount, clearLastTransaction, cl
       <ConfirmedFrame>
         <TopFrame>
           <Controls closeCheckout={closeCheckout} />
-          <ImgStyle src={sent} alt="Logo" />
+          <ImgStyle src={pac} alt="Logo" />
           <InfoFrame>
             <Owned>
               <p> {`You got ${amountFormatter(amount, 18, 0)} SOCKS!`}</p>
@@ -115,7 +115,7 @@ export default function Confirmed({ hash, type, amount, clearLastTransaction, cl
       <ConfirmedFrame>
         <TopFrame>
           <Controls closeCheckout={closeCheckout} />
-          <ImgStyle src={sent} alt="Logo" />
+          <ImgStyle src={pac} alt="Logo" />
           <InfoFrame>
             <Owned>
               <p>You sold socks!</p>
