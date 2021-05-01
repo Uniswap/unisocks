@@ -11,41 +11,41 @@ export default function Body({ totalSupply, reserveSOCKSToken, ready, balanceSOC
     <AppWrapper overlay={state.visible}>
       <Header totalSupply={totalSupply} ready={ready} balanceSOCKS={balanceSOCKS} setShowConnect={() => {}} />
       <Content>
-        <Title>SOCKS Stats</Title>
+        <Title>ETHpin Stats</Title>
         <Description>
           <p>
             <span role="img" aria-label="socks">
-              🧦
+              📌
             </span>
-            Initial SOCKS
+            Initial ETHpins
           </p>
-          <p>500</p>
+          <p>1000</p>
         </Description>
         <Description>
           <p>
             <span role="img" aria-label="socks">
               🔥
             </span>
-            Redeemed SOCKS
+            Redeemed ETHpins
           </p>
-          <p>{500 - totalSupply}</p>
+          <p>{1000 - totalSupply}</p>
         </Description>
         <Description>
           <p>
             <span role="img" aria-label="socks">
               💦
             </span>
-            SOCKS Pool
+            ETHpin Pool
           </p>
           <p>{amountFormatter(reserveSOCKSToken, 18, 0)}</p>
         </Description>
         <Shim />
         <Footer>
-          The price of SOCKS changes when tokens are bought and sold.
+          The price of ETHpin changes when tokens are bought and sold.
           <br />
           <br />
           <a
-            href="https://medium.com/frst/money-laundry-the-rise-of-the-crypto-sock-market-f979aafc3796"
+            href="https://medium.com/"
             target="_blank"
             rel="noopener noreferrer"
           >
