@@ -24,7 +24,7 @@ export function Header({ totalSupply, ready, balanceSOCKS, setShowConnect }) {
       <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
         <Unicorn>
           <span role="img" aria-label="unicorn">
-            🦄
+            🦖
           </span>{' '}
           ETHpins
         </Unicorn>
@@ -36,7 +36,7 @@ export function Header({ totalSupply, ready, balanceSOCKS, setShowConnect }) {
               <span role="img" aria-label="fire">
                 🔥
               </span>{' '}
-              {500 - totalSupply} <HideMobile>redeemed</HideMobile>
+              {1000 - totalSupply} <HideMobile>redeemed</HideMobile>
             </Burned>
           </Link>
         )}
