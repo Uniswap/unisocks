@@ -70,12 +70,12 @@ export default function Works({ closeCheckout }) {
         SOCKS is a uniswap pool where 500 SOCKS tokens were deposited along with the starting value of ETH.{' '}
       </Desc>
       <Desc>
-        <a href="https://docs.uniswap.io/" target="_blank" rel="noopener noreferrer">
+        <a href="https://docs.uniswap.org/" target="_blank" rel="noopener noreferrer">
           Learn more about how uniswap works.
         </a>
       </Desc>
       <Desc>
-        <a href="mailto:contact@uniswap.io" target="_blank" rel="noopener noreferrer">
+        <a href="mailto:contact@uniswap.org" target="_blank" rel="noopener noreferrer">
           Get in touch.
         </a>
       </Desc>
