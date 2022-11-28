@@ -1,20 +1,19 @@
-import React, { useState, useCallback, useEffect } from 'react'
-import { useWeb3Context } from 'web3-react'
 import { ethers } from 'ethers'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useWeb3Context } from 'web3-react'
 
-import { TOKEN_SYMBOLS, TOKEN_ADDRESSES, ERROR_CODES } from '../../utils'
 import {
-  useTokenContract,
-  useExchangeContract,
-  useAddressBalance,
   useAddressAllowance,
-  useExchangeReserves,
+  useAddressBalance,
   useExchangeAllowance,
+  useExchangeContract,
+  useExchangeReserves,
+  useTokenContract,
   useTotalSupply
 } from '../../hooks'
+import { ERROR_CODES, TOKEN_ADDRESSES, TOKEN_SYMBOLS } from '../../utils'
 import Body from '../Body'
 import Stats from '../Stats'
-import Status from '../Status'
 
 // denominated in bips
 const GAS_MARGIN = ethers.utils.bigNumberify(1000)
@@ -146,7 +145,7 @@ function calculateAmount(
   }
 }
 
-export default function Main({ stats, status }) {
+export default function Main({ stats }) {
   const { library, account } = useWeb3Context()
 
   // selected token
@@ -524,8 +523,6 @@ export default function Main({ stats, status }) {
 
   return stats ? (
     <Stats reserveSOCKSToken={reserveSOCKSToken} totalSupply={totalSupply} ready={ready} balanceSOCKS={balanceSOCKS} />
-  ) : status ? (
-    <Status totalSupply={totalSupply} ready={ready} balanceSOCKS={balanceSOCKS} />
   ) : (
     <Body
       selectedTokenSymbol={selectedTokenSymbol}

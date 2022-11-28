@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useWeb3Context } from 'web3-react'
 
+import { useAppContext } from '../context'
+import BuyAndSell from './BuyAndSell'
+import Confirmed from './Confirmed'
 import Connect from './Connect'
 import Works from './Works'
-import BuyAndSell from './BuyAndSell'
-import Redeem from './Redeem'
-import Confirmed from './Confirmed'
-import { useAppContext } from '../context'
-import { TRADE_TYPES } from '../utils'
 
 import Confetti from 'react-dom-confetti'
 
@@ -86,8 +84,6 @@ export default function Checkout({
   const { library } = useWeb3Context()
   const [state, setState] = useAppContext()
 
-  const redeeming = state.tradeType === TRADE_TYPES.REDEEM
-
   const [lastTransactionHash, setLastTransactionHash] = useState('')
   const [lastTransactionType, setLastTransactionType] = useState('')
   const [lastTransactionAmount, setLastTransactionAmount] = useState('')
@@ -145,40 +141,25 @@ export default function Checkout({
         />
       )
     } else {
-      if (!redeeming) {
-        return (
-          <BuyAndSell
-            selectedTokenSymbol={selectedTokenSymbol}
-            setSelectedTokenSymbol={setSelectedTokenSymbol}
-            ready={ready}
-            unlock={unlock}
-            validateBuy={validateBuy}
-            buy={buy}
-            validateSell={validateSell}
-            sell={sell}
-            dollarize={dollarize}
-            setCurrentTransaction={setCurrentTransaction}
-            currentTransactionHash={currentTransactionHash}
-            setShowConnect={setShowConnect}
-            dollarPrice={dollarPrice}
-            reserveSOCKSToken={reserveSOCKSToken}
-            pending={pending}
-          />
-        )
-      } else {
-        return (
-          <Redeem
-            ready={ready}
-            burn={burn}
-            balanceSOCKS={balanceSOCKS}
-            dollarize={dollarize}
-            setCurrentTransaction={setCurrentTransaction}
-            setShowConnect={setShowConnect}
-            closeCheckout={closeCheckout}
-            pending={pending}
-          />
-        )
-      }
+      return (
+        <BuyAndSell
+          selectedTokenSymbol={selectedTokenSymbol}
+          setSelectedTokenSymbol={setSelectedTokenSymbol}
+          ready={ready}
+          unlock={unlock}
+          validateBuy={validateBuy}
+          buy={buy}
+          validateSell={validateSell}
+          sell={sell}
+          dollarize={dollarize}
+          setCurrentTransaction={setCurrentTransaction}
+          currentTransactionHash={currentTransactionHash}
+          setShowConnect={setShowConnect}
+          dollarPrice={dollarPrice}
+          reserveSOCKSToken={reserveSOCKSToken}
+          pending={pending}
+        />
+      )
     }
   }
 

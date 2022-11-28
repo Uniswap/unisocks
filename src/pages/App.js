@@ -1,11 +1,11 @@
-import React from 'react'
-import Web3Provider, { Connectors } from 'web3-react'
 import WalletConnectApi from '@walletconnect/web3-subprovider'
+import React from 'react'
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom'
+import Web3Provider, { Connectors } from 'web3-react'
 
-import GlobalStyle, { ThemeProvider } from '../theme'
 import Web3ReactManager from '../components/Web3ReactManager'
 import AppProvider from '../context'
+import GlobalStyle, { ThemeProvider } from '../theme'
 import Main from './Main'
 
 const PROVIDER_URL = process.env.REACT_APP_PROVIDER_URL
@@ -36,7 +36,6 @@ export default function App() {
               <BrowserRouter>
                 <Switch>
                   <Route exact strict path="/" render={() => <Main />} />
-                  <Route exact strict path="/status" render={() => <Main status />} />
                   <Route exact strict path="/stats" render={() => <Main stats />} />
                   <Redirect to="/" />
                 </Switch>

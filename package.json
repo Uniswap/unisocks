@@ -19,16 +19,8 @@
     "web3-react": "^5.0.4"
   },
   "scripts": {
-    "start": "run-p start:**",
-    "start:app": "react-scripts start",
-    "start:functions": "netlify-lambda serve functions -c ./webpack.config.js",
-    "prebuild": "cd functions/ && yarn",
-    "build": "run-p build:**",
-    "build:app": "react-scripts build",
-    "build:functions": "netlify-lambda build functions -c ./webpack.config.js",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "now-build": "react-scripts build"
+    "start": "react-scripts start",
+    "build": "react-scripts build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -47,8 +39,6 @@
   },
   "devDependencies": {
     "dotenv-webpack": "^1.7.0",
-    "netlify-lambda": "^1.5.1",
-    "npm-run-all": "^4.1.5",
     "prettier": "^1.17.0"
   }
 }

@@ -1,13 +1,13 @@
-import React, { useState, useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { useWeb3Context } from 'web3-react'
-import { Link } from 'react-router-dom'
 
-import { useAppContext } from '../../context'
-import Card from '../../components/Card'
 import BuyButtons from '../../components/Buttons'
-import RedeemButton from '../../components/RedeemButton'
+import Card from '../../components/Card'
 import Checkout from '../../components/Checkout'
+import RedeemButton from '../../components/RedeemButton'
+import { useAppContext } from '../../context'
 import { amountFormatter } from '../../utils'
 
 export function Header({ totalSupply, ready, balanceSOCKS, setShowConnect }) {
@@ -149,7 +149,6 @@ export default function Body({
   reserveSOCKSToken,
   totalSupply
 }) {
-  const { account } = useWeb3Context()
   const [currentTransaction, _setCurrentTransaction] = useState({})
   const setCurrentTransaction = useCallback((hash, type, amount) => {
     _setCurrentTransaction({ hash, type, amount })
@@ -203,11 +202,6 @@ export default function Body({
         </Info>
         <BuyButtons balanceSOCKS={balanceSOCKS} />
         <RedeemButton balanceSOCKS={balanceSOCKS} />
-        {!!account && (
-          <Link style={{ textDecoration: 'none' }} to="/status">
-            <OrderStatusLink>Check order status?</OrderStatusLink>
-          </Link>
-        )}
       </Content>
       <Checkout
         selectedTokenSymbol={selectedTokenSymbol}
@@ -280,12 +274,6 @@ const Info = styled.div`
     cursor: pointer;
     text-decoration: underline;
   }
-`
-
-const OrderStatusLink = styled.p`
-  color: ${props => props.theme.uniswapPink};
-  text-align: center;
-  font-size: 0.6rem;
 `
 
 const Unicorn = styled.p`

@@ -2,11 +2,10 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components'
 
 import { amountFormatter, TRADE_TYPES } from '../utils'
-import Button from './Button'
 
+import { useAppContext } from '../context'
 import close from './Gallery/close.svg'
 import sent from './Gallery/sent.png'
-import { useAppContext } from '../context'
 
 const ConfirmedFrame = styled.div`
   width: 100%;
@@ -49,7 +48,7 @@ const Unicorn = styled.p`
 `
 
 export default function Confirmed({ hash, type, amount, clearLastTransaction, closeCheckout }) {
-  const [state, setState] = useAppContext()
+  const [state] = useAppContext()
 
   function link(hash) {
     return `https://etherscan.io/tx/${hash}`
@@ -98,15 +97,6 @@ export default function Confirmed({ hash, type, amount, clearLastTransaction, cl
             Transaction Details ↗
           </EtherscanLink>
         </CheckoutPrompt>
-        <ButtonFrame
-          text={`Redeem your SOCKS now`}
-          type={'cta'}
-          onClick={() => {
-            clearLastTransaction()
-            setState(state => ({ ...state, tradeType: TRADE_TYPES.REDEEM }))
-            // Trigger buy frame here!
-          }}
-        />
         {/* <Shim /> */}
       </ConfirmedFrame>
     )
@@ -164,12 +154,6 @@ const Close = styled.img`
   font-size: 16px;
   padding: 4px;
   cursor: pointer;
-`
-const ButtonFrame = styled(Button)`
-  width: calc(100% - 2rem);
-  margin: 16px;
-  height: 48px;
-  padding: 16px;
 `
 
 const InfoFrame = styled.div`
