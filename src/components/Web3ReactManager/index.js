@@ -15,10 +15,15 @@ export default function Web3ReactManager({ children }) {
           const library = new ethers.providers.Web3Provider(window.ethereum)
           library.listAccounts().then(accounts => {
             if (accounts.length >= 1) {
-              setConnector('Injected', { suppressAndThrowErrors: true })
+              setConnector('Injected', { suppressAndThrowErrors: true }).catch(() => {
+                console.log('Injected connection failed, falling back to Network')
+                setConnector('Network')
+              })
             } else {
               setConnector('Network')
             }
+          }).catch(() => {
+            setConnector('Network')
           })
         } catch {
           setConnector('Network')
